@@ -20,7 +20,8 @@ class FirebaseAuthRepository implements AuthRepository {
 
   /// Поток учётной записи; userChanges срабатывает и после reload.
   @override
-  Stream<AuthUser?> watchAuthUser() => _auth.userChanges().map(_toAuthUser);
+  Stream<AuthUser?> watchAuthUser() =>
+      _auth.userChanges().asyncMap(_syncVerifiedToken).map(_toAuthUser);
 
   /// Вход по email и паролю.
   @override
@@ -87,7 +88,12 @@ class FirebaseAuthRepository implements AuthRepository {
   Future<Result<bool>> reloadEmailVerification() {
     return _guard(() async {
       await _auth.currentUser?.reload();
-      return _auth.currentUser?.emailVerified ?? false;
+      final user = _auth.currentUser;
+      if (user == null || !user.emailVerified) {
+        return false;
+      }
+      await user.getIdToken(true);
+      return true;
     });
   }
 
@@ -112,6 +118,18 @@ class FirebaseAuthRepository implements AuthRepository {
       }
       await _auth.signOut();
     });
+  }
+
+  /// Обновляет токен, если email уже подтверждён, а в токене ещё старый статус: правила Firestore читают токен.
+  Future<User?> _syncVerifiedToken(User? user) async {
+    if (user == null || !user.emailVerified) {
+      return user;
+    }
+    final token = await user.getIdTokenResult();
+    if (token.claims?['email_verified'] != true) {
+      await user.getIdToken(true);
+    }
+    return user;
   }
 
   /// Переводит пользователя Firebase в модель приложения.
