@@ -1,0 +1,71 @@
+rules_version = '2';
+
+// Минимум доступа: всё, что не разрешено явно, запрещено.
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Вход выполнен, а при входе по паролю email подтверждён.
+    function isVerifiedUser() {
+      return request.auth != null
+        && (request.auth.token.firebase.sign_in_provider != 'password'
+            || request.auth.token.email_verified == true);
+    }
+
+    function isOwner(uid) {
+      return isVerifiedUser() && request.auth.uid == uid;
+    }
+
+    // Роли, которые клиент может выставить сам; moderator только через админ-инструмент.
+    function isSelectableRole(role) {
+      return role in ['athlete', 'student', 'coach'];
+    }
+
+    function isValidNickname(nickname) {
+      return nickname is string && nickname.matches('^[a-z0-9_.]{3,20}$');
+    }
+
+    function nicknamePath(nickname) {
+      return /databases/$(database)/documents/nicknames/$(nickname);
+    }
+
+    function userPath(uid) {
+      return /databases/$(database)/documents/users/$(uid);
+    }
+
+    match /users/{uid} {
+      allow read: if isVerifiedUser();
+
+      // Профиль создаётся вместе с записью ника в одной транзакции.
+      allow create: if isOwner(uid)
+        && request.resource.data.keys().hasOnly(['nickname', 'role', 'createdAt', 'updatedAt'])
+        && request.resource.data.keys().hasAll(['nickname', 'role', 'createdAt', 'updatedAt'])
+        && isValidNickname(request.resource.data.nickname)
+        && isSelectableRole(request.resource.data.role)
+        && request.resource.data.createdAt == request.time
+        && request.resource.data.updatedAt == request.time
+        && getAfter(nicknamePath(request.resource.data.nickname)).data.uid == uid;
+
+      // Сейчас клиент меняет только роль; модератор свою роль с клиента не меняет.
+      allow update: if isOwner(uid)
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['role', 'updatedAt'])
+        && isSelectableRole(request.resource.data.role)
+        && resource.data.role != 'moderator'
+        && request.resource.data.updatedAt == request.time;
+
+      // Удаление аккаунта и данных выполняется на сервере.
+      allow delete: if false;
+    }
+
+    match /nicknames/{nickname} {
+      allow read: if isVerifiedUser();
+
+      allow create: if isVerifiedUser()
+        && isValidNickname(nickname)
+        && request.resource.data.keys().hasOnly(['uid'])
+        && request.resource.data.uid == request.auth.uid
+        && getAfter(userPath(request.auth.uid)).data.nickname == nickname;
+
+      allow update, delete: if false;
+    }
+  }
+}
