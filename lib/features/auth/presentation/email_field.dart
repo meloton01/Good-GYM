@@ -11,11 +11,15 @@ class EmailField extends StatelessWidget {
     required this.controller,
     this.textInputAction = TextInputAction.next,
     this.onSubmitted,
+    this.label,
   });
 
   final TextEditingController controller;
   final TextInputAction textInputAction;
   final VoidCallback? onSubmitted;
+
+  /// Подпись поля; по умолчанию «Email».
+  final String? label;
 
   /// Строит TextFormField для email.
   @override
@@ -27,7 +31,7 @@ class EmailField extends StatelessWidget {
       textInputAction: textInputAction,
       autofillHints: const [AutofillHints.email],
       autocorrect: false,
-      decoration: InputDecoration(labelText: l10n.authEmailLabel),
+      decoration: InputDecoration(labelText: label ?? l10n.authEmailLabel),
       validator: (value) => CredentialValidators.email(l10n, value),
       onFieldSubmitted: (_) => onSubmitted?.call(),
     );

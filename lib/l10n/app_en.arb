@@ -1,155 +1,695 @@
 {
   "@@locale": "en",
   "appTitle": "Good GYM",
-  "@appTitle": {"description": "Application name"},
+  "@appTitle": {
+    "description": "Application name"
+  },
   "languageName": "English",
-  "@languageName": {"description": "Name of this language written in this language"},
+  "@languageName": {
+    "description": "Name of this language written in this language"
+  },
   "tabHome": "Home",
-  "@tabHome": {"description": "Bottom navigation label for the home tab"},
+  "@tabHome": {
+    "description": "Bottom navigation label for the home tab"
+  },
   "tabRating": "Rating",
-  "@tabRating": {"description": "Bottom navigation label for the gym rating tab"},
+  "@tabRating": {
+    "description": "Bottom navigation label for the gym rating tab"
+  },
   "tabWorkout": "Workouts",
-  "@tabWorkout": {"description": "Bottom navigation label for the workouts tab"},
+  "@tabWorkout": {
+    "description": "Bottom navigation label for the workouts tab"
+  },
   "tabProfile": "Profile",
-  "@tabProfile": {"description": "Bottom navigation label for the profile tab"},
+  "@tabProfile": {
+    "description": "Bottom navigation label for the profile tab"
+  },
   "tabSettings": "Settings",
-  "@tabSettings": {"description": "Bottom navigation label for the settings tab"},
+  "@tabSettings": {
+    "description": "Bottom navigation label for the settings tab"
+  },
   "emptySectionTitle": "Nothing here yet",
-  "@emptySectionTitle": {"description": "Title of the empty state of a section without content"},
+  "@emptySectionTitle": {
+    "description": "Title of the empty state of a section without content"
+  },
   "emptySectionMessage": "This section will be available in an upcoming update.",
-  "@emptySectionMessage": {"description": "Body of the empty state of a section that is not implemented yet"},
+  "@emptySectionMessage": {
+    "description": "Body of the empty state of a section that is not implemented yet"
+  },
   "settingsLanguage": "Language",
-  "@settingsLanguage": {"description": "Settings group title for the app language"},
+  "@settingsLanguage": {
+    "description": "Settings group title for the app language"
+  },
   "settingsLanguageSystem": "System language",
-  "@settingsLanguageSystem": {"description": "Language option that follows the device language"},
+  "@settingsLanguageSystem": {
+    "description": "Language option that follows the device language"
+  },
   "settingsTheme": "Theme",
-  "@settingsTheme": {"description": "Settings group title for the color theme"},
+  "@settingsTheme": {
+    "description": "Settings group title for the color theme"
+  },
   "settingsAccount": "Account",
-  "@settingsAccount": {"description": "Settings group title for account actions"},
+  "@settingsAccount": {
+    "description": "Settings group title for account actions"
+  },
   "themeSystem": "System",
-  "@themeSystem": {"description": "Theme option that follows the device setting"},
+  "@themeSystem": {
+    "description": "Theme option that follows the device setting"
+  },
   "themeLight": "Light",
-  "@themeLight": {"description": "Light theme option"},
+  "@themeLight": {
+    "description": "Light theme option"
+  },
   "themeDark": "Dark",
-  "@themeDark": {"description": "Dark theme option"},
+  "@themeDark": {
+    "description": "Dark theme option"
+  },
   "actionRetry": "Retry",
-  "@actionRetry": {"description": "Button that repeats a failed action"},
+  "@actionRetry": {
+    "description": "Button that repeats a failed action"
+  },
   "actionContinue": "Continue",
-  "@actionContinue": {"description": "Button that moves to the next step"},
+  "@actionContinue": {
+    "description": "Button that moves to the next step"
+  },
   "actionSave": "Save",
-  "@actionSave": {"description": "Button that saves changes"},
+  "@actionSave": {
+    "description": "Button that saves changes"
+  },
   "actionCancel": "Cancel",
-  "@actionCancel": {"description": "Button that closes a dialog without changes"},
+  "@actionCancel": {
+    "description": "Button that closes a dialog without changes"
+  },
   "loadingLabel": "Loading",
-  "@loadingLabel": {"description": "Screen reader label for a progress indicator"},
+  "@loadingLabel": {
+    "description": "Screen reader label for a progress indicator"
+  },
   "authSignInTitle": "Sign in",
-  "@authSignInTitle": {"description": "Title of the sign-in screen"},
+  "@authSignInTitle": {
+    "description": "Title of the sign-in screen"
+  },
   "authSignUpTitle": "Create account",
-  "@authSignUpTitle": {"description": "Title of the registration screen"},
+  "@authSignUpTitle": {
+    "description": "Title of the registration screen"
+  },
   "authResetPasswordTitle": "Reset password",
-  "@authResetPasswordTitle": {"description": "Title of the password reset screen"},
+  "@authResetPasswordTitle": {
+    "description": "Title of the password reset screen"
+  },
   "authEmailLabel": "Email",
-  "@authEmailLabel": {"description": "Email input label"},
+  "@authEmailLabel": {
+    "description": "Email input label"
+  },
   "authPasswordLabel": "Password",
-  "@authPasswordLabel": {"description": "Password input label"},
+  "@authPasswordLabel": {
+    "description": "Password input label"
+  },
   "authConfirmPasswordLabel": "Repeat password",
-  "@authConfirmPasswordLabel": {"description": "Password confirmation input label"},
+  "@authConfirmPasswordLabel": {
+    "description": "Password confirmation input label"
+  },
   "authShowPassword": "Show password",
-  "@authShowPassword": {"description": "Tooltip of the button that reveals the password"},
+  "@authShowPassword": {
+    "description": "Tooltip of the button that reveals the password"
+  },
   "authHidePassword": "Hide password",
-  "@authHidePassword": {"description": "Tooltip of the button that hides the password"},
+  "@authHidePassword": {
+    "description": "Tooltip of the button that hides the password"
+  },
   "authSignInAction": "Sign in",
-  "@authSignInAction": {"description": "Button that signs in with email and password"},
+  "@authSignInAction": {
+    "description": "Button that signs in with email and password"
+  },
   "authSignUpAction": "Create account",
-  "@authSignUpAction": {"description": "Button that registers a new account"},
+  "@authSignUpAction": {
+    "description": "Button that registers a new account"
+  },
   "authForgotPassword": "Forgot password?",
-  "@authForgotPassword": {"description": "Link to the password reset screen"},
+  "@authForgotPassword": {
+    "description": "Link to the password reset screen"
+  },
   "authOrDivider": "or",
-  "@authOrDivider": {"description": "Divider between email sign-in and social sign-in"},
+  "@authOrDivider": {
+    "description": "Divider between email sign-in and social sign-in"
+  },
   "authContinueWithGoogle": "Continue with Google",
-  "@authContinueWithGoogle": {"description": "Google sign-in button"},
+  "@authContinueWithGoogle": {
+    "description": "Google sign-in button"
+  },
   "authContinueWithApple": "Continue with Apple",
-  "@authContinueWithApple": {"description": "Apple sign-in button"},
+  "@authContinueWithApple": {
+    "description": "Apple sign-in button"
+  },
   "authSendResetLink": "Send link",
-  "@authSendResetLink": {"description": "Button that sends a password reset email"},
+  "@authSendResetLink": {
+    "description": "Button that sends a password reset email"
+  },
   "authResetLinkSent": "If an account exists for {email}, a reset link has been sent to it.",
-  "@authResetLinkSent": {"description": "Shown after a reset email was requested", "placeholders": {"email": {"type": "String"}}},
+  "@authResetLinkSent": {
+    "description": "Shown after a reset email was requested",
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
   "authVerifyEmailTitle": "Confirm email",
-  "@authVerifyEmailTitle": {"description": "Title of the email confirmation screen"},
+  "@authVerifyEmailTitle": {
+    "description": "Title of the email confirmation screen"
+  },
   "authVerifyEmailMessage": "We sent a confirmation link to {email}. Open it, then tap \"Check confirmation\".",
-  "@authVerifyEmailMessage": {"description": "Explains how to confirm the email", "placeholders": {"email": {"type": "String"}}},
+  "@authVerifyEmailMessage": {
+    "description": "Explains how to confirm the email",
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
   "authVerifyEmailConfirmed": "Check confirmation",
-  "@authVerifyEmailConfirmed": {"description": "Button that rechecks email confirmation"},
+  "@authVerifyEmailConfirmed": {
+    "description": "Button that rechecks email confirmation"
+  },
   "authVerifyEmailResend": "Send again",
-  "@authVerifyEmailResend": {"description": "Button that resends the confirmation email"},
+  "@authVerifyEmailResend": {
+    "description": "Button that resends the confirmation email"
+  },
   "authVerifyEmailSent": "Link sent again. Check your inbox and spam folder.",
-  "@authVerifyEmailSent": {"description": "Shown after the confirmation email was resent"},
+  "@authVerifyEmailSent": {
+    "description": "Shown after the confirmation email was resent"
+  },
   "authVerifyEmailPending": "Email is not confirmed yet. Open the link from the email.",
-  "@authVerifyEmailPending": {"description": "Shown when the user taps I confirmed before confirming the email"},
+  "@authVerifyEmailPending": {
+    "description": "Shown when the user taps I confirmed before confirming the email"
+  },
   "authSignOut": "Sign out",
-  "@authSignOut": {"description": "Button that signs out of the account"},
+  "@authSignOut": {
+    "description": "Button that signs out of the account"
+  },
   "validationRequired": "Fill in this field",
-  "@validationRequired": {"description": "Validation error for an empty required field"},
+  "@validationRequired": {
+    "description": "Validation error for an empty required field"
+  },
   "validationEmailInvalid": "Enter an email like name@example.com",
-  "@validationEmailInvalid": {"description": "Validation error for a malformed email"},
+  "@validationEmailInvalid": {
+    "description": "Validation error for a malformed email"
+  },
   "validationPasswordTooShort": "Use at least {count} characters",
-  "@validationPasswordTooShort": {"description": "Validation error for a short password", "placeholders": {"count": {"type": "int"}}},
+  "@validationPasswordTooShort": {
+    "description": "Validation error for a short password",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "validationPasswordsDoNotMatch": "Passwords don't match",
-  "@validationPasswordsDoNotMatch": {"description": "Validation error when the confirmation differs"},
+  "@validationPasswordsDoNotMatch": {
+    "description": "Validation error when the confirmation differs"
+  },
   "validationNicknameInvalid": "Use 3 to 20 characters: a-z, 0-9, _ and .",
-  "@validationNicknameInvalid": {"description": "Validation error for a malformed nickname"},
+  "@validationNicknameInvalid": {
+    "description": "Validation error for a malformed nickname"
+  },
   "profileSetupTitle": "Your profile",
-  "@profileSetupTitle": {"description": "Title of the first profile setup screen"},
+  "@profileSetupTitle": {
+    "description": "Title of the first profile setup screen"
+  },
   "profileNicknameLabel": "Nickname",
-  "@profileNicknameLabel": {"description": "Nickname input label"},
+  "@profileNicknameLabel": {
+    "description": "Nickname input label"
+  },
   "profileNicknameHelper": "3 to 20 characters: a-z, 0-9, _ and .",
-  "@profileNicknameHelper": {"description": "Helper text under the nickname input"},
+  "@profileNicknameHelper": {
+    "description": "Helper text under the nickname input"
+  },
   "profileRoleLabel": "Role",
-  "@profileRoleLabel": {"description": "Title of the role selector"},
+  "@profileRoleLabel": {
+    "description": "Title of the role selector"
+  },
   "profileChangeRole": "Change role",
-  "@profileChangeRole": {"description": "Button that opens the role selector"},
+  "@profileChangeRole": {
+    "description": "Button that opens the role selector"
+  },
   "roleAthlete": "Athlete",
-  "@roleAthlete": {"description": "Role name: trains alone"},
+  "@roleAthlete": {
+    "description": "Role name: trains alone"
+  },
   "roleAthleteDescription": "I train on my own",
-  "@roleAthleteDescription": {"description": "Short description of the athlete role"},
+  "@roleAthleteDescription": {
+    "description": "Short description of the athlete role"
+  },
   "roleStudent": "Student",
-  "@roleStudent": {"description": "Role name: trains with a coach"},
+  "@roleStudent": {
+    "description": "Role name: trains with a coach"
+  },
   "roleStudentDescription": "I train with a coach",
-  "@roleStudentDescription": {"description": "Short description of the student role"},
+  "@roleStudentDescription": {
+    "description": "Short description of the student role"
+  },
   "roleCoach": "Coach",
-  "@roleCoach": {"description": "Role name: trains students"},
+  "@roleCoach": {
+    "description": "Role name: trains students"
+  },
   "roleCoachDescription": "I train students",
-  "@roleCoachDescription": {"description": "Short description of the coach role"},
+  "@roleCoachDescription": {
+    "description": "Short description of the coach role"
+  },
   "roleModerator": "Moderator",
-  "@roleModerator": {"description": "Role name: reviews record videos"},
+  "@roleModerator": {
+    "description": "Role name: reviews record videos"
+  },
   "sessionErrorTitle": "Couldn't load the profile",
-  "@sessionErrorTitle": {"description": "Title shown when the profile fails to load"},
+  "@sessionErrorTitle": {
+    "description": "Title shown when the profile fails to load"
+  },
   "errorNetwork": "No connection. Check the internet and try again.",
-  "@errorNetwork": {"description": "Error shown when the network is unavailable"},
+  "@errorNetwork": {
+    "description": "Error shown when the network is unavailable"
+  },
   "errorPermissionDenied": "Access denied. Sign in again and repeat the action.",
-  "@errorPermissionDenied": {"description": "Error shown when the backend rejects access"},
+  "@errorPermissionDenied": {
+    "description": "Error shown when the backend rejects access"
+  },
   "errorNotFound": "Data not found. Refresh the screen.",
-  "@errorNotFound": {"description": "Error shown when requested data does not exist"},
+  "@errorNotFound": {
+    "description": "Error shown when requested data does not exist"
+  },
   "errorInvalidInput": "Check the entered data and try again.",
-  "@errorInvalidInput": {"description": "Error shown when input fails validation"},
+  "@errorInvalidInput": {
+    "description": "Error shown when input fails validation"
+  },
   "errorStorage": "Couldn't save on the device. Free up space and try again.",
-  "@errorStorage": {"description": "Error shown when local storage fails"},
+  "@errorStorage": {
+    "description": "Error shown when local storage fails"
+  },
   "errorInvalidCredentials": "Wrong email or password. Check them or reset the password.",
-  "@errorInvalidCredentials": {"description": "Error for wrong sign-in credentials"},
+  "@errorInvalidCredentials": {
+    "description": "Error for wrong sign-in credentials"
+  },
   "errorEmailAlreadyInUse": "This email is already registered. Sign in or reset the password.",
-  "@errorEmailAlreadyInUse": {"description": "Error when registering an existing email"},
+  "@errorEmailAlreadyInUse": {
+    "description": "Error when registering an existing email"
+  },
   "errorWeakPassword": "The password is too weak. Make it longer and add digits.",
-  "@errorWeakPassword": {"description": "Error when the backend rejects a weak password"},
+  "@errorWeakPassword": {
+    "description": "Error when the backend rejects a weak password"
+  },
   "errorTooManyRequests": "Too many attempts. Wait a few minutes and try again.",
-  "@errorTooManyRequests": {"description": "Error when requests are rate limited"},
+  "@errorTooManyRequests": {
+    "description": "Error when requests are rate limited"
+  },
   "errorNicknameTaken": "This nickname is taken. Choose another one.",
-  "@errorNicknameTaken": {"description": "Error when the nickname belongs to someone else"},
+  "@errorNicknameTaken": {
+    "description": "Error when the nickname belongs to someone else"
+  },
   "errorAccountExistsWithDifferentCredential": "This email is linked to another sign-in method. Sign in with that method.",
-  "@errorAccountExistsWithDifferentCredential": {"description": "Error when the email uses another provider"},
+  "@errorAccountExistsWithDifferentCredential": {
+    "description": "Error when the email uses another provider"
+  },
   "errorProviderUnavailable": "This sign-in method is unavailable. Use email and password.",
-  "@errorProviderUnavailable": {"description": "Error when a social provider is not configured"},
+  "@errorProviderUnavailable": {
+    "description": "Error when a social provider is not configured"
+  },
   "errorCancelled": "Action cancelled.",
-  "@errorCancelled": {"description": "Shown when the user cancelled an action"},
+  "@errorCancelled": {
+    "description": "Shown when the user cancelled an action"
+  },
   "errorUnknown": "Something went wrong. Try again later.",
-  "@errorUnknown": {"description": "Generic error shown when the cause is unknown"}
+  "@errorUnknown": {
+    "description": "Generic error shown when the cause is unknown"
+  },
+  "settingsAppearance": "Appearance",
+  "@settingsAppearance": {
+    "description": "Settings entry and screen title for appearance"
+  },
+  "appearancePalette": "Palette",
+  "@appearancePalette": {
+    "description": "Appearance group: color palette"
+  },
+  "appearanceAccent": "Accent color",
+  "@appearanceAccent": {
+    "description": "Appearance group: accent color"
+  },
+  "appearanceCorners": "Corners",
+  "@appearanceCorners": {
+    "description": "Appearance group: corner rounding"
+  },
+  "appearancePreview": "Preview",
+  "@appearancePreview": {
+    "description": "Appearance group: live preview"
+  },
+  "appearancePreviewSwitch": "Workout reminders",
+  "@appearancePreviewSwitch": {
+    "description": "Sample switch label in the preview"
+  },
+  "cornerSharp": "Sharp",
+  "@cornerSharp": {
+    "description": "Corner style option"
+  },
+  "cornerStandard": "Standard",
+  "@cornerStandard": {
+    "description": "Corner style option"
+  },
+  "cornerRound": "Round",
+  "@cornerRound": {
+    "description": "Corner style option"
+  },
+  "paletteBlackYellow": "Black & Yellow",
+  "@paletteBlackYellow": {
+    "description": "Palette name"
+  },
+  "paletteGraphiteOrange": "Graphite & Orange",
+  "@paletteGraphiteOrange": {
+    "description": "Palette name"
+  },
+  "paletteCarbonLime": "Carbon & Lime",
+  "@paletteCarbonLime": {
+    "description": "Palette name"
+  },
+  "paletteSteelTeal": "Steel & Teal",
+  "@paletteSteelTeal": {
+    "description": "Palette name"
+  },
+  "paletteInkPink": "Ink & Pink",
+  "@paletteInkPink": {
+    "description": "Palette name"
+  },
+  "paletteMono": "Monochrome",
+  "@paletteMono": {
+    "description": "Palette name"
+  },
+  "accentYellow": "Yellow",
+  "@accentYellow": {
+    "description": "Accent color name for screen readers"
+  },
+  "accentOrange": "Orange",
+  "@accentOrange": {
+    "description": "Accent color name for screen readers"
+  },
+  "accentLime": "Lime",
+  "@accentLime": {
+    "description": "Accent color name for screen readers"
+  },
+  "accentTeal": "Teal",
+  "@accentTeal": {
+    "description": "Accent color name for screen readers"
+  },
+  "accentPink": "Pink",
+  "@accentPink": {
+    "description": "Accent color name for screen readers"
+  },
+  "accentSilver": "Silver",
+  "@accentSilver": {
+    "description": "Accent color name for screen readers"
+  },
+  "settingsUnits": "Units",
+  "@settingsUnits": {
+    "description": "Settings group: measurement units"
+  },
+  "unitWeight": "Weight",
+  "@unitWeight": {
+    "description": "Units setting for weight"
+  },
+  "unitLength": "Height",
+  "@unitLength": {
+    "description": "Units setting for height"
+  },
+  "unitKilograms": "Kilograms (kg)",
+  "@unitKilograms": {
+    "description": "Weight unit option"
+  },
+  "unitPounds": "Pounds (lb)",
+  "@unitPounds": {
+    "description": "Weight unit option"
+  },
+  "unitCentimeters": "Centimeters (cm)",
+  "@unitCentimeters": {
+    "description": "Length unit option"
+  },
+  "unitInches": "Inches (in)",
+  "@unitInches": {
+    "description": "Length unit option"
+  },
+  "unitKilogramsShort": "kg",
+  "@unitKilogramsShort": {
+    "description": "Short weight unit"
+  },
+  "unitPoundsShort": "lb",
+  "@unitPoundsShort": {
+    "description": "Short weight unit"
+  },
+  "unitCentimetersShort": "cm",
+  "@unitCentimetersShort": {
+    "description": "Short length unit"
+  },
+  "unitInchesShort": "in",
+  "@unitInchesShort": {
+    "description": "Short length unit"
+  },
+  "settingsNotifications": "Notifications",
+  "@settingsNotifications": {
+    "description": "Settings group: notifications"
+  },
+  "notificationRecordReview": "Record review results",
+  "@notificationRecordReview": {
+    "description": "Notification type"
+  },
+  "notificationCoachInvites": "Coach and student invites",
+  "@notificationCoachInvites": {
+    "description": "Notification type"
+  },
+  "notificationWorkoutReminders": "Workout reminders",
+  "@notificationWorkoutReminders": {
+    "description": "Notification type"
+  },
+  "settingsPrivacy": "Privacy",
+  "@settingsPrivacy": {
+    "description": "Settings group: privacy"
+  },
+  "privacyProfileVisibility": "Who sees my profile",
+  "@privacyProfileVisibility": {
+    "description": "Privacy setting"
+  },
+  "privacyRecordsVisibility": "Who sees my records",
+  "@privacyRecordsVisibility": {
+    "description": "Privacy setting"
+  },
+  "visibilityEveryone": "Everyone",
+  "@visibilityEveryone": {
+    "description": "Visibility option"
+  },
+  "visibilityGymMembers": "Members of my gym",
+  "@visibilityGymMembers": {
+    "description": "Visibility option"
+  },
+  "visibilityOnlyMe": "Only me",
+  "@visibilityOnlyMe": {
+    "description": "Visibility option"
+  },
+  "accountChangeEmail": "Change email",
+  "@accountChangeEmail": {
+    "description": "Account action and screen title"
+  },
+  "accountChangePassword": "Change password",
+  "@accountChangePassword": {
+    "description": "Account action and screen title"
+  },
+  "accountExportData": "Export data",
+  "@accountExportData": {
+    "description": "Account action"
+  },
+  "accountExportSaved": "Data saved: {location}",
+  "@accountExportSaved": {
+    "description": "Shown after export",
+    "placeholders": {
+      "location": {
+        "type": "String"
+      }
+    }
+  },
+  "accountDelete": "Delete account",
+  "@accountDelete": {
+    "description": "Account action"
+  },
+  "accountDeleteTitle": "Delete account?",
+  "@accountDeleteTitle": {
+    "description": "Delete confirmation title"
+  },
+  "accountDeleteMessage": "The profile, nickname, weight and height will be deleted for good. This can't be undone.",
+  "@accountDeleteMessage": {
+    "description": "Delete confirmation body"
+  },
+  "accountDeleteSocialHint": "Next, confirm it's you by signing in again.",
+  "@accountDeleteSocialHint": {
+    "description": "Shown for Google or Apple users before deletion"
+  },
+  "accountDeleteConfirm": "Delete",
+  "@accountDeleteConfirm": {
+    "description": "Destructive confirm button"
+  },
+  "accountCurrentPassword": "Current password",
+  "@accountCurrentPassword": {
+    "description": "Password input for re-authentication"
+  },
+  "accountNewEmail": "New email",
+  "@accountNewEmail": {
+    "description": "Email input on change email screen"
+  },
+  "accountNewPassword": "New password",
+  "@accountNewPassword": {
+    "description": "Password input on change password screen"
+  },
+  "accountEmailChangeSent": "We sent a link to {email}. The email changes after you open it.",
+  "@accountEmailChangeSent": {
+    "description": "Shown after requesting email change",
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "accountPasswordChanged": "Password changed.",
+  "@accountPasswordChanged": {
+    "description": "Shown after password change"
+  },
+  "settingsAbout": "About",
+  "@settingsAbout": {
+    "description": "Settings group: about"
+  },
+  "aboutVersion": "Version",
+  "@aboutVersion": {
+    "description": "App version row title"
+  },
+  "aboutLicenses": "Open source licenses",
+  "@aboutLicenses": {
+    "description": "Opens license list"
+  },
+  "profileEdit": "Edit profile",
+  "@profileEdit": {
+    "description": "Profile action and screen title"
+  },
+  "profileBioLabel": "About me",
+  "@profileBioLabel": {
+    "description": "Bio input label"
+  },
+  "profileBioHelper": "Up to {count} characters",
+  "@profileBioHelper": {
+    "description": "Bio helper text",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "profileGymLabel": "Gym",
+  "@profileGymLabel": {
+    "description": "Gym field label"
+  },
+  "profileGymNone": "Not selected",
+  "@profileGymNone": {
+    "description": "Shown when no gym is set"
+  },
+  "profileBodyTitle": "Body",
+  "@profileBodyTitle": {
+    "description": "Private body data section"
+  },
+  "profileBodyPrivateNote": "Only you see weight and height.",
+  "@profileBodyPrivateNote": {
+    "description": "Explains body data privacy"
+  },
+  "profileWeightLabel": "Weight, {unit}",
+  "@profileWeightLabel": {
+    "description": "Weight input label",
+    "placeholders": {
+      "unit": {
+        "type": "String"
+      }
+    }
+  },
+  "profileHeightLabel": "Height, {unit}",
+  "@profileHeightLabel": {
+    "description": "Height input label",
+    "placeholders": {
+      "unit": {
+        "type": "String"
+      }
+    }
+  },
+  "profileNotSet": "Not set",
+  "@profileNotSet": {
+    "description": "Shown for an empty value"
+  },
+  "profilePublicPreview": "How others see me",
+  "@profilePublicPreview": {
+    "description": "Opens own public profile"
+  },
+  "profileHiddenTitle": "Profile is hidden",
+  "@profileHiddenTitle": {
+    "description": "Public profile hidden state title"
+  },
+  "profileHiddenMessage": "The owner limited who can see this profile.",
+  "@profileHiddenMessage": {
+    "description": "Public profile hidden state body"
+  },
+  "profileSaved": "Profile saved.",
+  "@profileSaved": {
+    "description": "Shown after saving the profile"
+  },
+  "validationNumberRange": "Enter a number from {min} to {max}",
+  "@validationNumberRange": {
+    "description": "Validation for numeric ranges",
+    "placeholders": {
+      "min": {
+        "type": "String"
+      },
+      "max": {
+        "type": "String"
+      }
+    }
+  },
+  "validationTextLength": "Use {min} to {max} characters",
+  "@validationTextLength": {
+    "description": "Validation for text length",
+    "placeholders": {
+      "min": {
+        "type": "int"
+      },
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "gymPickerTitle": "Choose gym",
+  "@gymPickerTitle": {
+    "description": "Gym picker screen title"
+  },
+  "gymSearchLabel": "Search by name",
+  "@gymSearchLabel": {
+    "description": "Gym search input label"
+  },
+  "gymSearchEmpty": "No gyms found. Create your gym.",
+  "@gymSearchEmpty": {
+    "description": "Empty gym search result"
+  },
+  "gymCreate": "Create gym",
+  "@gymCreate": {
+    "description": "Button and dialog title"
+  },
+  "gymNameLabel": "Gym name",
+  "@gymNameLabel": {
+    "description": "Gym name input"
+  },
+  "gymCityLabel": "City",
+  "@gymCityLabel": {
+    "description": "Gym city input"
+  },
+  "gymRemove": "Remove gym",
+  "@gymRemove": {
+    "description": "Clears the selected gym"
+  },
+  "errorRequiresRecentLogin": "For security, confirm it's you again and repeat the action.",
+  "@errorRequiresRecentLogin": {
+    "description": "Error when the action needs a fresh sign-in"
+  }
 }

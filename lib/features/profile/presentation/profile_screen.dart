@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
+import '../../../app/router/app_routes.dart';
 import '../../../app/theme/theme_context.dart';
 import '../../../core/errors/result.dart';
 import '../../../core/firebase/firestore_failure_mapper.dart';
@@ -12,10 +14,12 @@ import '../../auth/data/auth_repository_provider.dart';
 import '../data/user_profile_repository_provider.dart';
 import '../domain/user_profile.dart';
 import '../domain/user_role.dart';
+import 'body_metrics_section.dart';
+import 'profile_header.dart';
 import 'role_change_sheet.dart';
 import 'user_role_labels.dart';
 
-/// Вкладка профиля: ник и роль со сменой роли.
+/// Вкладка профиля: данные, роль, тело и переходы к редактированию.
 class ProfileScreen extends ConsumerWidget {
   /// Создаёт экран профиля.
   const ProfileScreen({super.key});
@@ -43,24 +47,28 @@ class ProfileScreen extends ConsumerWidget {
   }
 }
 
-/// Ник и роль с кнопкой смены роли.
+/// Список данных профиля с действиями.
 class _ProfileDetails extends ConsumerWidget {
   /// Создаёт блок данных профиля.
   const _ProfileDetails({required this.profile});
 
   final UserProfile profile;
 
-  /// Строит прокручиваемый список данных профиля.
+  /// Строит шапку, роль, данные о теле и переходы.
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
-    final spacing = context.spacing;
     final canChangeRole = UserRole.selectable.contains(profile.role);
     return ListView(
-      padding: EdgeInsetsDirectional.all(spacing.md),
+      padding: EdgeInsetsDirectional.only(bottom: context.spacing.lg),
       children: [
-        Text(profile.nickname, style: Theme.of(context).textTheme.titleLarge),
-        SizedBox(height: spacing.md),
+        ProfileHeader(profile: profile),
+        ListTile(
+          leading: const Icon(Icons.edit_outlined),
+          title: Text(l10n.profileEdit),
+          trailing: const Icon(Icons.chevron_right_rounded),
+          onTap: () => context.push(AppRoutes.profileEdit),
+        ),
         ListTile(
           title: Text(l10n.profileRoleLabel),
           subtitle: Text(profile.role.label(l10n)),
@@ -69,6 +77,19 @@ class _ProfileDetails extends ConsumerWidget {
               : null,
           onTap: canChangeRole ? () => _changeRole(context, ref) : null,
         ),
+        ListTile(
+          leading: const Icon(Icons.visibility_outlined),
+          title: Text(l10n.profilePublicPreview),
+          trailing: const Icon(Icons.chevron_right_rounded),
+          onTap: () => context.push(AppRoutes.publicProfile(profile.uid)),
+        ),
+        ListTile(
+          leading: const Icon(Icons.palette_outlined),
+          title: Text(l10n.settingsAppearance),
+          trailing: const Icon(Icons.chevron_right_rounded),
+          onTap: () => context.push(AppRoutes.appearance),
+        ),
+        BodyMetricsSection(uid: profile.uid),
       ],
     );
   }

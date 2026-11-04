@@ -67,6 +67,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
                 GoRoute(
                   path: tab.path,
                   builder: (context, state) => tab.builder(context),
+                  routes: tab.routes,
                 ),
               ],
             ),

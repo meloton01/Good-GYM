@@ -1,4 +1,5 @@
 import 'package:flutter/widgets.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../l10n/generated/app_localizations.dart';
 
@@ -12,6 +13,7 @@ class TabDefinition {
     required this.selectedIcon,
     required this.label,
     required this.builder,
+    this.routes = const [],
   });
 
   /// Корневой путь вкладки в роутере, например `/home`.
@@ -24,4 +26,7 @@ class TabDefinition {
 
   /// Корневой экран вкладки.
   final WidgetBuilder builder;
+
+  /// Вложенные экраны вкладки; открываются над ней, нижняя навигация остаётся.
+  final List<RouteBase> routes;
 }

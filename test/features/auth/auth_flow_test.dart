@@ -5,6 +5,7 @@ import 'package:good_gym/core/errors/result.dart';
 import 'package:good_gym/features/auth/domain/auth_user.dart';
 
 import '../../helpers/pump_app.dart';
+import '../../helpers/scroll_to.dart';
 
 void main() {
   Finder field(String label) => find.widgetWithText(TextFormField, label);
@@ -132,10 +133,7 @@ void main() {
     await tester.tap(find.text('Settings'));
     await tester.pumpAndSettle();
 
-    await tester.ensureVisible(find.text('Sign out'));
-    await tester.pumpAndSettle();
-    await tester.tap(find.text('Sign out'));
-    await tester.pumpAndSettle();
+    await scrollToAndTap(tester, find.text('Sign out'));
 
     expect(find.widgetWithText(AppBar, 'Sign in'), findsOneWidget);
   });

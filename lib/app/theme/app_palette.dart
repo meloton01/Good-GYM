@@ -1,6 +1,6 @@
 import 'package:flutter/painting.dart';
 
-/// Исходные значения палитры «Black & Yellow»; используются только токенами темы.
+/// Исходные значения цветов всех палитр; используются только токенами темы.
 abstract final class AppPalette {
   static const Color black = Color(0xFF0B0B0B);
   static const Color graphite = Color(0xFF161616);
@@ -18,4 +18,23 @@ abstract final class AppPalette {
   static const Color greyTextDark = Color(0xFF575757);
   static const Color redDark = Color(0xFFC62828);
   static const Color greenDark = Color(0xFF1B7F3B);
+
+  static const Color orange = Color(0xFFFF8A00);
+  static const Color lime = Color(0xFFC6F432);
+  static const Color teal = Color(0xFF00D1C1);
+  static const Color pink = Color(0xFFFF6FAE);
+  static const Color silver = Color(0xFFE6E6E6);
+
+  static const Color graphiteWarm = Color(0xFF121212);
+  static const Color graphiteWarmSurface = Color(0xFF1C1C1C);
+  static const Color graphiteWarmHigh = Color(0xFF262626);
+  static const Color carbon = Color(0xFF0C0D0B);
+  static const Color carbonSurface = Color(0xFF171A15);
+  static const Color carbonHigh = Color(0xFF21251E);
+  static const Color steel = Color(0xFF0B0F10);
+  static const Color steelSurface = Color(0xFF141B1D);
+  static const Color steelHigh = Color(0xFF1D2729);
+  static const Color ink = Color(0xFF0E0B0D);
+  static const Color inkSurface = Color(0xFF1A1418);
+  static const Color inkHigh = Color(0xFF251D22);
 }

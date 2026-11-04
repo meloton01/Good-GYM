@@ -39,4 +39,19 @@ abstract interface class AuthRepository {
 
   /// Выход из учётной записи.
   Future<Result<void>> signOut();
+
+  /// Подтверждает личность перед опасным действием: паролем или повторным входом через провайдера.
+  Future<Result<void>> reauthenticate({String? password});
+
+  /// Меняет пароль; требует недавнего [reauthenticate].
+  Future<Result<void>> changePassword(String newPassword);
+
+  /// Отправляет письмо на новый email; адрес сменится после перехода по ссылке.
+  Future<Result<void>> changeEmail(
+    String newEmail, {
+    required String languageCode,
+  });
+
+  /// Удаляет учётную запись; требует недавнего [reauthenticate].
+  Future<Result<void>> deleteAccount();
 }

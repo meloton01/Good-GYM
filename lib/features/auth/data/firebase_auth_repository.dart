@@ -6,17 +6,18 @@ import '../../../core/errors/result.dart';
 import '../domain/auth_repository.dart';
 import '../domain/auth_user.dart';
 import 'firebase_auth_failure_mapper.dart';
+import 'google_id_token_source.dart';
 
-/// Реализация входа и регистрации на Firebase Auth.
+/// Реализация входа, регистрации и управления аккаунтом на Firebase Auth.
 class FirebaseAuthRepository implements AuthRepository {
-  /// Создаёт репозиторий поверх экземпляров Firebase Auth и Google Sign-In.
-  FirebaseAuthRepository(this._auth, this._googleSignIn);
+  /// Создаёт репозиторий поверх Firebase Auth и источника токена Google.
+  FirebaseAuthRepository(this._auth, this._google);
 
   static const String _passwordProviderId = 'password';
+  static const String _appleProviderId = 'apple.com';
 
   final FirebaseAuth _auth;
-  final GoogleSignIn _googleSignIn;
-  Future<void>? _googleInitialization;
+  final GoogleIdTokenSource _google;
 
   /// Поток учётной записи; userChanges срабатывает и после reload.
   @override
@@ -51,20 +52,12 @@ class FirebaseAuthRepository implements AuthRepository {
     });
   }
 
-  /// Вход через Google: получает idToken и обменивает его на сессию Firebase.
+  /// Вход через Google: обменивает idToken на сессию Firebase.
   @override
   Future<Result<void>> signInWithGoogle() {
-    return _guard(() async {
-      await (_googleInitialization ??= _googleSignIn.initialize());
-      final account = await _googleSignIn.authenticate();
-      final idToken = account.authentication.idToken;
-      if (idToken == null) {
-        throw FirebaseAuthException(code: 'invalid-credential');
-      }
-      await _auth.signInWithCredential(
-        GoogleAuthProvider.credential(idToken: idToken),
-      );
-    });
+    return _guard(
+      () async => _auth.signInWithCredential(await _google.credential()),
+    );
   }
 
   /// Вход через Apple средствами Firebase Auth.
@@ -109,18 +102,72 @@ class FirebaseAuthRepository implements AuthRepository {
     });
   }
 
-  /// Выходит из Firebase и из Google, чтобы при следующем входе был выбор аккаунта.
+  /// Выходит из Firebase и из Google.
   @override
   Future<Result<void>> signOut() {
     return _guard(() async {
-      if (_googleInitialization != null) {
-        await _googleSignIn.signOut();
-      }
+      await _google.signOut();
       await _auth.signOut();
     });
   }
 
-  /// Обновляет токен, если email уже подтверждён, а в токене ещё старый статус: правила Firestore читают токен.
+  /// Подтверждает личность паролем, а без пароля — повторным входом через Apple или Google.
+  @override
+  Future<Result<void>> reauthenticate({String? password}) {
+    return _guard(() async {
+      final user = _requireUser();
+      final email = user.email;
+      if (password != null && email != null) {
+        await user.reauthenticateWithCredential(
+          EmailAuthProvider.credential(email: email, password: password),
+        );
+      } else if (user.providerData.any(
+        (info) => info.providerId == _appleProviderId,
+      )) {
+        await user.reauthenticateWithProvider(AppleAuthProvider());
+      } else {
+        await user.reauthenticateWithCredential(await _google.credential());
+      }
+    });
+  }
+
+  /// Меняет пароль текущего пользователя.
+  @override
+  Future<Result<void>> changePassword(String newPassword) {
+    return _guard(() => _requireUser().updatePassword(newPassword));
+  }
+
+  /// Отправляет подтверждение на новый email на языке интерфейса.
+  @override
+  Future<Result<void>> changeEmail(
+    String newEmail, {
+    required String languageCode,
+  }) {
+    return _guard(() async {
+      await _auth.setLanguageCode(languageCode);
+      await _requireUser().verifyBeforeUpdateEmail(newEmail);
+    });
+  }
+
+  /// Удаляет учётную запись и выходит из Google.
+  @override
+  Future<Result<void>> deleteAccount() {
+    return _guard(() async {
+      await _requireUser().delete();
+      await _google.signOut();
+    });
+  }
+
+  /// Текущий пользователь; без входа бросает ошибку, которая станет permissionDenied.
+  User _requireUser() {
+    final user = _auth.currentUser;
+    if (user == null) {
+      throw FirebaseAuthException(code: 'user-disabled');
+    }
+    return user;
+  }
+
+  /// Обновляет токен, если email подтверждён, а в токене старый статус: правила Firestore читают токен.
   Future<User?> _syncVerifiedToken(User? user) async {
     if (user == null || !user.emailVerified) {
       return user;
@@ -154,21 +201,9 @@ class FirebaseAuthRepository implements AuthRepository {
     } on FirebaseAuthException catch (error) {
       return Failure(mapFirebaseAuthFailure(error), cause: error);
     } on GoogleSignInException catch (error) {
-      return Failure(_mapGoogleFailure(error.code), cause: error);
+      return Failure(mapGoogleSignInFailure(error.code), cause: error);
     } on Exception catch (error) {
       return Failure(AppFailure.unknown, cause: error);
     }
-  }
-
-  /// Переводит код ошибки Google Sign-In в ошибку приложения.
-  AppFailure _mapGoogleFailure(GoogleSignInExceptionCode code) {
-    return switch (code) {
-      GoogleSignInExceptionCode.canceled ||
-      GoogleSignInExceptionCode.interrupted => AppFailure.cancelled,
-      GoogleSignInExceptionCode.clientConfigurationError ||
-      GoogleSignInExceptionCode.providerConfigurationError ||
-      GoogleSignInExceptionCode.uiUnavailable => AppFailure.providerUnavailable,
-      _ => AppFailure.unknown,
-    };
   }
 }

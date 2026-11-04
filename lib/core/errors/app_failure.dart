@@ -13,5 +13,6 @@ enum AppFailure {
   accountExistsWithDifferentCredential,
   providerUnavailable,
   cancelled,
+  requiresRecentLogin,
   unknown,
 }

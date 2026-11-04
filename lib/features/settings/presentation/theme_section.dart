@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../core/errors/result.dart';
-import '../../../core/widgets/failure_snack_bar.dart';
 import '../../../core/widgets/section_header.dart';
 import '../../../core/widgets/selectable_option_tile.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../domain/app_theme_mode.dart';
 import 'app_settings_controller.dart';
+import 'settings_save.dart';
 
 /// Выбор режима темы: системная, светлая, тёмная.
 class ThemeSection extends ConsumerWidget {
@@ -21,6 +20,7 @@ class ThemeSection extends ConsumerWidget {
     final selectedMode = ref.watch(
       appSettingsProvider.select((settings) => settings.themeMode),
     );
+    final controller = ref.read(appSettingsProvider.notifier);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -29,7 +29,8 @@ class ThemeSection extends ConsumerWidget {
           SelectableOptionTile(
             title: _label(l10n, mode),
             selected: selectedMode == mode,
-            onTap: () => _select(context, ref, mode),
+            onTap: () =>
+                saveSetting(context, () => controller.setThemeMode(mode)),
           ),
       ],
     );
@@ -42,23 +43,5 @@ class ThemeSection extends ConsumerWidget {
       AppThemeMode.light => l10n.themeLight,
       AppThemeMode.dark => l10n.themeDark,
     };
-  }
-
-  /// Применяет тему и показывает ошибку с повтором, если сохранить не удалось.
-  Future<void> _select(
-    BuildContext context,
-    WidgetRef ref,
-    AppThemeMode mode,
-  ) async {
-    final result = await ref
-        .read(appSettingsProvider.notifier)
-        .setThemeMode(mode);
-    if (result is Failure<void> && context.mounted) {
-      showFailureSnackBar(
-        context,
-        result.failure,
-        onRetry: () => _select(context, ref, mode),
-      );
-    }
   }
 }

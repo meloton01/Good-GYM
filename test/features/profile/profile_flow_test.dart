@@ -34,21 +34,21 @@ void main() {
     await tester.tap(find.text('Profile'));
     await tester.pumpAndSettle();
     expect(find.text('coach.max'), findsOneWidget);
-    expect(find.text('Coach'), findsOneWidget);
+    expect(find.text('Coach'), findsNWidgets(2));
   });
 
   testWidgets('role can be changed from the profile tab', (tester) async {
     await pumpApp(tester);
     await tester.tap(find.text('Profile'));
     await tester.pumpAndSettle();
-    expect(find.text('Athlete'), findsOneWidget);
+    expect(find.text('Athlete'), findsNWidgets(2));
 
     await tester.tap(find.text('Role'));
     await tester.pumpAndSettle();
     await tester.tap(find.text('Student'));
     await tester.pumpAndSettle();
 
-    expect(find.text('Student'), findsOneWidget);
+    expect(find.text('Student'), findsNWidgets(2));
     expect(find.text('Athlete'), findsNothing);
   });
 }

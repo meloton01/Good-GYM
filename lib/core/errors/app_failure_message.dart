@@ -20,6 +20,7 @@ extension AppFailureMessage on AppFailure {
         l10n.errorAccountExistsWithDifferentCredential,
       AppFailure.providerUnavailable => l10n.errorProviderUnavailable,
       AppFailure.cancelled => l10n.errorCancelled,
+      AppFailure.requiresRecentLogin => l10n.errorRequiresRecentLogin,
       AppFailure.unknown => l10n.errorUnknown,
     };
   }

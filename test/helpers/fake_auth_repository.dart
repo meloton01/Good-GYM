@@ -88,6 +88,37 @@ class FakeAuthRepository implements AuthRepository {
     return const Success(null);
   }
 
+  /// Результат подтверждения личности.
+  Result<void> reauthResult = const Success(null);
+
+  @override
+  Future<Result<void>> reauthenticate({String? password}) async {
+    calls.add('reauthenticate:${password ?? 'provider'}');
+    return reauthResult;
+  }
+
+  @override
+  Future<Result<void>> changePassword(String newPassword) async {
+    calls.add('changePassword');
+    return const Success(null);
+  }
+
+  @override
+  Future<Result<void>> changeEmail(
+    String newEmail, {
+    required String languageCode,
+  }) async {
+    calls.add('changeEmail:$newEmail:$languageCode');
+    return const Success(null);
+  }
+
+  @override
+  Future<Result<void>> deleteAccount() async {
+    calls.add('deleteAccount');
+    emit(null);
+    return const Success(null);
+  }
+
   /// Записывает вызов и при успехе выполняет вход.
   Future<Result<void>> _signIn(String call) async {
     calls.add(call);

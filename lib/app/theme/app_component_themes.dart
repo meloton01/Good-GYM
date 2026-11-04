@@ -19,6 +19,7 @@ abstract final class AppComponentThemes {
   static FilledButtonThemeData filledButton(
     AppColors colors,
     TextTheme textTheme,
+    AppRadii radii,
   ) {
     const sizes = AppSizes.standard;
     return FilledButtonThemeData(
@@ -31,7 +32,7 @@ abstract final class AppComponentThemes {
           vertical: AppSpacing.standard.sm,
         ),
         textStyle: textTheme.labelLarge,
-        shape: _shape(AppRadii.standard),
+        shape: _shape(radii),
       ),
     );
   }
@@ -40,6 +41,7 @@ abstract final class AppComponentThemes {
   static OutlinedButtonThemeData outlinedButton(
     AppColors colors,
     TextTheme textTheme,
+    AppRadii radii,
   ) {
     return OutlinedButtonThemeData(
       style: OutlinedButton.styleFrom(
@@ -51,27 +53,35 @@ abstract final class AppComponentThemes {
           vertical: AppSpacing.standard.sm,
         ),
         textStyle: textTheme.labelLarge,
-        shape: _shape(AppRadii.standard),
+        shape: _shape(radii),
       ),
     );
   }
 
   /// Текстовая кнопка-ссылка.
-  static TextButtonThemeData textButton(AppColors colors, TextTheme textTheme) {
+  static TextButtonThemeData textButton(
+    AppColors colors,
+    TextTheme textTheme,
+    AppRadii radii,
+  ) {
     return TextButtonThemeData(
       style: TextButton.styleFrom(
         foregroundColor: colors.accentContent,
         minimumSize: _minimumSize(AppSizes.standard),
         textStyle: textTheme.labelLarge,
-        shape: _shape(AppRadii.standard),
+        shape: _shape(radii),
       ),
     );
   }
 
   /// Поля ввода: заливка поверхности, видимая граница, акцент при фокусе.
-  static InputDecorationThemeData input(AppColors colors, TextTheme textTheme) {
+  static InputDecorationThemeData input(
+    AppColors colors,
+    TextTheme textTheme,
+    AppRadii radii,
+  ) {
     OutlineInputBorder border(Color color) => OutlineInputBorder(
-      borderRadius: BorderRadius.circular(AppRadii.standard.medium),
+      borderRadius: BorderRadius.circular(radii.medium),
       borderSide: BorderSide(color: color),
     );
     return InputDecorationThemeData(

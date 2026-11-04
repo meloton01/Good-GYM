@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:good_gym/core/errors/app_failure.dart';
 import 'package:good_gym/core/errors/result.dart';
+import 'package:good_gym/features/profile/domain/body_metrics.dart';
 import 'package:good_gym/features/profile/domain/user_profile.dart';
 import 'package:good_gym/features/profile/domain/user_profile_repository.dart';
 import 'package:good_gym/features/profile/domain/user_role.dart';
@@ -60,6 +61,56 @@ class FakeUserProfileRepository implements UserProfileRepository {
       return const Failure(AppFailure.notFound);
     }
     _profiles[uid] = profile.copyWith(role: role);
+    _controller.add(null);
+    return const Success(null);
+  }
+
+  @override
+  Future<Result<void>> updateProfile(UserProfile profile) async {
+    final current = _profiles[profile.uid];
+    if (current == null) {
+      return const Failure(AppFailure.notFound);
+    }
+    if (current.nickname != profile.nickname &&
+        takenNicknames.contains(profile.nickname)) {
+      return const Failure(AppFailure.nicknameTaken);
+    }
+    _profiles[profile.uid] = profile;
+    _controller.add(null);
+    return const Success(null);
+  }
+
+  /// Данные о теле по uid.
+  final Map<String, BodyMetrics> bodies = {};
+
+  /// uid, данные которых удалены.
+  final List<String> deletedUids = [];
+
+  @override
+  Stream<BodyMetrics> watchBodyMetrics(String uid) async* {
+    yield bodies[uid] ?? const BodyMetrics();
+    await for (final _ in _controller.stream) {
+      yield bodies[uid] ?? const BodyMetrics();
+    }
+  }
+
+  @override
+  Future<Result<void>> saveBodyMetrics(String uid, BodyMetrics metrics) async {
+    bodies[uid] = metrics;
+    _controller.add(null);
+    return const Success(null);
+  }
+
+  @override
+  Future<Result<Map<String, Object?>>> exportData(String uid) async {
+    return Success({'uid': uid, 'profile': _profiles[uid]?.nickname});
+  }
+
+  @override
+  Future<Result<void>> deleteAllData(String uid) async {
+    _profiles.remove(uid);
+    bodies.remove(uid);
+    deletedUids.add(uid);
     _controller.add(null);
     return const Success(null);
   }

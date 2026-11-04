@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 import '../../../core/errors/app_failure.dart';
 
@@ -20,7 +21,24 @@ AppFailure mapFirebaseAuthFailure(FirebaseAuthException error) {
     'operation-not-allowed' ||
     'invalid-api-key' ||
     'app-not-authorized' => AppFailure.providerUnavailable,
-    'canceled' || 'web-context-canceled' => AppFailure.cancelled,
+    'canceled' ||
+    'web-context-canceled' ||
+    'popup-closed-by-user' ||
+    'cancelled-popup-request' => AppFailure.cancelled,
+    'requires-recent-login' ||
+    'user-mismatch' => AppFailure.requiresRecentLogin,
+    _ => AppFailure.unknown,
+  };
+}
+
+/// Переводит код ошибки Google Sign-In в ошибку приложения.
+AppFailure mapGoogleSignInFailure(GoogleSignInExceptionCode code) {
+  return switch (code) {
+    GoogleSignInExceptionCode.canceled ||
+    GoogleSignInExceptionCode.interrupted => AppFailure.cancelled,
+    GoogleSignInExceptionCode.clientConfigurationError ||
+    GoogleSignInExceptionCode.providerConfigurationError ||
+    GoogleSignInExceptionCode.uiUnavailable => AppFailure.providerUnavailable,
     _ => AppFailure.unknown,
   };
 }

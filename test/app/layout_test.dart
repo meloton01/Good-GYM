@@ -16,7 +16,40 @@ void main() {
     'ru': ['Главная', 'Рейтинг', 'Тренировки', 'Профиль', 'Настройки'],
   };
 
+  /// Прокручивает текущий экран до конца и проверяет, что overflow не было.
+  Future<void> scrollThrough(WidgetTester tester) async {
+    expect(tester.takeException(), isNull);
+    final scrollable = find.byType(Scrollable).first;
+    for (var i = 0; i < 8; i++) {
+      await tester.drag(scrollable, const Offset(0, -400));
+      await tester.pumpAndSettle();
+      expect(tester.takeException(), isNull);
+    }
+  }
+
   for (final entry in tabsByLanguage.entries) {
+    testWidgets('profile and settings screens fit 2x font, ${entry.key}', (
+      tester,
+    ) async {
+      await pumpApp(
+        tester,
+        textScale: 2,
+        preferences: {'settings.languageCode': entry.key},
+      );
+      final router = GoRouter.of(tester.element(find.byType(Scaffold).first));
+      for (final route in [
+        '/settings',
+        AppRoutes.appearance,
+        '/profile',
+        AppRoutes.profileEdit,
+        AppRoutes.changePassword,
+      ]) {
+        router.go(route);
+        await tester.pumpAndSettle();
+        await scrollThrough(tester);
+      }
+    });
+
     testWidgets('no overflow on 360x640 with 2x font, ${entry.key}', (
       tester,
     ) async {

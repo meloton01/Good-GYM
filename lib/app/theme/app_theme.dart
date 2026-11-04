@@ -8,8 +8,7 @@ import 'app_spacing.dart';
 import 'app_typography.dart';
 
 /// Собирает ThemeData из токенов, чтобы стандартные виджеты Material не брали чужие цвета.
-ThemeData buildAppTheme(AppColors colors) {
-  const radii = AppRadii.standard;
+ThemeData buildAppTheme(AppColors colors, AppRadii radii) {
   final textTheme = AppTypography.textTheme(colors);
   final scheme = ColorScheme(
     brightness: colors.brightness,
@@ -79,10 +78,18 @@ ThemeData buildAppTheme(AppColors colors) {
         borderRadius: BorderRadius.circular(radii.medium),
       ),
     ),
-    filledButtonTheme: AppComponentThemes.filledButton(colors, textTheme),
-    outlinedButtonTheme: AppComponentThemes.outlinedButton(colors, textTheme),
-    textButtonTheme: AppComponentThemes.textButton(colors, textTheme),
-    inputDecorationTheme: AppComponentThemes.input(colors, textTheme),
+    filledButtonTheme: AppComponentThemes.filledButton(
+      colors,
+      textTheme,
+      radii,
+    ),
+    outlinedButtonTheme: AppComponentThemes.outlinedButton(
+      colors,
+      textTheme,
+      radii,
+    ),
+    textButtonTheme: AppComponentThemes.textButton(colors, textTheme, radii),
+    inputDecorationTheme: AppComponentThemes.input(colors, textTheme, radii),
     progressIndicatorTheme: ProgressIndicatorThemeData(
       color: colors.accentContent,
     ),
@@ -98,7 +105,7 @@ ThemeData buildAppTheme(AppColors colors) {
     extensions: <ThemeExtension<dynamic>>[
       colors,
       AppSpacing.standard,
-      AppRadii.standard,
+      radii,
       AppSizes.standard,
     ],
   );
