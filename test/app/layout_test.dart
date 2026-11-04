@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
@@ -48,7 +50,9 @@ void main() {
       expect(tester.takeException(), isNull);
 
       for (final route in [AppRoutes.signUp, AppRoutes.resetPassword]) {
-        GoRouter.of(tester.element(find.byType(Scaffold).first)).push(route);
+        unawaited(
+          GoRouter.of(tester.element(find.byType(Scaffold).first)).push(route),
+        );
         await tester.pumpAndSettle();
         expect(tester.takeException(), isNull);
       }
