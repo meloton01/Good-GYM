@@ -265,5 +265,6 @@
   "metricE1rm": "Розрахунковий 1ПМ",
   "metricMaxWeight": "Макс. вага",
   "metricReps": "Повторення",
-  "valueWithUnit": "{value} {unit}"
+  "valueWithUnit": "{value} {unit}",
+  "roleCoachByAdmin": "Роль тренера надає адміністрація застосунку."
 }

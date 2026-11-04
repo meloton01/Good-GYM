@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../app/theme/theme_context.dart';
 import '../../../core/widgets/selectable_option_tile.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../domain/user_role.dart';
@@ -17,7 +18,7 @@ class RoleSelector extends StatelessWidget {
   final UserRole? selected;
   final ValueChanged<UserRole> onSelected;
 
-  /// Строит пункт на каждую роль из [UserRole.selectable].
+  /// Строит пункт на каждую роль из [UserRole.selectable] и пояснение про роль тренера.
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
@@ -31,6 +32,16 @@ class RoleSelector extends StatelessWidget {
             selected: role == selected,
             onTap: () => onSelected(role),
           ),
+        Padding(
+          padding: EdgeInsetsDirectional.symmetric(
+            horizontal: context.spacing.md,
+            vertical: context.spacing.sm,
+          ),
+          child: Text(
+            l10n.roleCoachByAdmin,
+            style: TextStyle(color: context.colors.textSecondary),
+          ),
+        ),
       ],
     );
   }

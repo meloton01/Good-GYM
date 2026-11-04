@@ -20,7 +20,7 @@ void main() {
     final result = await repository.createProfile(
       uid: 'u1',
       nickname: 'iron',
-      role: UserRole.coach,
+      role: UserRole.student,
     );
 
     expect(result, isA<Success<void>>());
@@ -28,7 +28,7 @@ void main() {
     expect(nickname.data(), {'uid': 'u1'});
     expect(
       await repository.watchProfile('u1').first,
-      const UserProfile(uid: 'u1', nickname: 'iron', role: UserRole.coach),
+      const UserProfile(uid: 'u1', nickname: 'iron', role: UserRole.student),
     );
   });
 

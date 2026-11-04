@@ -59,7 +59,11 @@ after(() => env.cleanup());
 
 describe('users: create', () => {
   test('verified user creates own profile with nickname', async () => {
-    await assertSucceeds(createProfile(as('alice'), 'alice', 'alice.lifts', 'coach'));
+    await assertSucceeds(createProfile(as('alice'), 'alice', 'alice.lifts', 'student'));
+  });
+
+  test('coach role cannot be chosen at sign-up', async () => {
+    await assertFails(createProfile(as('alice'), 'alice', 'alice.lifts', 'coach'));
   });
 
   test('google user without password is allowed', async () => {
@@ -114,11 +118,24 @@ describe('users: update and delete', () => {
   beforeEach(async () => {
     await seed('users/alice', { nickname: 'alice', role: 'athlete', createdAt: new Date(), updatedAt: new Date() });
     await seed('users/mod', { nickname: 'mod', role: 'moderator', createdAt: new Date(), updatedAt: new Date() });
+    await seed('users/coach', { nickname: 'coach', role: 'coach', createdAt: new Date(), updatedAt: new Date() });
   });
 
   test('owner changes role to a selectable one', async () => {
     await assertSucceeds(
+      updateDoc(doc(as('alice'), 'users', 'alice'), { role: 'student', updatedAt: serverTimestamp() }),
+    );
+  });
+
+  test('owner cannot become coach', async () => {
+    await assertFails(
       updateDoc(doc(as('alice'), 'users', 'alice'), { role: 'coach', updatedAt: serverTimestamp() }),
+    );
+  });
+
+  test('coach cannot change own role from the client', async () => {
+    await assertFails(
+      updateDoc(doc(as('coach'), 'users', 'coach'), { role: 'athlete', updatedAt: serverTimestamp() }),
     );
   });
 

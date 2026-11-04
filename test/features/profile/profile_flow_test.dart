@@ -26,7 +26,8 @@ void main() {
     expect(find.text('This nickname is taken. Choose another one.'), findsOne);
 
     await tester.enterText(nickname, 'Coach.Max');
-    await tester.tap(find.text('Coach'));
+    expect(find.text('Coach'), findsNothing);
+    await tester.tap(find.text('Student'));
     await tester.tap(find.widgetWithText(FilledButton, 'Continue'));
     await tester.pumpAndSettle();
 
@@ -34,7 +35,7 @@ void main() {
     await tester.tap(find.text('Profile'));
     await tester.pumpAndSettle();
     expect(find.text('coach.max'), findsOneWidget);
-    expect(find.text('Coach'), findsNWidgets(2));
+    expect(find.text('Student'), findsNWidgets(2));
   });
 
   testWidgets('role can be changed from the profile tab', (tester) async {

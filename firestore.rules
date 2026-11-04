@@ -15,9 +15,9 @@ service cloud.firestore {
       return isVerifiedUser() && request.auth.uid == uid;
     }
 
-    // Роли, которые клиент может выставить сам; moderator только через админ-инструмент.
+    // Роли, которые клиент может выставить сам; coach и moderator выдаёт только администрация.
     function isSelectableRole(role) {
-      return role in ['athlete', 'student', 'coach'];
+      return role in ['athlete', 'student'];
     }
 
     function isVisibility(value) {
@@ -150,7 +150,7 @@ service cloud.firestore {
         && request.resource.data.updatedAt == request.time
         && getAfter(nicknamePath(request.resource.data.nickname)).data.uid == uid;
 
-      // Роль модератора с клиента не меняется; новый ник должен быть закреплён за владельцем.
+      // Клиент меняет роль только между атлетом и учеником; тренер и модератор свою роль не снимают.
       allow update: if isOwner(uid)
         && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
              'nickname', 'role', 'bio', 'gymId', 'gymName',
@@ -158,7 +158,7 @@ service cloud.firestore {
         && hasValidEditableFields(request.resource.data)
         && (request.resource.data.role == resource.data.role
             || (isSelectableRole(request.resource.data.role)
-                && resource.data.role != 'moderator'))
+                && isSelectableRole(resource.data.role)))
         && request.resource.data.updatedAt == request.time
         && (request.resource.data.nickname == resource.data.nickname
             || (getAfter(nicknamePath(request.resource.data.nickname)).data.uid == uid

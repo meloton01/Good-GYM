@@ -107,7 +107,7 @@ describe('profile edits', () => {
   test('profile from stage 1 without new fields can still change role', async () => {
     await seed('users/legacy', { nickname: 'legacy', role: 'athlete', createdAt: new Date(), updatedAt: new Date() });
     await assertSucceeds(
-      updateDoc(doc(as('legacy'), 'users', 'legacy'), { role: 'coach', updatedAt: serverTimestamp() }),
+      updateDoc(doc(as('legacy'), 'users', 'legacy'), { role: 'student', updatedAt: serverTimestamp() }),
     );
   });
 
