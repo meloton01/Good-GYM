@@ -8,7 +8,7 @@ import '../../../core/widgets/failure_snack_bar.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../data/auth_repository_provider.dart';
 
-/// Кнопки входа через Google и Apple; Apple показывается только на iOS.
+/// Кнопки входа через Google и Apple; Apple только на iOS, на вебе кнопок нет.
 class SocialSignInButtons extends ConsumerStatefulWidget {
   /// Создаёт блок кнопок социального входа.
   const SocialSignInButtons({super.key});
@@ -23,9 +23,12 @@ class SocialSignInButtons extends ConsumerStatefulWidget {
 class _SocialSignInButtonsState extends ConsumerState<SocialSignInButtons> {
   bool _busy = false;
 
-  /// Строит разделитель «или» и кнопки провайдеров.
+  /// Строит разделитель «или» и кнопки провайдеров; в веб-сборке для просмотра их нет.
   @override
   Widget build(BuildContext context) {
+    if (kIsWeb) {
+      return const SizedBox.shrink();
+    }
     final l10n = AppLocalizations.of(context);
     final spacing = context.spacing;
     final repository = ref.read(authRepositoryProvider);

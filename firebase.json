@@ -13,7 +13,8 @@
           "projectId": "good-gym-1dc5f",
           "configurations": {
             "android": "1:1056224975581:android:c9e75f6a1ed323b4c65934",
-            "ios": "1:1056224975581:ios:da520431b9de6ef0c65934"
+            "ios": "1:1056224975581:ios:da520431b9de6ef0c65934",
+            "web": "1:1056224975581:web:9b3d35a1eeb00d27c65934"
           }
         }
       }

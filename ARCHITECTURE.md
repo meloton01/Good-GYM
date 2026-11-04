@@ -98,6 +98,10 @@ flutter run
 
 Сгенерированные файлы (`*.freezed.dart`, `*.g.dart`, `lib/l10n/generated/`) в репозиторий не попадают и создаются командами выше. Конфигурация Firebase (`lib/firebase_options.dart`, `android/app/google-services.json`, `ios/Runner/GoogleService-Info.plist`) тоже не коммитится: её создаёт `flutterfire configure`.
 
+### Веб-сборка для просмотра
+
+Целевые платформы по ТЗ: Android и iOS. Веб нужен только для быстрого просмотра интерфейса при разработке и в сторы не идёт: `flutter run -d chrome`. На вебе работает вход по email и паролю, кнопок Google и Apple нет. Вёрстка под десктоп не адаптируется.
+
 ## Правила Firestore
 
 Правила лежат в `firestore.rules`, тесты к ним в `firestore-tests/`. Тесты запускаются на эмуляторе (нужны Node.js и Java 11+):
