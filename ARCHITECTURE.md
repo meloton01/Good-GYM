@@ -1,0 +1,174 @@
+# Архитектура Good GYM
+
+## Слои
+
+```
+presentation  ->  domain  <-  data
+(экраны,          (модели,      (реализации репозиториев,
+ виджеты,          интерфейсы    источники данных, DTO)
+ провайдеры)       репозиториев)
+```
+
+- `domain` не зависит от Flutter-виджетов, Firebase и других фич. Модели на `freezed`, репозитории объявлены как `abstract interface class`.
+- `data` реализует интерфейсы из `domain`. Бэкенд (Firebase или другой) подключается только здесь.
+- `presentation` работает с интерфейсами через провайдеры Riverpod. Провайдер репозитория лежит в `data/<name>_repository_provider.dart` и создаёт реализацию на Firebase. В тестах она подменяется через `ProviderScope.overrides`.
+- Ошибки: методы `Future` возвращают `Result<T>` (`Success` или `Failure` с `AppFailure`), потоки обрабатываются через `AsyncValue`. Пользователь видит текст из `AppFailureMessage`, а не исключение.
+
+## Структура
+
+```
+lib/
+  main.dart                 точка входа: Firebase, локальные настройки
+  firebase_options.dart     создаётся flutterfire configure, не в git
+  app/
+    app.dart                MaterialApp.router: тема, язык, роутер
+    tabs_registry.dart      список вкладок нижней навигации
+    router/                 GoRouter, перенаправления по сессии, каркас с NavigationBar
+    session/                состояние сессии: вход, подтверждение email, профиль
+    theme/                  палитра и токены ThemeExtension
+  core/
+    constants/              числовые ограничения
+    errors/                 Result, AppFailure, локализация ошибок
+    firebase/               ошибки Firestore, даты, JSON-выгрузка, запись с офлайн-очередью
+    ids/                    случайный id до записи на сервер
+    formatting/             вывод и разбор чисел по локали
+    navigation/             TabDefinition
+    pagination/             PagedResult
+    storage/                провайдер SharedPreferences
+    time/                   источник текущего времени для таймеров
+    units/                  единицы веса и длины, перевод в метрические
+    widgets/                общие виджеты
+  l10n/                     ARB-файлы, generated/ создаётся автоматически
+  features/<name>/
+    data/  domain/  presentation/
+```
+
+Фичи: `home`, `rating`, `workout`, `profile`, `settings`, `auth`. Фича-вкладка может брать у другой фичи только `domain` и Riverpod-провайдеры (репозиториев и состояния). Экраны и виджеты других вкладок не импортируются, поэтому вкладку можно отключить, не сломав остальные. Исключение: `auth` не вкладка, и её экраны и поля форм (вход, смена email и пароля, поле пароля) доступны всем. Общие виджеты лежат в `core/widgets/`, единицы измерения — в `core/units/`, сборка фич в одно приложение — в `app/`. Пути вложенных экранов собраны в `AppRoutes`, а переход в другую вкладку идёт по пути, без импорта её экрана.
+
+## Сессия и маршруты
+
+`sessionProvider` сводит учётную запись (`authUserProvider`) и профиль (`userProfileProvider`) в одно состояние. Роутер перенаправляет по нему функцией `sessionRedirect`:
+
+| Состояние | Экран |
+|---|---|
+| `SessionLoading` | `/splash` |
+| `SessionSignedOut` | `/sign-in`, `/sign-up`, `/reset-password` |
+| `SessionEmailUnverified` | `/verify-email` (только вход по паролю) |
+| `SessionNeedsProfile` | `/profile-setup`: ник и роль |
+| `SessionReady` | вкладки |
+| `SessionError` | `/session-error` с повтором |
+
+Экраны не вызывают навигацию после входа или выхода: роутер сам реагирует на смену сессии.
+
+## Правила
+
+1. Цвета, отступы, радиусы, размеры берутся из токенов: `context.colors`, `context.spacing`, `context.radii`, `context.sizes`. Сырые значения цветов есть только в `app/theme/app_palette.dart`.
+2. Текст в интерфейсе только из ARB через `AppLocalizations.of(context)`.
+3. Отступы и выравнивание через `start`/`end` (`EdgeInsetsDirectional`, `AlignmentDirectional`).
+4. Один публичный класс на файл, файл до ~200 строк, над каждым классом и функцией комментарий `///` в одну строку.
+5. Длительность анимаций из `AppMotion`, через `AppMotion.resolve`, чтобы учитывать «уменьшить анимацию».
+6. Списки данных через `ListView.builder` и пагинацию по `AppLimits.pageSize`.
+
+## Тема
+
+- `AppColors.dark` и `AppColors.light`: палитра Black & Yellow. Жёлтый `accent` только для заливки активных элементов, текст и иконки поверх него берут `onAccent`. Для акцента на фоне служит `accentContent`: в светлой теме он чёрный, потому что жёлтый на светлом фоне не проходит по контрасту.
+- `buildAppTheme(colors, radii)` собирает `ColorScheme` вручную из токенов, без `ColorScheme.fromSeed`.
+- Настройки внешнего вида (`AppSettings`): режим темы, одна из 6 палитр (`PaletteId`), акцент (`AccentId`, null — акцент палитры) и стиль скруглений (`CornerStyle`). `appThemesProvider` пересобирает обе темы только при их смене, `AppearanceColors.resolve` превращает выбор в `AppColors`, `AppRadii.forStyle` — в радиусы.
+- Новая палитра: значения в `AppPalette`, вариант в `PaletteId`, фон в `AppearanceColors._darkBase`, название в ARB. Тест `appearance_test.dart` проверяет контраст для всех сочетаний палитры, акцента и темы.
+
+## Как добавить вкладку
+
+1. Создай `lib/features/<name>/presentation/<name>_tab.dart` с `final <name>Tab = TabDefinition(...)`: путь, иконки, подпись из ARB, корневой экран.
+2. Добавь подпись вкладки в каждый ARB-файл.
+3. Добавь `<name>Tab` в список `appTabs` в `lib/app/tabs_registry.dart`.
+
+Чтобы отключить вкладку, убери её из `appTabs`. Остальные вкладки и роутер от неё не зависят.
+
+## Как добавить язык
+
+1. Скопируй `lib/l10n/app_en.arb` в `lib/l10n/app_<код>.arb` (например, `app_de.arb`) и замени `@@locale` на код языка.
+2. Переведи значения, в `languageName` впиши название языка на нём самом.
+3. Выполни `flutter gen-l10n` (или `flutter pub get`). Язык появится в настройках автоматически.
+
+Для языков с письмом справа налево (арабский, иврит) дополнительных шагов нет: направление берётся из локали.
+
+## Сборка
+
+```
+flutterfire configure --project=good-gym-1dc5f --platforms=android,ios
+flutter pub get
+dart run build_runner build -d
+flutter analyze
+flutter test
+flutter run
+```
+
+Сгенерированные файлы (`*.freezed.dart`, `*.g.dart`, `lib/l10n/generated/`) в репозиторий не попадают и создаются командами выше. Конфигурация Firebase (`lib/firebase_options.dart`, `android/app/google-services.json`, `ios/Runner/GoogleService-Info.plist`) тоже не коммитится: её создаёт `flutterfire configure`.
+
+### Веб-сборка для просмотра
+
+Целевые платформы по ТЗ: Android и iOS. Веб нужен только для быстрого просмотра интерфейса при разработке и в сторы не идёт: `flutter run -d chrome`. На вебе работает вход по email и паролю, кнопок Google и Apple нет. Вёрстка под десктоп не адаптируется.
+
+## Правила Firestore
+
+Правила лежат в `firestore.rules`, тесты к ним в `firestore-tests/`. Тесты запускаются на эмуляторе (нужны Node.js и Java 11+):
+
+```
+npm --prefix firestore-tests install
+firebase emulators:exec --only firestore --project demo-good-gym "npm --prefix firestore-tests test"
+```
+
+Деплой: `firebase deploy --only firestore:rules`.
+
+Ник уникален за счёт коллекции `nicknames/{nickname}` с полем `uid`. Профиль и ник создаются одной транзакцией, а правила через `getAfter` проверяют, что обе записи ссылаются друг на друга. При смене ника старая запись удаляется, а новая создаётся в той же транзакции.
+
+Данные пользователя:
+
+| Путь | Кто читает | Содержимое |
+|---|---|---|
+| `users/{uid}` | по `profileVisibility`: все, посетители того же зала или только владелец | ник, роль, описание, зал, видимость |
+| `users/{uid}/private/body` | только владелец | вес (кг) и рост (см) |
+| `nicknames/{nickname}` | вошедшие | `uid` владельца |
+| `gyms/{gymId}` | вошедшие | название, `nameLower` для поиска, город, создатель |
+| `users/{uid}/workouts/{id}` | только владелец | завершённая тренировка: даты, `exerciseIds`, упражнения с подходами |
+| `users/{uid}/workoutTemplates/{id}` | только владелец | шаблон: название, `titleLower`, упражнения |
+| `users/{uid}/exercises/{id}` | только владелец | своё упражнение: название, группа мышц; не меняется |
+| `users/{uid}/personalRecords/{exerciseId}` | только владелец | лучший вес, расчётный 1ПМ и повторы со ссылкой на тренировку |
+
+Для графика упражнения нужен составной индекс `exerciseIds` + `finishedAt` из `firestore.indexes.json`: `firebase deploy --only firestore:indexes`.
+
+Удаление аккаунта идёт с клиента (тариф Spark, без Cloud Functions): подтверждение личности, затем пачками удаляются тренировочные коллекции, одним батчем тело, ник и профиль, после этого учётная запись Auth. Созданные пользователем залы остаются: это общие данные.
+
+## Тренировки и офлайн-режим
+
+- Встроенная библиотека в `BuiltInExercises`, названия в ARB по id. Своё упражнение копируется в тренировку целиком, поэтому история не зависит от библиотеки.
+- Идущая тренировка и конец отдыха хранятся в SharedPreferences (`LocalActiveWorkoutStore`): переживают перезапуск и работают без сети. В Firestore попадает только завершённая тренировка с выполненными подходами.
+- Офлайн-кэш: встроенный кэш Firestore, отдельной базы (hive, drift) нет. Чтение без сети идёт из кэша, запись сразу ложится в кэш и уходит на сервер при появлении сети. `writeWithOfflineQueue` ждёт подтверждения сервера не больше `WorkoutLimits.offlineWriteTimeout`, потом считает запись принятой. Второй слой хранения пришлось бы синхронизировать вручную, а очередь Firestore уже это делает.
+- Личные рекорды считает `PersonalRecords` при завершении тренировки и пишет одним батчем с ней. При удалении тренировки рекорды её упражнений пересчитываются по оставшимся.
+- Расчётный 1ПМ по формуле Эпли (`estimateOneRepMax`). Это личные рекорды, рейтинг зала строится отдельно, по проверенному видео.
+- Таймер отдыха (`RestTimerController`) хранит время окончания, а не остаток, поэтому отсчёт верен после сворачивания. Уведомление ставит системный планировщик через `flutter_local_notifications`: точное, если Android разрешил `SCHEDULE_EXACT_ALARM`, иначе неточное. Тип уведомлений «Таймер отдыха» выключается в настройках.
+
+## Роли
+
+Сам пользователь выбирает только атлета или ученика (`UserRole.selectable`) и переключается между ними. Тренера и модератора выдаёт администрация: в Firebase Console открыть `users/{uid}` и поменять поле `role` на `coach` или `moderator`. Консоль работает в обход правил, а клиент такую роль ни выставить, ни снять не может.
+
+## Бэкенд
+
+Бэкенд: Firebase (Auth, Firestore). Интерфейсы репозиториев описаны в `domain` каждой фичи:
+
+| Фича | Интерфейс | Назначение | Реализация |
+|---|---|---|---|
+| auth | `AuthRepository` | вход, регистрация, подтверждение email, сброс и смена пароля, смена email, удаление учётной записи | `FirebaseAuthRepository` |
+| profile | `UserProfileRepository` | профиль, ник, роль, данные о теле, экспорт и удаление данных | `FirestoreUserProfileRepository` |
+| rating | `GymRepository` | поиск и создание залов | `FirestoreGymRepository` |
+| rating | `RecordRepository` | таблицы, подача рекорда, модерация | этап 5 |
+| workout | `WorkoutRepository` | история, график, личные рекорды, выгрузка и удаление тренировок | `FirestoreWorkoutRepository` |
+| workout | `WorkoutTemplateRepository` | шаблоны тренировок | `FirestoreWorkoutTemplateRepository` |
+| workout | `ExerciseRepository` | свои упражнения | `FirestoreExerciseRepository` |
+| workout | `RestAlarm` | уведомление об окончании отдыха | `LocalNotificationsRestAlarm` |
+| workout | `CoachLinkRepository` | приглашения и связь тренер-ученик | этап 4 |
+| settings | `SettingsRepository` | внешний вид, язык, единицы, уведомления на устройстве | `SharedPreferencesSettingsRepository` |
+
+Вход через Google и Apple требует настройки консолей: см. `docs/firebase-setup.md`.
+
+Интерфейсы уточняются на этапах ТЗ, где реализуется фича. Критичные операции (одобрение рекорда, расчёт `e1rm`, подтверждение связи) реализация выполняет на сервере.

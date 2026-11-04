@@ -1,0 +1,242 @@
+rules_version = '2';
+
+// Минимум доступа: всё, что не разрешено явно, запрещено.
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Вход выполнен, а при входе по паролю email подтверждён.
+    function isVerifiedUser() {
+      return request.auth != null
+        && (request.auth.token.firebase.sign_in_provider != 'password'
+            || request.auth.token.email_verified == true);
+    }
+
+    function isOwner(uid) {
+      return isVerifiedUser() && request.auth.uid == uid;
+    }
+
+    // Роли, которые клиент может выставить сам; coach и moderator выдаёт только администрация.
+    function isSelectableRole(role) {
+      return role in ['athlete', 'student'];
+    }
+
+    function isVisibility(value) {
+      return value in ['everyone', 'gymMembers', 'onlyMe'];
+    }
+
+    function isValidNickname(nickname) {
+      return nickname is string && nickname.matches('^[a-z0-9_.]{3,20}$');
+    }
+
+    function isTextOfLength(value, min, max) {
+      return value is string && value.size() >= min && value.size() <= max;
+    }
+
+    function nicknamePath(nickname) {
+      return /databases/$(database)/documents/nicknames/$(nickname);
+    }
+
+    function userPath(uid) {
+      return /databases/$(database)/documents/users/$(uid);
+    }
+
+    function isMuscleGroup(value) {
+      return value in ['chest', 'back', 'legs', 'shoulders', 'arms', 'core'];
+    }
+
+    // Список из min..max элементов; содержимое подходов проверяет клиент, документ виден только владельцу.
+    function isListOfSize(value, min, max) {
+      return value is list && value.size() >= min && value.size() <= max;
+    }
+
+    // Завершённая тренировка: даты по порядку, до 30 упражнений.
+    function isValidWorkout(data) {
+      return data.keys().hasOnly(['title', 'note', 'startedAt', 'finishedAt', 'exerciseIds', 'exercises'])
+        && data.keys().hasAll(['title', 'note', 'startedAt', 'finishedAt', 'exerciseIds', 'exercises'])
+        && isTextOfLength(data.title, 1, 60)
+        && isTextOfLength(data.note, 0, 1000)
+        && data.startedAt is timestamp
+        && data.finishedAt is timestamp
+        && data.finishedAt >= data.startedAt
+        && data.finishedAt <= request.time + duration.value(1, 'd')
+        && isListOfSize(data.exerciseIds, 1, 30)
+        && isListOfSize(data.exercises, 1, 30);
+    }
+
+    function isValidTemplate(data) {
+      return data.keys().hasOnly(['title', 'titleLower', 'exercises', 'updatedAt'])
+        && isTextOfLength(data.title, 1, 60)
+        && data.titleLower == data.title.lower()
+        && isListOfSize(data.exercises, 1, 30)
+        && data.updatedAt == request.time;
+    }
+
+    function isValidCustomExercise(data) {
+      return data.keys().hasOnly(['name', 'nameLower', 'muscleGroup', 'createdAt'])
+        && data.keys().hasAll(['name', 'nameLower', 'muscleGroup', 'createdAt'])
+        && isTextOfLength(data.name, 2, 40)
+        && data.nameLower == data.name.lower()
+        && isMuscleGroup(data.muscleGroup)
+        && data.createdAt == request.time;
+    }
+
+    // Показатель рекорда: значение, тренировка и дата, или null.
+    function isRecordValue(value) {
+      return value == null
+        || (value is map
+            && value.keys().hasOnly(['value', 'workoutId', 'achievedAt'])
+            && value.value is number
+            && value.value >= 0
+            && value.value <= 100000
+            && value.workoutId is string
+            && value.achievedAt is timestamp);
+    }
+
+    function isValidRecord(exerciseId, data) {
+      return data.keys().hasOnly(['exerciseId', 'muscleGroup', 'customName', 'maxWeightKg', 'bestE1rmKg', 'maxReps'])
+        && data.exerciseId == exerciseId
+        && isMuscleGroup(data.muscleGroup)
+        && (data.get('customName', null) == null || isTextOfLength(data.customName, 2, 40))
+        && isRecordValue(data.get('maxWeightKg', null))
+        && isRecordValue(data.get('bestE1rmKg', null))
+        && isRecordValue(data.get('maxReps', null));
+    }
+
+    function gymPath(gymId) {
+      return /databases/$(database)/documents/gyms/$(gymId);
+    }
+
+    // Зал не указан или указан существующий зал с тем же названием.
+    function isValidGym(data) {
+      return (data.get('gymId', null) == null && data.get('gymName', null) == null)
+        || (data.gymId is string
+            && exists(gymPath(data.gymId))
+            && get(gymPath(data.gymId)).data.name == data.gymName);
+    }
+
+    // Поля, которые владелец меняет сам; у профилей с Этапа 1 их ещё может не быть.
+    function hasValidEditableFields(data) {
+      return isValidNickname(data.nickname)
+        && isTextOfLength(data.get('bio', ''), 0, 300)
+        && isVisibility(data.get('profileVisibility', 'everyone'))
+        && isVisibility(data.get('recordsVisibility', 'everyone'))
+        && isValidGym(data);
+    }
+
+    // Профиль виден по настройке владельца: всем, посетителям его зала или только ему.
+    function canViewProfile(uid, data) {
+      return isOwner(uid)
+        || (isVerifiedUser()
+            && (data.get('profileVisibility', 'everyone') == 'everyone'
+                || (data.get('profileVisibility', 'everyone') == 'gymMembers'
+                    && data.get('gymId', null) != null
+                    && get(userPath(request.auth.uid)).data.get('gymId', null) == data.gymId)));
+    }
+
+    match /users/{uid} {
+      allow read: if canViewProfile(uid, resource.data);
+
+      // Профиль создаётся вместе с записью ника в одной транзакции.
+      allow create: if isOwner(uid)
+        && request.resource.data.keys().hasOnly([
+             'nickname', 'role', 'bio', 'profileVisibility', 'recordsVisibility',
+             'createdAt', 'updatedAt'])
+        && request.resource.data.keys().hasAll([
+             'nickname', 'role', 'bio', 'profileVisibility', 'recordsVisibility',
+             'createdAt', 'updatedAt'])
+        && hasValidEditableFields(request.resource.data)
+        && isSelectableRole(request.resource.data.role)
+        && request.resource.data.createdAt == request.time
+        && request.resource.data.updatedAt == request.time
+        && getAfter(nicknamePath(request.resource.data.nickname)).data.uid == uid;
+
+      // Клиент меняет роль только между атлетом и учеником; тренер и модератор свою роль не снимают.
+      allow update: if isOwner(uid)
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+             'nickname', 'role', 'bio', 'gymId', 'gymName',
+             'profileVisibility', 'recordsVisibility', 'updatedAt'])
+        && hasValidEditableFields(request.resource.data)
+        && (request.resource.data.role == resource.data.role
+            || (isSelectableRole(request.resource.data.role)
+                && isSelectableRole(resource.data.role)))
+        && request.resource.data.updatedAt == request.time
+        && (request.resource.data.nickname == resource.data.nickname
+            || (getAfter(nicknamePath(request.resource.data.nickname)).data.uid == uid
+                && !existsAfter(nicknamePath(resource.data.nickname))));
+
+      // Владелец удаляет свой профиль при удалении аккаунта.
+      allow delete: if isOwner(uid);
+
+      // Вес и рост: только владелец.
+      match /private/body {
+        allow read, delete: if isOwner(uid);
+        allow write: if isOwner(uid)
+          && request.resource.data.keys().hasOnly(['weightKg', 'heightCm'])
+          && (request.resource.data.get('weightKg', null) == null
+              || (request.resource.data.weightKg is number
+                  && request.resource.data.weightKg >= 30
+                  && request.resource.data.weightKg <= 300))
+          && (request.resource.data.get('heightCm', null) == null
+              || (request.resource.data.heightCm is number
+                  && request.resource.data.heightCm >= 100
+                  && request.resource.data.heightCm <= 250));
+      }
+
+      // Тренировочные данные: читает и пишет только владелец.
+      match /workouts/{workoutId} {
+        allow read, delete: if isOwner(uid);
+        allow create, update: if isOwner(uid) && isValidWorkout(request.resource.data);
+      }
+
+      match /workoutTemplates/{templateId} {
+        allow read, delete: if isOwner(uid);
+        allow create, update: if isOwner(uid) && isValidTemplate(request.resource.data);
+      }
+
+      // Своё упражнение не меняется: его название уже скопировано в историю.
+      match /exercises/{exerciseId} {
+        allow read, delete: if isOwner(uid);
+        allow create: if isOwner(uid) && isValidCustomExercise(request.resource.data);
+        allow update: if false;
+      }
+
+      match /personalRecords/{exerciseId} {
+        allow read, delete: if isOwner(uid);
+        allow create, update: if isOwner(uid) && isValidRecord(exerciseId, request.resource.data);
+      }
+    }
+
+    match /nicknames/{nickname} {
+      allow read: if isVerifiedUser();
+
+      allow create: if isVerifiedUser()
+        && isValidNickname(nickname)
+        && request.resource.data.keys().hasOnly(['uid'])
+        && request.resource.data.uid == request.auth.uid
+        && getAfter(userPath(request.auth.uid)).data.nickname == nickname;
+
+      // Ник освобождает только владелец: при смене ника или удалении профиля.
+      allow delete: if isVerifiedUser()
+        && resource.data.uid == request.auth.uid
+        && (!existsAfter(userPath(request.auth.uid))
+            || getAfter(userPath(request.auth.uid)).data.nickname != nickname);
+
+      allow update: if false;
+    }
+
+    match /gyms/{gymId} {
+      allow read: if isVerifiedUser();
+
+      allow create: if isVerifiedUser()
+        && request.resource.data.keys().hasOnly(['name', 'nameLower', 'city', 'creatorId', 'createdAt'])
+        && request.resource.data.keys().hasAll(['name', 'nameLower', 'city', 'creatorId', 'createdAt'])
+        && isTextOfLength(request.resource.data.name, 2, 60)
+        && isTextOfLength(request.resource.data.city, 2, 60)
+        && request.resource.data.nameLower == request.resource.data.name.lower()
+        && request.resource.data.creatorId == request.auth.uid
+        && request.resource.data.createdAt == request.time;
+
+      allow update, delete: if false;
+    }
+  }
+}
