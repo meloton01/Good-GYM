@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../../core/errors/app_failure.dart';
 import '../../../core/errors/result.dart';
 import '../../../core/firebase/firestore_failure_mapper.dart';
+import '../../../core/firebase/json_safe.dart';
 import '../domain/body_metrics.dart';
 import '../domain/profile_visibility.dart';
 import '../domain/user_profile.dart';
@@ -134,8 +135,8 @@ class FirestoreUserProfileRepository implements UserProfileRepository {
       final body = await _body(uid).get();
       return Success({
         'uid': uid,
-        'profile': _jsonSafe(user.data()),
-        'body': _jsonSafe(body.data()),
+        'profile': jsonSafe(user.data()),
+        'body': jsonSafe(body.data()),
       });
     } on FirebaseException catch (error) {
       return Failure(mapFirestoreFailure(error), cause: error);
@@ -192,15 +193,5 @@ class FirestoreUserProfileRepository implements UserProfileRepository {
     } on FirebaseException catch (error) {
       return Failure(mapFirestoreFailure(error), cause: error);
     }
-  }
-
-  /// Переводит Timestamp в строку ISO 8601, чтобы данные сериализовались в JSON.
-  Map<String, Object?>? _jsonSafe(Map<String, dynamic>? data) {
-    return data?.map(
-      (key, value) => MapEntry(
-        key,
-        value is Timestamp ? value.toDate().toUtc().toIso8601String() : value,
-      ),
-    );
   }
 }
