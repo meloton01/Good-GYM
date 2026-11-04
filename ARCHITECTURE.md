@@ -29,10 +29,13 @@ lib/
   core/
     constants/              числовые ограничения
     errors/                 Result, AppFailure, локализация ошибок
-    firebase/               перевод ошибок Firestore в AppFailure
+    firebase/               ошибки Firestore, даты, JSON-выгрузка, запись с офлайн-очередью
+    ids/                    случайный id до записи на сервер
     formatting/             вывод и разбор чисел по локали
     navigation/             TabDefinition
     pagination/             PagedResult
+    storage/                провайдер SharedPreferences
+    time/                   источник текущего времени для таймеров
     units/                  единицы веса и длины, перевод в метрические
     widgets/                общие виджеты
   l10n/                     ARB-файлы, generated/ создаётся автоматически
@@ -127,8 +130,23 @@ firebase emulators:exec --only firestore --project demo-good-gym "npm --prefix f
 | `users/{uid}/private/body` | только владелец | вес (кг) и рост (см) |
 | `nicknames/{nickname}` | вошедшие | `uid` владельца |
 | `gyms/{gymId}` | вошедшие | название, `nameLower` для поиска, город, создатель |
+| `users/{uid}/workouts/{id}` | только владелец | завершённая тренировка: даты, `exerciseIds`, упражнения с подходами |
+| `users/{uid}/workoutTemplates/{id}` | только владелец | шаблон: название, `titleLower`, упражнения |
+| `users/{uid}/exercises/{id}` | только владелец | своё упражнение: название, группа мышц; не меняется |
+| `users/{uid}/personalRecords/{exerciseId}` | только владелец | лучший вес, расчётный 1ПМ и повторы со ссылкой на тренировку |
 
-Удаление аккаунта идёт с клиента (тариф Spark, без Cloud Functions): подтверждение личности, затем одним батчем удаляются тело, ник и профиль, после этого учётная запись Auth. Созданные пользователем залы остаются: это общие данные.
+Для графика упражнения нужен составной индекс `exerciseIds` + `finishedAt` из `firestore.indexes.json`: `firebase deploy --only firestore:indexes`.
+
+Удаление аккаунта идёт с клиента (тариф Spark, без Cloud Functions): подтверждение личности, затем пачками удаляются тренировочные коллекции, одним батчем тело, ник и профиль, после этого учётная запись Auth. Созданные пользователем залы остаются: это общие данные.
+
+## Тренировки и офлайн-режим
+
+- Встроенная библиотека в `BuiltInExercises`, названия в ARB по id. Своё упражнение копируется в тренировку целиком, поэтому история не зависит от библиотеки.
+- Идущая тренировка и конец отдыха хранятся в SharedPreferences (`LocalActiveWorkoutStore`): переживают перезапуск и работают без сети. В Firestore попадает только завершённая тренировка с выполненными подходами.
+- Офлайн-кэш: встроенный кэш Firestore, отдельной базы (hive, drift) нет. Чтение без сети идёт из кэша, запись сразу ложится в кэш и уходит на сервер при появлении сети. `writeWithOfflineQueue` ждёт подтверждения сервера не больше `WorkoutLimits.offlineWriteTimeout`, потом считает запись принятой. Второй слой хранения пришлось бы синхронизировать вручную, а очередь Firestore уже это делает.
+- Личные рекорды считает `PersonalRecords` при завершении тренировки и пишет одним батчем с ней. При удалении тренировки рекорды её упражнений пересчитываются по оставшимся.
+- Расчётный 1ПМ по формуле Эпли (`estimateOneRepMax`). Это личные рекорды, рейтинг зала строится отдельно, по проверенному видео.
+- Таймер отдыха (`RestTimerController`) хранит время окончания, а не остаток, поэтому отсчёт верен после сворачивания. Уведомление ставит системный планировщик через `flutter_local_notifications`: точное, если Android разрешил `SCHEDULE_EXACT_ALARM`, иначе неточное. Тип уведомлений «Таймер отдыха» выключается в настройках.
 
 ## Бэкенд
 
@@ -140,7 +158,10 @@ firebase emulators:exec --only firestore --project demo-good-gym "npm --prefix f
 | profile | `UserProfileRepository` | профиль, ник, роль, данные о теле, экспорт и удаление данных | `FirestoreUserProfileRepository` |
 | rating | `GymRepository` | поиск и создание залов | `FirestoreGymRepository` |
 | rating | `RecordRepository` | таблицы, подача рекорда, модерация | этап 5 |
-| workout | `WorkoutRepository` | история и сохранение тренировок | этап 3 |
+| workout | `WorkoutRepository` | история, график, личные рекорды, выгрузка и удаление тренировок | `FirestoreWorkoutRepository` |
+| workout | `WorkoutTemplateRepository` | шаблоны тренировок | `FirestoreWorkoutTemplateRepository` |
+| workout | `ExerciseRepository` | свои упражнения | `FirestoreExerciseRepository` |
+| workout | `RestAlarm` | уведомление об окончании отдыха | `LocalNotificationsRestAlarm` |
 | workout | `CoachLinkRepository` | приглашения и связь тренер-ученик | этап 4 |
 | settings | `SettingsRepository` | внешний вид, язык, единицы, уведомления на устройстве | `SharedPreferencesSettingsRepository` |
 
