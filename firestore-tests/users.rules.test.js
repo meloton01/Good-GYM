@@ -32,6 +32,9 @@ const createProfile = (db, uid, nickname, role = 'athlete', extra = {}) => {
   batch.set(doc(db, 'users', uid), {
     nickname,
     role,
+    bio: '',
+    profileVisibility: 'everyone',
+    recordsVisibility: 'everyone',
     createdAt: serverTimestamp(),
     updatedAt: serverTimestamp(),
     ...extra,
@@ -131,7 +134,7 @@ describe('users: update and delete', () => {
     );
   });
 
-  test('owner cannot change nickname or other fields', async () => {
+  test('owner cannot change nickname without reserving it, or other fields', async () => {
     await assertFails(
       updateDoc(doc(as('alice'), 'users', 'alice'), { nickname: 'new', updatedAt: serverTimestamp() }),
     );
@@ -146,8 +149,9 @@ describe('users: update and delete', () => {
     );
   });
 
-  test('profile cannot be deleted from the client', async () => {
-    await assertFails(deleteDoc(doc(as('alice'), 'users', 'alice')));
+  test('only the owner deletes the profile', async () => {
+    await assertFails(deleteDoc(doc(as('bob'), 'users', 'alice')));
+    await assertSucceeds(deleteDoc(doc(as('alice'), 'users', 'alice')));
   });
 });
 
