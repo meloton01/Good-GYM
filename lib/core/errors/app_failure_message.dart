@@ -21,6 +21,8 @@ extension AppFailureMessage on AppFailure {
       AppFailure.providerUnavailable => l10n.errorProviderUnavailable,
       AppFailure.cancelled => l10n.errorCancelled,
       AppFailure.requiresRecentLogin => l10n.errorRequiresRecentLogin,
+      AppFailure.notificationsDenied => l10n.errorNotificationsDenied,
+      AppFailure.nothingCompleted => l10n.errorNothingCompleted,
       AppFailure.unknown => l10n.errorUnknown,
     };
   }

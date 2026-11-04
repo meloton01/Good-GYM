@@ -1,16 +1,16 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
+import 'exercise.dart';
 import 'workout_set.dart';
 
 part 'workout_exercise.freezed.dart';
 
-/// Упражнение внутри тренировки со списком подходов.
+/// Упражнение внутри тренировки или шаблона со списком подходов.
 @freezed
 abstract class WorkoutExercise with _$WorkoutExercise {
-  /// Создаёт упражнение тренировки.
+  /// Создаёт упражнение тренировки; [exercise] хранится копией, чтобы история не зависела от библиотеки.
   const factory WorkoutExercise({
-    required String exerciseId,
+    required Exercise exercise,
     required List<WorkoutSet> sets,
-    String? note,
   }) = _WorkoutExercise;
 }

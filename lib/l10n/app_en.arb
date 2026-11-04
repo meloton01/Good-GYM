@@ -691,5 +691,542 @@
   "errorRequiresRecentLogin": "For security, confirm it's you again and repeat the action.",
   "@errorRequiresRecentLogin": {
     "description": "Error when the action needs a fresh sign-in"
+  },
+  "actionDelete": "Delete",
+  "@actionDelete": {
+    "description": "Button that deletes an item"
+  },
+  "durationMinutes": "{minutes} min",
+  "@durationMinutes": {
+    "description": "Workout duration under an hour",
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "durationHoursMinutes": "{hours} h {minutes} min",
+  "@durationHoursMinutes": {
+    "description": "Workout duration of an hour or more",
+    "placeholders": {
+      "hours": {
+        "type": "int"
+      },
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "errorNotificationsDenied": "Notifications are turned off. Allow them in phone settings to get a signal when rest ends.",
+  "@errorNotificationsDenied": {
+    "description": "Rest timer notification could not be scheduled"
+  },
+  "errorNothingCompleted": "Mark at least one completed set to save the workout.",
+  "@errorNothingCompleted": {
+    "description": "Finishing a workout without completed sets"
+  },
+  "notificationRestTimer": "Rest timer",
+  "@notificationRestTimer": {
+    "description": "Notification type and Android channel for rest timer"
+  },
+  "workoutHistoryTab": "History",
+  "@workoutHistoryTab": {
+    "description": "Workouts tab section with past workouts"
+  },
+  "workoutTemplatesTab": "Templates",
+  "@workoutTemplatesTab": {
+    "description": "Workouts tab section with templates"
+  },
+  "workoutRecordsTab": "Records",
+  "@workoutRecordsTab": {
+    "description": "Workouts tab section with personal records"
+  },
+  "workoutNew": "New workout",
+  "@workoutNew": {
+    "description": "Button that opens a new workout plan"
+  },
+  "workoutResume": "Resume workout",
+  "@workoutResume": {
+    "description": "Button that opens the workout in progress"
+  },
+  "workoutStart": "Start",
+  "@workoutStart": {
+    "description": "Button that starts a workout"
+  },
+  "workoutFinish": "Finish workout",
+  "@workoutFinish": {
+    "description": "Button that finishes and saves the workout"
+  },
+  "workoutFinishOpenSets": "Sets that are not marked as done will not be saved.",
+  "@workoutFinishOpenSets": {
+    "description": "Confirmation when some sets are not marked"
+  },
+  "workoutDiscard": "Cancel workout",
+  "@workoutDiscard": {
+    "description": "Action that cancels the workout in progress"
+  },
+  "workoutDiscardMessage": "The workout in progress will be deleted without saving.",
+  "@workoutDiscardMessage": {
+    "description": "Confirmation for cancelling the workout"
+  },
+  "workoutDiscardConfirm": "Delete workout",
+  "@workoutDiscardConfirm": {
+    "description": "Confirm button for cancelling the workout"
+  },
+  "workoutReplaceTitle": "Workout in progress",
+  "@workoutReplaceTitle": {
+    "description": "Dialog title when another workout is in progress"
+  },
+  "workoutReplaceMessage": "Starting a new workout deletes the current one without saving.",
+  "@workoutReplaceMessage": {
+    "description": "Dialog body when another workout is in progress"
+  },
+  "workoutHistoryEmptyTitle": "No workouts yet",
+  "@workoutHistoryEmptyTitle": {
+    "description": "Empty history title"
+  },
+  "workoutHistoryEmptyMessage": "Finished workouts appear here. Tap New workout to plan one.",
+  "@workoutHistoryEmptyMessage": {
+    "description": "Empty history body"
+  },
+  "templatesEmptyTitle": "No templates",
+  "@templatesEmptyTitle": {
+    "description": "Empty templates title"
+  },
+  "templatesEmptyMessage": "Save a workout plan as a template to start it in one tap.",
+  "@templatesEmptyMessage": {
+    "description": "Empty templates body"
+  },
+  "recordsEmptyTitle": "No records yet",
+  "@recordsEmptyTitle": {
+    "description": "Empty personal records title"
+  },
+  "recordsEmptyMessage": "Finish a workout to see your best results for each exercise.",
+  "@recordsEmptyMessage": {
+    "description": "Empty personal records body"
+  },
+  "recordsTitle": "Personal records",
+  "@recordsTitle": {
+    "description": "Section with personal records of an exercise"
+  },
+  "recordWeightSummary": "1RM ≈ {e1rm} · heaviest {weight}",
+  "@recordWeightSummary": {
+    "description": "Personal record line for weighted exercises",
+    "placeholders": {
+      "e1rm": {
+        "type": "String"
+      },
+      "weight": {
+        "type": "String"
+      }
+    }
+  },
+  "recordRepsSummary": "{reps, plural, =1{Best: 1 rep} other{Best: {reps} reps}}",
+  "@recordRepsSummary": {
+    "description": "Personal record line for bodyweight exercises",
+    "placeholders": {
+      "reps": {
+        "type": "int"
+      }
+    }
+  },
+  "workoutPlanTitle": "Workout plan",
+  "@workoutPlanTitle": {
+    "description": "Workout plan editor title"
+  },
+  "workoutTitleLabel": "Title",
+  "@workoutTitleLabel": {
+    "description": "Workout title field"
+  },
+  "workoutDefaultTitle": "Workout",
+  "@workoutDefaultTitle": {
+    "description": "Title used when the field is empty"
+  },
+  "workoutPlanEmpty": "Add at least one exercise.",
+  "@workoutPlanEmpty": {
+    "description": "Hint when the plan has no exercises"
+  },
+  "workoutNoteLabel": "Notes",
+  "@workoutNoteLabel": {
+    "description": "Workout note field"
+  },
+  "workoutStartedAt": "Started {time}",
+  "@workoutStartedAt": {
+    "description": "When the workout in progress started",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "workoutSummary": "{exercises} · {duration}",
+  "@workoutSummary": {
+    "description": "Exercise count and duration of a workout",
+    "placeholders": {
+      "exercises": {
+        "type": "String"
+      },
+      "duration": {
+        "type": "String"
+      }
+    }
+  },
+  "workoutDetailTitle": "Workout",
+  "@workoutDetailTitle": {
+    "description": "Finished workout screen title"
+  },
+  "workoutRepeat": "Repeat workout",
+  "@workoutRepeat": {
+    "description": "Button that plans the same workout again"
+  },
+  "workoutDelete": "Delete workout",
+  "@workoutDelete": {
+    "description": "Action that deletes a finished workout"
+  },
+  "workoutDeleteMessage": "The workout is removed from history and records are recalculated.",
+  "@workoutDeleteMessage": {
+    "description": "Confirmation for deleting a finished workout"
+  },
+  "templateEditTitle": "Template",
+  "@templateEditTitle": {
+    "description": "Template editor title"
+  },
+  "templateSaveAs": "Save as template",
+  "@templateSaveAs": {
+    "description": "Button that saves the plan as a template"
+  },
+  "templateSaved": "Template saved.",
+  "@templateSaved": {
+    "description": "Shown after saving a template"
+  },
+  "templateDelete": "Delete template",
+  "@templateDelete": {
+    "description": "Action that deletes a template"
+  },
+  "templateDeleteMessage": "Workouts started from this template stay in history.",
+  "@templateDeleteMessage": {
+    "description": "Confirmation for deleting a template"
+  },
+  "exerciseCount": "{count, plural, =1{1 exercise} other{{count} exercises}}",
+  "@exerciseCount": {
+    "description": "Number of exercises",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "exerciseAdd": "Add exercise",
+  "@exerciseAdd": {
+    "description": "Button that opens the exercise library"
+  },
+  "exerciseRemove": "Remove exercise",
+  "@exerciseRemove": {
+    "description": "Button that removes an exercise from the plan"
+  },
+  "exercisePickerTitle": "Exercises",
+  "@exercisePickerTitle": {
+    "description": "Exercise library title"
+  },
+  "exerciseSearchLabel": "Search",
+  "@exerciseSearchLabel": {
+    "description": "Exercise search field"
+  },
+  "exerciseSearchEmpty": "Nothing found. Change the query or create your own exercise.",
+  "@exerciseSearchEmpty": {
+    "description": "No exercise matches the search"
+  },
+  "exerciseCreate": "Create exercise",
+  "@exerciseCreate": {
+    "description": "Button and dialog title for a custom exercise"
+  },
+  "exerciseNameLabel": "Name",
+  "@exerciseNameLabel": {
+    "description": "Custom exercise name field"
+  },
+  "exerciseGroupLabel": "Muscle group",
+  "@exerciseGroupLabel": {
+    "description": "Custom exercise muscle group field"
+  },
+  "exercisePosition": "Exercise {index} of {count}",
+  "@exercisePosition": {
+    "description": "Current exercise number in the workout",
+    "placeholders": {
+      "index": {
+        "type": "int"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "exercisePrevious": "Previous exercise",
+  "@exercisePrevious": {
+    "description": "Button that opens the previous exercise"
+  },
+  "exerciseNext": "Next exercise",
+  "@exerciseNext": {
+    "description": "Button that opens the next exercise"
+  },
+  "exerciseUnknown": "Exercise",
+  "@exerciseUnknown": {
+    "description": "Name of an exercise missing from the library"
+  },
+  "exerciseSquat": "Squat",
+  "@exerciseSquat": {
+    "description": "Built-in exercise"
+  },
+  "exerciseBenchPress": "Bench press",
+  "@exerciseBenchPress": {
+    "description": "Built-in exercise"
+  },
+  "exerciseDeadlift": "Deadlift",
+  "@exerciseDeadlift": {
+    "description": "Built-in exercise"
+  },
+  "exercisePullUp": "Pull-up",
+  "@exercisePullUp": {
+    "description": "Built-in exercise"
+  },
+  "exerciseOverheadPress": "Overhead press",
+  "@exerciseOverheadPress": {
+    "description": "Built-in exercise"
+  },
+  "exerciseBarbellRow": "Barbell row",
+  "@exerciseBarbellRow": {
+    "description": "Built-in exercise"
+  },
+  "exerciseLatPulldown": "Lat pulldown",
+  "@exerciseLatPulldown": {
+    "description": "Built-in exercise"
+  },
+  "exerciseInclineBenchPress": "Incline bench press",
+  "@exerciseInclineBenchPress": {
+    "description": "Built-in exercise"
+  },
+  "exercisePushUp": "Push-up",
+  "@exercisePushUp": {
+    "description": "Built-in exercise"
+  },
+  "exerciseDip": "Dip",
+  "@exerciseDip": {
+    "description": "Built-in exercise"
+  },
+  "exerciseLegPress": "Leg press",
+  "@exerciseLegPress": {
+    "description": "Built-in exercise"
+  },
+  "exerciseLunge": "Lunge",
+  "@exerciseLunge": {
+    "description": "Built-in exercise"
+  },
+  "exerciseRomanianDeadlift": "Romanian deadlift",
+  "@exerciseRomanianDeadlift": {
+    "description": "Built-in exercise"
+  },
+  "exerciseLateralRaise": "Lateral raise",
+  "@exerciseLateralRaise": {
+    "description": "Built-in exercise"
+  },
+  "exerciseBicepsCurl": "Biceps curl",
+  "@exerciseBicepsCurl": {
+    "description": "Built-in exercise"
+  },
+  "exerciseTricepsExtension": "Triceps extension",
+  "@exerciseTricepsExtension": {
+    "description": "Built-in exercise"
+  },
+  "exerciseCrunch": "Crunch",
+  "@exerciseCrunch": {
+    "description": "Built-in exercise"
+  },
+  "exerciseHangingLegRaise": "Hanging leg raise",
+  "@exerciseHangingLegRaise": {
+    "description": "Built-in exercise"
+  },
+  "muscleChest": "Chest",
+  "@muscleChest": {
+    "description": "Muscle group"
+  },
+  "muscleBack": "Back",
+  "@muscleBack": {
+    "description": "Muscle group"
+  },
+  "muscleLegs": "Legs",
+  "@muscleLegs": {
+    "description": "Muscle group"
+  },
+  "muscleShoulders": "Shoulders",
+  "@muscleShoulders": {
+    "description": "Muscle group"
+  },
+  "muscleArms": "Arms",
+  "@muscleArms": {
+    "description": "Muscle group"
+  },
+  "muscleCore": "Core",
+  "@muscleCore": {
+    "description": "Muscle group"
+  },
+  "setNumber": "Set {number}",
+  "@setNumber": {
+    "description": "Set label with its number",
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "setRepsOnly": "{reps, plural, =1{1 rep} other{{reps} reps}}",
+  "@setRepsOnly": {
+    "description": "Set without extra weight",
+    "placeholders": {
+      "reps": {
+        "type": "int"
+      }
+    }
+  },
+  "setRepsWeight": "{reps} × {weight}",
+  "@setRepsWeight": {
+    "description": "Set with weight",
+    "placeholders": {
+      "reps": {
+        "type": "int"
+      },
+      "weight": {
+        "type": "String"
+      }
+    }
+  },
+  "setWithRest": "{set} · rest {rest}",
+  "@setWithRest": {
+    "description": "Set and the rest after it",
+    "placeholders": {
+      "set": {
+        "type": "String"
+      },
+      "rest": {
+        "type": "String"
+      }
+    }
+  },
+  "setAdd": "Add set",
+  "@setAdd": {
+    "description": "Button that adds a set"
+  },
+  "setRemove": "Remove set",
+  "@setRemove": {
+    "description": "Button that removes a set"
+  },
+  "setEditTitle": "Edit set",
+  "@setEditTitle": {
+    "description": "Set editor title and edit button"
+  },
+  "setRepsLabel": "Reps",
+  "@setRepsLabel": {
+    "description": "Reps field"
+  },
+  "setWeightLabel": "Weight, {unit}",
+  "@setWeightLabel": {
+    "description": "Weight field with unit",
+    "placeholders": {
+      "unit": {
+        "type": "String"
+      }
+    }
+  },
+  "setWeightHelper": "Leave empty for bodyweight",
+  "@setWeightHelper": {
+    "description": "Hint under the weight field"
+  },
+  "setRestLabel": "Rest, seconds",
+  "@setRestLabel": {
+    "description": "Rest field"
+  },
+  "restTitle": "Rest",
+  "@restTitle": {
+    "description": "Rest timer panel title"
+  },
+  "restExtend": "+{seconds} s",
+  "@restExtend": {
+    "description": "Button that adds seconds to rest",
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "restSkip": "Skip",
+  "@restSkip": {
+    "description": "Button that ends rest now"
+  },
+  "restAlarmTitle": "Rest is over",
+  "@restAlarmTitle": {
+    "description": "Rest end notification title"
+  },
+  "restAlarmBody": "Time for the next set.",
+  "@restAlarmBody": {
+    "description": "Rest end notification body"
+  },
+  "sessionEmptyTitle": "No workout in progress",
+  "@sessionEmptyTitle": {
+    "description": "Workout screen without a workout in progress"
+  },
+  "sessionEmptyMessage": "Start a workout from a plan or a template.",
+  "@sessionEmptyMessage": {
+    "description": "Workout screen without a workout in progress, body"
+  },
+  "progressTitle": "Progress",
+  "@progressTitle": {
+    "description": "Exercise progress screen title"
+  },
+  "progressEmpty": "There are no completed sets of this exercise yet.",
+  "@progressEmpty": {
+    "description": "No progress data for the exercise"
+  },
+  "progressPointsHint": "{count, plural, =1{Based on 1 workout} other{Based on the last {count} workouts}}",
+  "@progressPointsHint": {
+    "description": "How many workouts the chart covers",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "progressChartLabel": "Progress chart: {metric}. Latest value {value}.",
+  "@progressChartLabel": {
+    "description": "Screen reader label of the progress chart",
+    "placeholders": {
+      "metric": {
+        "type": "String"
+      },
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "metricE1rm": "Estimated 1RM",
+  "@metricE1rm": {
+    "description": "Estimated one-rep max metric"
+  },
+  "metricMaxWeight": "Max weight",
+  "@metricMaxWeight": {
+    "description": "Heaviest weight metric"
+  },
+  "metricReps": "Reps",
+  "@metricReps": {
+    "description": "Most reps metric"
+  },
+  "valueWithUnit": "{value} {unit}",
+  "@valueWithUnit": {
+    "description": "Number followed by unit",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      },
+      "unit": {
+        "type": "String"
+      }
+    }
   }
 }

@@ -12,6 +12,7 @@ import '../../../core/widgets/info_snack_bar.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../auth/data/auth_repository_provider.dart';
 import '../../profile/data/user_profile_repository_provider.dart';
+import '../../workout/data/workout_repository_provider.dart';
 import 'app_settings_controller.dart';
 
 /// Имя файла выгрузки без расширения.
@@ -23,19 +24,21 @@ Future<void> exportUserData(BuildContext context, WidgetRef ref) async {
   if (user == null) {
     return;
   }
-  final result = await ref
-      .read(userProfileRepositoryProvider)
-      .exportData(user.uid);
+  final (profile, workouts) = await (
+    ref.read(userProfileRepositoryProvider).exportData(user.uid),
+    ref.read(workoutRepositoryProvider).exportData(user.uid),
+  ).wait;
   if (!context.mounted) {
     return;
   }
-  switch (result) {
-    case Failure(:final failure):
+  switch ((profile, workouts)) {
+    case (Failure(:final failure), _) || (_, Failure(:final failure)):
       showFailureSnackBar(context, failure);
-    case Success(:final value):
+    case (Success(value: final profileData), Success(value: final workoutData)):
       final settings = ref.read(appSettingsProvider);
       final document = {
-        ...value,
+        ...profileData,
+        'workouts': workoutData,
         'email': user.email,
         'exportedAt': DateTime.now().toUtc().toIso8601String(),
         'deviceSettings': {

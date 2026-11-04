@@ -13,6 +13,11 @@ class AppSizes extends ThemeExtension<AppSizes> {
     required this.formMaxWidth,
     required this.progressStrokeWidth,
     required this.selectionBorderWidth,
+    required this.fabClearance,
+    required this.chartAspectRatio,
+    required this.chartAxisReserved,
+    required this.chartLineWidth,
+    required this.chartDotRadius,
   });
 
   final double iconLarge;
@@ -28,6 +33,17 @@ class AppSizes extends ThemeExtension<AppSizes> {
   /// Толщина рамки выбранного образца.
   final double selectionBorderWidth;
 
+  /// Отступ под списком, чтобы плавающая кнопка не закрывала последний пункт.
+  final double fabClearance;
+
+  /// Соотношение сторон графика прогресса.
+  final double chartAspectRatio;
+
+  /// Место под подписи осей графика до масштабирования шрифта.
+  final double chartAxisReserved;
+  final double chartLineWidth;
+  final double chartDotRadius;
+
   /// Размеры по умолчанию.
   static const AppSizes standard = AppSizes(
     iconLarge: 48,
@@ -36,6 +52,11 @@ class AppSizes extends ThemeExtension<AppSizes> {
     formMaxWidth: 480,
     progressStrokeWidth: 2,
     selectionBorderWidth: 3,
+    fabClearance: 88,
+    chartAspectRatio: 1.6,
+    chartAxisReserved: 40,
+    chartLineWidth: 3,
+    chartDotRadius: 4,
   );
 
   /// Возвращает копию с заменёнными размерами.
@@ -47,6 +68,11 @@ class AppSizes extends ThemeExtension<AppSizes> {
     double? formMaxWidth,
     double? progressStrokeWidth,
     double? selectionBorderWidth,
+    double? fabClearance,
+    double? chartAspectRatio,
+    double? chartAxisReserved,
+    double? chartLineWidth,
+    double? chartDotRadius,
   }) {
     return AppSizes(
       iconLarge: iconLarge ?? this.iconLarge,
@@ -55,6 +81,11 @@ class AppSizes extends ThemeExtension<AppSizes> {
       formMaxWidth: formMaxWidth ?? this.formMaxWidth,
       progressStrokeWidth: progressStrokeWidth ?? this.progressStrokeWidth,
       selectionBorderWidth: selectionBorderWidth ?? this.selectionBorderWidth,
+      fabClearance: fabClearance ?? this.fabClearance,
+      chartAspectRatio: chartAspectRatio ?? this.chartAspectRatio,
+      chartAxisReserved: chartAxisReserved ?? this.chartAxisReserved,
+      chartLineWidth: chartLineWidth ?? this.chartLineWidth,
+      chartDotRadius: chartDotRadius ?? this.chartDotRadius,
     );
   }
 
@@ -75,6 +106,11 @@ class AppSizes extends ThemeExtension<AppSizes> {
         selectionBorderWidth,
         other.selectionBorderWidth,
       ),
+      fabClearance: mix(fabClearance, other.fabClearance),
+      chartAspectRatio: mix(chartAspectRatio, other.chartAspectRatio),
+      chartAxisReserved: mix(chartAxisReserved, other.chartAxisReserved),
+      chartLineWidth: mix(chartLineWidth, other.chartLineWidth),
+      chartDotRadius: mix(chartDotRadius, other.chartDotRadius),
     );
   }
 }

@@ -24,6 +24,28 @@ abstract final class AppRoutes {
   /// Путь публичного профиля пользователя.
   static String publicProfile(String uid) => '/profile/users/$uid';
 
+  static const String workoutPlanSegment = 'plan';
+  static const String workoutPlan = '/workout/$workoutPlanSegment';
+  static const String workoutSessionSegment = 'session';
+  static const String workoutSession = '/workout/$workoutSessionSegment';
+  static const String exercisePickerSegment = 'exercises';
+  static const String exercisePicker = '/workout/$exercisePickerSegment';
+  static const String workoutTemplateSegment = 'templates/:templateId';
+  static const String workoutDetailSegment = 'history/:workoutId';
+  static const String exerciseProgressSegment = 'progress/:exerciseId';
+
+  /// Путь редактора сохранённого шаблона.
+  static String workoutTemplate(String templateId) =>
+      '/workout/templates/$templateId';
+
+  /// Путь завершённой тренировки в истории.
+  static String workoutDetail(String workoutId) =>
+      '/workout/history/$workoutId';
+
+  /// Путь графика прогресса по упражнению.
+  static String exerciseProgress(String exerciseId) =>
+      '/workout/progress/$exerciseId';
+
   /// Экраны, доступные без входа.
   static const Set<String> signedOut = {signIn, signUp, resetPassword};
 

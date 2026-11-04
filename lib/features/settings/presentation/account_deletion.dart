@@ -5,9 +5,10 @@ import '../../../core/errors/result.dart';
 import '../../../core/widgets/failure_snack_bar.dart';
 import '../../auth/data/auth_repository_provider.dart';
 import '../../profile/data/user_profile_repository_provider.dart';
+import '../../workout/data/workout_repository_provider.dart';
 import 'delete_account_dialog.dart';
 
-/// Подтверждает личность, удаляет данные пользователя и затем учётную запись.
+/// Подтверждает личность, удаляет тренировки, профиль и затем учётную запись.
 Future<void> deleteAccount(
   BuildContext context,
   WidgetRef ref,
@@ -20,6 +21,7 @@ Future<void> deleteAccount(
   final auth = ref.read(authRepositoryProvider);
   final steps = <Future<Result<void>> Function()>[
     () => auth.reauthenticate(password: confirmation.password),
+    () => ref.read(workoutRepositoryProvider).deleteAllData(uid),
     () => ref.read(userProfileRepositoryProvider).deleteAllData(uid),
     auth.deleteAccount,
   ];

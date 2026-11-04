@@ -6,7 +6,10 @@ import 'package:go_router/go_router.dart';
 import 'package:good_gym/app/router/app_routes.dart';
 import 'package:good_gym/features/auth/domain/auth_user.dart';
 import 'package:good_gym/features/profile/presentation/profile_setup_screen.dart';
+import 'package:good_gym/features/workout/data/firestore_workout_repository.dart';
+import 'package:good_gym/features/workout/domain/personal_records.dart';
 
+import '../features/workout/workout_test_data.dart';
 import '../helpers/pump_app.dart';
 
 void main() {
@@ -43,6 +46,40 @@ void main() {
         '/profile',
         AppRoutes.profileEdit,
         AppRoutes.changePassword,
+      ]) {
+        router.go(route);
+        await tester.pumpAndSettle();
+        await scrollThrough(tester);
+      }
+    });
+
+    testWidgets('workout screens fit 2x font, ${entry.key}', (tester) async {
+      final backend = await pumpApp(
+        tester,
+        textScale: 2,
+        preferences: {
+          'settings.languageCode': entry.key,
+          'workout.active':
+              '{"id":"w9","ownerId":"uid-1","title":"Upper body push day",'
+              '"note":"","startedAt":1793800000000,"exerciseIds":["bench_press"],'
+              '"exercises":[{"exerciseId":"bench_press","muscleGroup":"chest",'
+              '"sets":[{"reps":8,"restSeconds":120,"weightKg":82.5,'
+              '"completed":false}]}]}',
+        },
+      );
+      final workout = squatWorkout('w1', 1, 102.5);
+      await FirestoreWorkoutRepository(backend.firestore).saveWorkout(
+        workout,
+        improvedRecords: PersonalRecords.improvedBy(workout, {}),
+      );
+      final router = GoRouter.of(tester.element(find.byType(Scaffold).first));
+      for (final route in [
+        '/workout',
+        AppRoutes.workoutPlan,
+        AppRoutes.exercisePicker,
+        AppRoutes.workoutSession,
+        AppRoutes.workoutDetail('w1'),
+        AppRoutes.exerciseProgress('squat'),
       ]) {
         router.go(route);
         await tester.pumpAndSettle();

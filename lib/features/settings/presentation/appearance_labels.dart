@@ -47,5 +47,6 @@ extension NotificationTypeLabels on NotificationType {
     NotificationType.recordReview => l10n.notificationRecordReview,
     NotificationType.coachInvites => l10n.notificationCoachInvites,
     NotificationType.workoutReminders => l10n.notificationWorkoutReminders,
+    NotificationType.restTimer => l10n.notificationRestTimer,
   };
 }

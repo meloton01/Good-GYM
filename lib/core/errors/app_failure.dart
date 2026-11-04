@@ -14,5 +14,7 @@ enum AppFailure {
   providerUnavailable,
   cancelled,
   requiresRecentLogin,
+  notificationsDenied,
+  nothingCompleted,
   unknown,
 }

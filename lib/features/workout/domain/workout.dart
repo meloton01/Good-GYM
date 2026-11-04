@@ -15,6 +15,6 @@ abstract class Workout with _$Workout {
     required List<WorkoutExercise> exercises,
     required DateTime startedAt,
     DateTime? finishedAt,
-    String? note,
+    @Default('') String note,
   }) = _Workout;
 }

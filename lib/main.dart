@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'app/app.dart';
+import 'core/storage/shared_preferences_provider.dart';
 import 'features/settings/data/settings_repository_provider.dart';
 import 'features/settings/data/shared_preferences_settings_repository.dart';
 import 'firebase_options.dart';
@@ -18,6 +19,7 @@ Future<void> main() async {
   runApp(
     ProviderScope(
       overrides: [
+        sharedPreferencesProvider.overrideWithValue(preferences),
         settingsRepositoryProvider.overrideWithValue(
           SharedPreferencesSettingsRepository(preferences),
         ),
