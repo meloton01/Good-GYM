@@ -30,15 +30,17 @@ lib/
     constants/              числовые ограничения
     errors/                 Result, AppFailure, локализация ошибок
     firebase/               перевод ошибок Firestore в AppFailure
+    formatting/             вывод и разбор чисел по локали
     navigation/             TabDefinition
     pagination/             PagedResult
+    units/                  единицы веса и длины, перевод в метрические
     widgets/                общие виджеты
   l10n/                     ARB-файлы, generated/ создаётся автоматически
   features/<name>/
     data/  domain/  presentation/
 ```
 
-Фичи: `home`, `rating`, `workout`, `profile`, `settings`, `auth`. Фича может брать у другой фичи только `domain` и провайдеры репозиториев из `data`. Её экраны и виджеты не импортируются. Общие виджеты лежат в `core/widgets/`, сборка фич в одно приложение — в `app/`.
+Фичи: `home`, `rating`, `workout`, `profile`, `settings`, `auth`. Фича-вкладка может брать у другой фичи только `domain` и Riverpod-провайдеры (репозиториев и состояния). Экраны и виджеты других вкладок не импортируются, поэтому вкладку можно отключить, не сломав остальные. Исключение: `auth` не вкладка, и её экраны и поля форм (вход, смена email и пароля, поле пароля) доступны всем. Общие виджеты лежат в `core/widgets/`, единицы измерения — в `core/units/`, сборка фич в одно приложение — в `app/`. Пути вложенных экранов собраны в `AppRoutes`, а переход в другую вкладку идёт по пути, без импорта её экрана.
 
 ## Сессия и маршруты
 
@@ -67,7 +69,9 @@ lib/
 ## Тема
 
 - `AppColors.dark` и `AppColors.light`: палитра Black & Yellow. Жёлтый `accent` только для заливки активных элементов, текст и иконки поверх него берут `onAccent`. Для акцента на фоне служит `accentContent`: в светлой теме он чёрный, потому что жёлтый на светлом фоне не проходит по контрасту.
-- `buildAppTheme` собирает `ColorScheme` вручную из токенов, без `ColorScheme.fromSeed`.
+- `buildAppTheme(colors, radii)` собирает `ColorScheme` вручную из токенов, без `ColorScheme.fromSeed`.
+- Настройки внешнего вида (`AppSettings`): режим темы, одна из 6 палитр (`PaletteId`), акцент (`AccentId`, null — акцент палитры) и стиль скруглений (`CornerStyle`). `appThemesProvider` пересобирает обе темы только при их смене, `AppearanceColors.resolve` превращает выбор в `AppColors`, `AppRadii.forStyle` — в радиусы.
+- Новая палитра: значения в `AppPalette`, вариант в `PaletteId`, фон в `AppearanceColors._darkBase`, название в ARB. Тест `appearance_test.dart` проверяет контраст для всех сочетаний палитры, акцента и темы.
 
 ## Как добавить вкладку
 
@@ -113,7 +117,18 @@ firebase emulators:exec --only firestore --project demo-good-gym "npm --prefix f
 
 Деплой: `firebase deploy --only firestore:rules`.
 
-Ник уникален за счёт коллекции `nicknames/{nickname}` с полем `uid`. Профиль и ник создаются одной транзакцией, а правила через `getAfter` проверяют, что обе записи ссылаются друг на друга.
+Ник уникален за счёт коллекции `nicknames/{nickname}` с полем `uid`. Профиль и ник создаются одной транзакцией, а правила через `getAfter` проверяют, что обе записи ссылаются друг на друга. При смене ника старая запись удаляется, а новая создаётся в той же транзакции.
+
+Данные пользователя:
+
+| Путь | Кто читает | Содержимое |
+|---|---|---|
+| `users/{uid}` | по `profileVisibility`: все, посетители того же зала или только владелец | ник, роль, описание, зал, видимость |
+| `users/{uid}/private/body` | только владелец | вес (кг) и рост (см) |
+| `nicknames/{nickname}` | вошедшие | `uid` владельца |
+| `gyms/{gymId}` | вошедшие | название, `nameLower` для поиска, город, создатель |
+
+Удаление аккаунта идёт с клиента (тариф Spark, без Cloud Functions): подтверждение личности, затем одним батчем удаляются тело, ник и профиль, после этого учётная запись Auth. Созданные пользователем залы остаются: это общие данные.
 
 ## Бэкенд
 
@@ -121,13 +136,13 @@ firebase emulators:exec --only firestore --project demo-good-gym "npm --prefix f
 
 | Фича | Интерфейс | Назначение | Реализация |
 |---|---|---|---|
-| auth | `AuthRepository` | вход, регистрация, подтверждение email, сброс пароля | `FirebaseAuthRepository` |
-| profile | `UserProfileRepository` | профиль, ник, роль | `FirestoreUserProfileRepository` |
-| rating | `GymRepository` | поиск и создание залов | этап 5 |
+| auth | `AuthRepository` | вход, регистрация, подтверждение email, сброс и смена пароля, смена email, удаление учётной записи | `FirebaseAuthRepository` |
+| profile | `UserProfileRepository` | профиль, ник, роль, данные о теле, экспорт и удаление данных | `FirestoreUserProfileRepository` |
+| rating | `GymRepository` | поиск и создание залов | `FirestoreGymRepository` |
 | rating | `RecordRepository` | таблицы, подача рекорда, модерация | этап 5 |
 | workout | `WorkoutRepository` | история и сохранение тренировок | этап 3 |
 | workout | `CoachLinkRepository` | приглашения и связь тренер-ученик | этап 4 |
-| settings | `SettingsRepository` | тема и язык | `SharedPreferencesSettingsRepository` |
+| settings | `SettingsRepository` | внешний вид, язык, единицы, уведомления на устройстве | `SharedPreferencesSettingsRepository` |
 
 Вход через Google и Apple требует настройки консолей: см. `docs/firebase-setup.md`.
 
