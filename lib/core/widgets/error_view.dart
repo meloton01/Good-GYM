@@ -13,11 +13,17 @@ class ErrorView extends StatelessWidget {
     required this.title,
     required this.failure,
     required this.onRetry,
+    this.secondaryLabel,
+    this.onSecondary,
   });
 
   final String title;
   final AppFailure failure;
   final VoidCallback onRetry;
+
+  /// Подпись и действие второй кнопки, например выхода из аккаунта.
+  final String? secondaryLabel;
+  final VoidCallback? onSecondary;
 
   /// Строит прокручиваемый блок с текстом ошибки и кнопкой.
   @override
@@ -52,6 +58,10 @@ class ErrorView extends StatelessWidget {
             ),
             SizedBox(height: spacing.lg),
             FilledButton(onPressed: onRetry, child: Text(l10n.actionRetry)),
+            if (secondaryLabel != null && onSecondary != null) ...[
+              SizedBox(height: spacing.sm),
+              TextButton(onPressed: onSecondary, child: Text(secondaryLabel!)),
+            ],
           ],
         ),
       ),

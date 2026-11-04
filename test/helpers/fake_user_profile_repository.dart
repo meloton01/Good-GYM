@@ -18,11 +18,18 @@ class FakeUserProfileRepository implements UserProfileRepository {
   final Map<String, UserProfile> _profiles = {};
   final _controller = StreamController<void>.broadcast();
 
+  /// Ошибка, которую отдаст поток профиля, если задана.
+  Object? watchError;
+
   /// Ники, которые считаются занятыми другими пользователями.
   final Set<String> takenNicknames = {};
 
   @override
   Stream<UserProfile?> watchProfile(String uid) async* {
+    final error = watchError;
+    if (error != null) {
+      throw error;
+    }
     yield _profiles[uid];
     await for (final _ in _controller.stream) {
       yield _profiles[uid];
