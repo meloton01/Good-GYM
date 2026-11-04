@@ -21,10 +21,12 @@ class LocalNotificationsRestAlarm implements RestAlarm {
   bool? _permitted;
 
   /// Планирует уведомление; при первом вызове инициализирует плагин и спрашивает разрешение.
+  ///
+  /// В веб-превью системных уведомлений нет: отдых идёт только на экране, ошибки нет.
   @override
   Future<Result<void>> schedule(DateTime at, RestAlarmText text) async {
     if (kIsWeb) {
-      return const Failure(AppFailure.notificationsDenied);
+      return const Success(null);
     }
     try {
       if (!await _ensurePermission()) {
