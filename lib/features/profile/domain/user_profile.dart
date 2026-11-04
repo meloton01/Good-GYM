@@ -12,8 +12,5 @@ abstract class UserProfile with _$UserProfile {
     required String uid,
     required String nickname,
     required UserRole role,
-    String? gymId,
-    String? avatarUrl,
-    String? bio,
   }) = _UserProfile;
 }

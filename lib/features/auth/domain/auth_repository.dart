@@ -3,36 +3,40 @@ import 'auth_user.dart';
 
 /// Вход, регистрация и управление учётной записью; реализация не зависит от UI.
 abstract interface class AuthRepository {
-  /// Поток текущей учётной записи; null, если вход не выполнен.
+  /// Поток текущей учётной записи, включая смену статуса подтверждения email.
   Stream<AuthUser?> watchAuthUser();
 
   /// Вход по email и паролю.
-  Future<Result<AuthUser>> signInWithEmail({
+  Future<Result<void>> signInWithEmail({
     required String email,
     required String password,
   });
 
-  /// Регистрация по email и паролю.
-  Future<Result<AuthUser>> signUpWithEmail({
+  /// Регистрация по email и паролю с отправкой письма для подтверждения.
+  Future<Result<void>> signUpWithEmail({
     required String email,
     required String password,
+    required String languageCode,
   });
 
   /// Вход через Google.
-  Future<Result<AuthUser>> signInWithGoogle();
+  Future<Result<void>> signInWithGoogle();
 
   /// Вход через Apple.
-  Future<Result<AuthUser>> signInWithApple();
+  Future<Result<void>> signInWithApple();
 
-  /// Отправляет письмо для подтверждения email.
-  Future<Result<void>> sendEmailVerification();
+  /// Отправляет письмо для подтверждения email ещё раз на языке [languageCode].
+  Future<Result<void>> sendEmailVerification({required String languageCode});
+
+  /// Перечитывает учётную запись с сервера и возвращает, подтверждён ли email.
+  Future<Result<bool>> reloadEmailVerification();
 
   /// Отправляет письмо для сброса пароля.
-  Future<Result<void>> sendPasswordReset(String email);
+  Future<Result<void>> sendPasswordReset(
+    String email, {
+    required String languageCode,
+  });
 
   /// Выход из учётной записи.
   Future<Result<void>> signOut();
-
-  /// Удаляет учётную запись и все данные пользователя.
-  Future<Result<void>> deleteAccount();
 }

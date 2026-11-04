@@ -11,6 +11,15 @@ extension AppFailureMessage on AppFailure {
       AppFailure.notFound => l10n.errorNotFound,
       AppFailure.invalidInput => l10n.errorInvalidInput,
       AppFailure.storage => l10n.errorStorage,
+      AppFailure.invalidCredentials => l10n.errorInvalidCredentials,
+      AppFailure.emailAlreadyInUse => l10n.errorEmailAlreadyInUse,
+      AppFailure.weakPassword => l10n.errorWeakPassword,
+      AppFailure.tooManyRequests => l10n.errorTooManyRequests,
+      AppFailure.nicknameTaken => l10n.errorNicknameTaken,
+      AppFailure.accountExistsWithDifferentCredential =>
+        l10n.errorAccountExistsWithDifferentCredential,
+      AppFailure.providerUnavailable => l10n.errorProviderUnavailable,
+      AppFailure.cancelled => l10n.errorCancelled,
       AppFailure.unknown => l10n.errorUnknown,
     };
   }

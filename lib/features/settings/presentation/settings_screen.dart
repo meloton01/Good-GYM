@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../app/theme/theme_context.dart';
 import '../../../l10n/generated/app_localizations.dart';
+import 'account_section.dart';
 import 'language_section.dart';
 import 'theme_section.dart';
 
@@ -17,7 +18,7 @@ class SettingsScreen extends StatelessWidget {
       appBar: AppBar(title: Text(AppLocalizations.of(context).tabSettings)),
       body: ListView(
         padding: EdgeInsetsDirectional.only(bottom: context.spacing.lg),
-        children: const [LanguageSection(), ThemeSection()],
+        children: const [LanguageSection(), ThemeSection(), AccountSection()],
       ),
     );
   }

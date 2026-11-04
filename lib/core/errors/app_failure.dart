@@ -5,5 +5,13 @@ enum AppFailure {
   notFound,
   invalidInput,
   storage,
+  invalidCredentials,
+  emailAlreadyInUse,
+  weakPassword,
+  tooManyRequests,
+  nicknameTaken,
+  accountExistsWithDifferentCredential,
+  providerUnavailable,
+  cancelled,
   unknown,
 }

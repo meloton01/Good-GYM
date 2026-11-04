@@ -10,11 +10,15 @@ class SelectableOptionTile extends StatelessWidget {
     required this.title,
     required this.selected,
     required this.onTap,
+    this.subtitle,
   });
 
   final String title;
   final bool selected;
   final VoidCallback onTap;
+
+  /// Пояснение под названием варианта.
+  final String? subtitle;
 
   /// Строит ListTile с галочкой у выбранного варианта.
   @override
@@ -25,6 +29,7 @@ class SelectableOptionTile extends StatelessWidget {
       child: ListTile(
         minTileHeight: context.sizes.minTouchTarget,
         title: Text(title),
+        subtitle: subtitle == null ? null : Text(subtitle!),
         selected: selected,
         trailing: selected
             ? Icon(Icons.check_rounded, color: context.colors.accentContent)

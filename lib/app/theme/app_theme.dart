@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'app_colors.dart';
+import 'app_component_themes.dart';
 import 'app_radii.dart';
 import 'app_sizes.dart';
 import 'app_spacing.dart';
@@ -77,6 +78,13 @@ ThemeData buildAppTheme(AppColors colors) {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(radii.medium),
       ),
+    ),
+    filledButtonTheme: AppComponentThemes.filledButton(colors, textTheme),
+    outlinedButtonTheme: AppComponentThemes.outlinedButton(colors, textTheme),
+    textButtonTheme: AppComponentThemes.textButton(colors, textTheme),
+    inputDecorationTheme: AppComponentThemes.input(colors, textTheme),
+    progressIndicatorTheme: ProgressIndicatorThemeData(
+      color: colors.accentContent,
     ),
     snackBarTheme: SnackBarThemeData(
       behavior: SnackBarBehavior.floating,
