@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:good_gym/app/app.dart';
+import 'package:good_gym/core/links/link_opener_provider.dart';
 import 'package:good_gym/core/storage/shared_preferences_provider.dart';
 import 'package:good_gym/features/auth/data/auth_repository_provider.dart';
 import 'package:good_gym/features/auth/domain/auth_user.dart';
@@ -55,6 +56,12 @@ class TestBackend {
   final FakeFirebaseFirestore firestore = FakeFirebaseFirestore();
   final FakeRestAlarm restAlarm = FakeRestAlarm();
   final FakeVideoSource videoSource = FakeVideoSource();
+
+  /// Адреса, которые приложение пыталось открыть в браузере.
+  final List<Uri> openedLinks = [];
+
+  /// Результат открытия ссылки; `false` имитирует отсутствие браузера.
+  bool linkOpens = true;
   late final FakeRecordRepository records = FakeRecordRepository(
     firestore,
     () => auth.currentUid ?? '',
@@ -87,6 +94,10 @@ Future<TestBackend> pumpApp(
     ProviderScope(
       overrides: [
         sharedPreferencesProvider.overrideWithValue(instance),
+        linkOpenerProvider.overrideWithValue((uri) async {
+          backend.openedLinks.add(uri);
+          return backend.linkOpens;
+        }),
         settingsRepositoryProvider.overrideWithValue(
           SharedPreferencesSettingsRepository(instance),
         ),
