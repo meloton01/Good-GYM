@@ -157,6 +157,7 @@ describe('record videos', () => {
   test('rejects other folders, other types, bad names and big files', async () => {
     await assertFails(upload('bob', `records/alice/${fileName}`));
     await assertFails(upload('alice', `records/alice/${fileName}`, video, 'image/png'));
+    await assertFails(upload('alice', `records/alice/${fileName}`, video, 'video/quicktime'));
     await assertFails(upload('alice', 'records/alice/../bob.mp4'));
     await assertFails(upload('alice', `records/alice/${fileName}`, new Uint8Array(50 * 1024 * 1024 + 1)));
   });

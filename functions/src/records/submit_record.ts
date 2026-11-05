@@ -54,7 +54,7 @@ export const submitRecord = onCall({ region }, async (request) => {
   return { recordId: record.id };
 });
 
-/** Видео загружено владельцем, это видео и оно не больше лимита; неподходящий файл удаляется. */
+/** Видео загружено владельцем, это MP4 и оно не больше лимита; неподходящий файл удаляется. */
 async function checkVideo(uid: string, uploadId: string): Promise<void> {
   const file = bucket().file(videoPath(uid, uploadId));
   const [exists] = await file.exists();
@@ -63,7 +63,7 @@ async function checkVideo(uid: string, uploadId: string): Promise<void> {
   }
   const [metadata] = await file.getMetadata();
   const size = Number(metadata.size ?? 0);
-  const isVideo = String(metadata.contentType ?? '').startsWith('video/');
+  const isVideo = metadata.contentType === RecordLimits.videoContentType;
   if (!isVideo || size <= 0 || size > RecordLimits.maxVideoBytes) {
     await file.delete({ ignoreNotFound: true });
     throw fail('invalid-argument', 'video-invalid');
