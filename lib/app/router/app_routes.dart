@@ -33,18 +33,46 @@ abstract final class AppRoutes {
   static const String workoutTemplateSegment = 'templates/:templateId';
   static const String workoutDetailSegment = 'history/:workoutId';
   static const String exerciseProgressSegment = 'progress/:exerciseId';
+  static const String coachQrSegment = 'coach/qr';
+  static const String coachQr = '/workout/$coachQrSegment';
+  static const String coachScanSegment = 'coach/scan';
+  static const String coachScan = '/workout/$coachScanSegment';
+  static const String studentSegment = 'students/:athleteId';
+  static const String planEditorSegment = 'plan-editor';
+  static const String planDetailSegment = 'plans/:athleteId/:planId';
+  static const String myPlansSegment = 'plans';
+  static const String myPlans = '/workout/$myPlansSegment';
+
+  /// Параметр запроса с uid владельца тренировки, если это не текущий пользователь.
+  static const String ownerParameter = 'owner';
 
   /// Путь редактора сохранённого шаблона.
   static String workoutTemplate(String templateId) =>
       '/workout/templates/$templateId';
 
-  /// Путь завершённой тренировки в истории.
-  static String workoutDetail(String workoutId) =>
-      '/workout/history/$workoutId';
+  /// Путь завершённой тренировки; [owner] задан, когда тренер смотрит тренировку ученика.
+  static String workoutDetail(String workoutId, {String? owner}) =>
+      _withOwner('/workout/history/$workoutId', owner);
 
-  /// Путь графика прогресса по упражнению.
-  static String exerciseProgress(String exerciseId) =>
-      '/workout/progress/$exerciseId';
+  /// Путь графика прогресса по упражнению; [owner] задан для ученика тренера.
+  static String exerciseProgress(String exerciseId, {String? owner}) =>
+      _withOwner('/workout/progress/$exerciseId', owner);
+
+  /// Путь экрана ученика у тренера.
+  static String student(String athleteId) => '/workout/students/$athleteId';
+
+  /// Путь редактора плана для ученика.
+  static String planEditor(String athleteId) =>
+      '${student(athleteId)}/$planEditorSegment';
+
+  /// Путь плана тренера.
+  static String planDetail(String athleteId, String planId) =>
+      '/workout/plans/$athleteId/$planId';
+
+  /// Добавляет uid владельца в запрос, если он задан.
+  static String _withOwner(String path, String? owner) => owner == null
+      ? path
+      : Uri(path: path, queryParameters: {ownerParameter: owner}).toString();
 
   /// Экраны, доступные без входа.
   static const Set<String> signedOut = {signIn, signUp, resetPassword};

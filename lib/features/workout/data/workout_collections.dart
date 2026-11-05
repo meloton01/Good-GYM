@@ -24,6 +24,22 @@ extension WorkoutCollections on FirebaseFirestore {
   CollectionReference<Map<String, dynamic>> personalRecords(String uid) =>
       _user(uid).collection(WorkoutFields.recordsCollection);
 
+  /// Планы тренера, назначенные ученику [uid].
+  CollectionReference<Map<String, dynamic>> plans(String uid) =>
+      _user(uid).collection(WorkoutFields.plansCollection);
+
+  /// Связи тренер-ученик.
+  CollectionReference<Map<String, dynamic>> get coachLinks =>
+      collection(WorkoutFields.linksCollection);
+
+  /// Замок активного тренера ученика [athleteId].
+  DocumentReference<Map<String, dynamic>> studentCoach(String athleteId) =>
+      collection(WorkoutFields.studentCoachCollection).doc(athleteId);
+
+  /// Счётчик активных учеников тренера [coachId].
+  DocumentReference<Map<String, dynamic>> coachStudents(String coachId) =>
+      collection(WorkoutFields.coachStudentsCollection).doc(coachId);
+
   /// Все тренировочные коллекции пользователя по названию.
   Map<String, CollectionReference<Map<String, dynamic>>> workoutData(
     String uid,

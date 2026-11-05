@@ -17,6 +17,7 @@ Future<void> startWorkout(
   required String ownerId,
   required String title,
   required List<WorkoutExercise> exercises,
+  String? planId,
   bool replaceRoute = false,
 }) async {
   final l10n = AppLocalizations.of(context);
@@ -34,7 +35,12 @@ Future<void> startWorkout(
   }
   final result = await ref
       .read(activeWorkoutProvider.notifier)
-      .start(ownerId: ownerId, title: title, exercises: exercises);
+      .start(
+        ownerId: ownerId,
+        title: title,
+        exercises: exercises,
+        planId: planId,
+      );
   if (!context.mounted) {
     return;
   }

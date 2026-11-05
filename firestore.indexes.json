@@ -7,6 +7,14 @@
         { "fieldPath": "exerciseIds", "arrayConfig": "CONTAINS" },
         { "fieldPath": "finishedAt", "order": "DESCENDING" }
       ]
+    },
+    {
+      "collectionGroup": "plans",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "coachId", "order": "ASCENDING" },
+        { "fieldPath": "createdAt", "order": "DESCENDING" }
+      ]
     }
   ],
   "fieldOverrides": []

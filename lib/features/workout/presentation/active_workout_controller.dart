@@ -27,11 +27,12 @@ class ActiveWorkoutController extends Notifier<Workout?> {
   @override
   Workout? build() => ref.watch(activeWorkoutStoreProvider).loadWorkout();
 
-  /// Начинает тренировку по плану; отметки выполнения сбрасываются.
+  /// Начинает тренировку по плану; [planId] задан, если это план тренера.
   Future<Result<void>> start({
     required String ownerId,
     required String title,
     required List<WorkoutExercise> exercises,
+    String? planId,
   }) async {
     await ref.read(restTimerProvider.notifier).stop();
     return _apply(
@@ -39,6 +40,7 @@ class ActiveWorkoutController extends Notifier<Workout?> {
         id: randomId(),
         ownerId: ownerId,
         title: title,
+        planId: planId,
         startedAt: ref.read(clockProvider)(),
         exercises: [
           for (final item in exercises)

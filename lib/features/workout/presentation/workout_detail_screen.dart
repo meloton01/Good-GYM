@@ -27,16 +27,20 @@ import 'workout_history_controller.dart';
 /// Завершённая тренировка: подходы, заметка, повтор и удаление.
 class WorkoutDetailScreen extends ConsumerWidget {
   /// Создаёт экран тренировки [workoutId].
-  const WorkoutDetailScreen({super.key, required this.workoutId});
+  const WorkoutDetailScreen({super.key, required this.workoutId, this.ownerId});
 
   final String workoutId;
+
+  /// uid ученика, если тренер смотрит его тренировку; null — своя тренировка.
+  final String? ownerId;
 
   /// Строит загрузку, ошибку или данные тренировки.
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
-    final uid = ref.watch(authUserProvider).value?.uid ?? '';
-    final key = (uid, workoutId);
+    final me = ref.watch(authUserProvider).value?.uid ?? '';
+    final readOnly = ownerId != null && ownerId != me;
+    final key = (ownerId ?? me, workoutId);
     final loaded = ref.watch(workoutDetailProvider(key));
     final workout = switch (loaded) {
       AsyncData(value: Success(:final value)) => value,
@@ -46,7 +50,7 @@ class WorkoutDetailScreen extends ConsumerWidget {
       appBar: AppBar(
         title: Text(l10n.workoutDetailTitle),
         actions: [
-          if (workout != null)
+          if (workout != null && !readOnly)
             IconButton(
               tooltip: l10n.workoutDelete,
               icon: const Icon(Icons.delete_outline_rounded),
@@ -55,7 +59,10 @@ class WorkoutDetailScreen extends ConsumerWidget {
         ],
       ),
       body: switch (loaded) {
-        AsyncData(value: Success(:final value)) => _Details(workout: value),
+        AsyncData(value: Success(:final value)) => _Details(
+          workout: value,
+          readOnly: readOnly,
+        ),
         AsyncData(value: Failure(:final failure)) => ErrorView(
           title: l10n.workoutDetailTitle,
           failure: failure,
@@ -107,9 +114,12 @@ class WorkoutDetailScreen extends ConsumerWidget {
 /// Список упражнений и подходов тренировки.
 class _Details extends ConsumerWidget {
   /// Создаёт блок данных тренировки.
-  const _Details({required this.workout});
+  const _Details({required this.workout, required this.readOnly});
 
   final Workout workout;
+
+  /// Тренировка ученика: без повтора.
+  final bool readOnly;
 
   /// Строит заголовок, заметку, упражнения и кнопку повтора.
   @override
@@ -146,20 +156,21 @@ class _Details extends ConsumerWidget {
               subtitle: Text(format.set(item.sets[index])),
             ),
         ],
-        Padding(
-          padding: EdgeInsetsDirectional.all(spacing.md),
-          child: PrimaryButton(
-            label: l10n.workoutRepeat,
-            onPressed: () => context.push(
-              AppRoutes.workoutPlan,
-              extra: WorkoutTemplate(
-                id: randomId(),
-                title: workout.title,
-                exercises: workout.exercises,
+        if (!readOnly)
+          Padding(
+            padding: EdgeInsetsDirectional.all(spacing.md),
+            child: PrimaryButton(
+              label: l10n.workoutRepeat,
+              onPressed: () => context.push(
+                AppRoutes.workoutPlan,
+                extra: WorkoutTemplate(
+                  id: randomId(),
+                  title: workout.title,
+                  exercises: workout.exercises,
+                ),
               ),
             ),
           ),
-        ),
       ],
     );
   }

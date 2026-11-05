@@ -4,10 +4,13 @@ import 'package:go_router/go_router.dart';
 
 import '../../../core/errors/result.dart';
 import '../../../core/widgets/confirm_dialog.dart';
+import '../../../core/widgets/failure_snack_bar.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../settings/domain/notification_type.dart';
 import '../../settings/presentation/app_settings_controller.dart';
+import '../data/coach_repository_providers.dart';
 import '../domain/rest_alarm_text.dart';
+import '../domain/workout.dart';
 import 'active_workout_controller.dart';
 import 'rest_timer_controller.dart';
 
@@ -49,5 +52,24 @@ Future<void> discardWorkout(BuildContext context, WidgetRef ref) async {
   await ref.read(activeWorkoutProvider.notifier).discard();
   if (context.mounted) {
     context.pop();
+  }
+}
+
+/// Отмечает план тренера выполненным; если не вышло, сообщает об этом, тренировка уже сохранена.
+Future<void> completePlan(
+  BuildContext context,
+  WidgetRef ref,
+  Workout workout,
+  String workoutId,
+) async {
+  final planId = workout.planId;
+  if (planId == null) {
+    return;
+  }
+  final result = await ref
+      .read(coachPlanRepositoryProvider)
+      .completePlan(workout.ownerId, planId, workoutId);
+  if (result case Failure(:final failure) when context.mounted) {
+    showFailureSnackBar(context, failure);
   }
 }

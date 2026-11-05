@@ -8,6 +8,7 @@ import '../../../core/widgets/empty_state_view.dart';
 import '../../../core/widgets/error_view.dart';
 import '../../../core/widgets/loading_view.dart';
 import '../../../l10n/generated/app_localizations.dart';
+import '../../auth/data/auth_repository_provider.dart';
 import '../../settings/presentation/app_settings_controller.dart';
 import 'workout_format.dart';
 import 'workout_history_controller.dart';
@@ -47,6 +48,7 @@ class WorkoutHistoryList extends ConsumerWidget {
       ref.watch(appSettingsProvider.select((s) => s.weightUnit)),
     );
     final showFooter = state.hasMore || failure != null;
+    final owner = ref.watch(authUserProvider).value?.uid == uid ? null : uid;
     return NotificationListener<ScrollNotification>(
       onNotification: (notification) {
         final metrics = notification.metrics;
@@ -79,7 +81,8 @@ class WorkoutHistoryList extends ConsumerWidget {
             ),
             isThreeLine: true,
             trailing: const Icon(Icons.chevron_right_rounded),
-            onTap: () => context.push(AppRoutes.workoutDetail(workout.id)),
+            onTap: () =>
+                context.push(AppRoutes.workoutDetail(workout.id, owner: owner)),
           );
         },
       ),

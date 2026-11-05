@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/widgets/section_header.dart';
 import '../../../l10n/generated/app_localizations.dart';
-import '../../auth/data/auth_repository_provider.dart';
 import '../data/workout_repository_provider.dart';
 import '../domain/record_value.dart';
 import 'workout_format.dart';
@@ -13,10 +12,13 @@ class RecordSummary extends ConsumerWidget {
   /// Создаёт блок рекордов упражнения [exerciseId].
   const RecordSummary({
     super.key,
+    required this.uid,
     required this.exerciseId,
     required this.format,
   });
 
+  /// Владелец рекордов.
+  final String uid;
   final String exerciseId;
   final WorkoutFormat format;
 
@@ -24,14 +26,11 @@ class RecordSummary extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
-    final uid = ref.watch(authUserProvider).value?.uid;
-    final record = uid == null
-        ? null
-        : ref
-              .watch(personalRecordsProvider(uid))
-              .value
-              ?.where((item) => item.exercise.id == exerciseId)
-              .firstOrNull;
+    final record = ref
+        .watch(personalRecordsProvider(uid))
+        .value
+        ?.where((item) => item.exercise.id == exerciseId)
+        .firstOrNull;
     if (record == null) {
       return const SizedBox.shrink();
     }
