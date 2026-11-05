@@ -56,82 +56,130 @@ class CoachSection extends ConsumerWidget {
     final pending = links.where(
       (link) => link.status == CoachLinkStatus.pending,
     );
-    final incoming = pending.where((link) => link.isIncomingFor(me.uid));
-    final outgoing = pending.where((link) => !link.isIncomingFor(me.uid));
+    final incoming = pending
+        .where((link) => link.isIncomingFor(me.uid))
+        .toList();
+    final outgoing = pending
+        .where((link) => !link.isIncomingFor(me.uid))
+        .toList();
     final active = links
         .where((link) => link.status == CoachLinkStatus.active)
         .toList();
     final hint = TextStyle(color: context.colors.textSecondary);
-    return ListView(
-      padding: EdgeInsetsDirectional.only(bottom: context.sizes.fabClearance),
-      children: [
-        Padding(
-          padding: EdgeInsetsDirectional.all(spacing.md),
-          child: Wrap(
-            spacing: spacing.sm,
-            runSpacing: spacing.sm,
-            children: [
-              FilledButton.tonalIcon(
-                icon: const Icon(Icons.person_add_alt_rounded),
-                label: Text(
-                  asCoach ? l10n.coachInviteStudent : l10n.coachInviteCoach,
+    return CustomScrollView(
+      slivers: [
+        SliverToBoxAdapter(
+          child: Padding(
+            padding: EdgeInsetsDirectional.all(spacing.md),
+            child: Wrap(
+              spacing: spacing.sm,
+              runSpacing: spacing.sm,
+              children: [
+                FilledButton.tonalIcon(
+                  icon: const Icon(Icons.person_add_alt_rounded),
+                  label: Text(
+                    asCoach ? l10n.coachInviteStudent : l10n.coachInviteCoach,
+                  ),
+                  onPressed: () => showInviteDialog(context, me),
                 ),
-                onPressed: () => showInviteDialog(context, me),
-              ),
-              OutlinedButton.icon(
-                icon: const Icon(Icons.qr_code_rounded),
-                label: Text(l10n.coachMyQr),
-                onPressed: () => context.push(AppRoutes.coachQr),
-              ),
-            ],
+                OutlinedButton.icon(
+                  icon: const Icon(Icons.qr_code_rounded),
+                  label: Text(l10n.coachMyQr),
+                  onPressed: () => context.push(AppRoutes.coachQr),
+                ),
+              ],
+            ),
           ),
         ),
         if (incoming.isNotEmpty) ...[
-          SectionHeader(title: l10n.coachInvitesIncoming),
-          for (final link in incoming) CoachLinkTile(link: link, uid: me.uid),
+          SliverToBoxAdapter(
+            child: SectionHeader(title: l10n.coachInvitesIncoming),
+          ),
+          _invites(incoming),
         ],
         if (outgoing.isNotEmpty) ...[
-          SectionHeader(title: l10n.coachInvitesOutgoing),
-          for (final link in outgoing) CoachLinkTile(link: link, uid: me.uid),
-        ],
-        if (asCoach) ...[
-          SectionHeader(
-            title: l10n.coachStudentsTitle(
-              active.length,
-              CoachLimits.maxStudents,
-            ),
+          SliverToBoxAdapter(
+            child: SectionHeader(title: l10n.coachInvitesOutgoing),
           ),
-          if (active.isEmpty)
-            ListTile(title: Text(l10n.coachNoStudents, style: hint)),
-          for (final link in active)
-            ListTile(
-              leading: const Icon(Icons.person_outline_rounded),
-              title: Text(link.athleteNickname),
-              trailing: const Icon(Icons.chevron_right_rounded),
-              onTap: () => context.push(AppRoutes.student(link.athleteId)),
-            ),
-        ] else ...[
-          SectionHeader(title: l10n.coachMyCoach),
-          if (active.isEmpty)
-            ListTile(title: Text(l10n.coachNoCoach, style: hint)),
-          for (final link in active)
-            ListTile(
-              leading: const Icon(Icons.sports_rounded),
-              title: Text(link.coachNickname),
-              trailing: IconButton(
-                tooltip: l10n.coachEndLink,
-                icon: const Icon(Icons.link_off_rounded),
-                onPressed: () => endLink(context, ref, link, me.uid),
+          _invites(outgoing),
+        ],
+        SliverToBoxAdapter(
+          child: SectionHeader(
+            title: asCoach
+                ? l10n.coachStudentsTitle(
+                    active.length,
+                    CoachLimits.maxStudents,
+                  )
+                : l10n.coachMyCoach,
+          ),
+        ),
+        if (active.isEmpty)
+          SliverToBoxAdapter(
+            child: ListTile(
+              title: Text(
+                asCoach ? l10n.coachNoStudents : l10n.coachNoCoach,
+                style: hint,
               ),
             ),
-          ListTile(
-            leading: const Icon(Icons.assignment_outlined),
-            title: Text(l10n.coachPlansTitle),
-            trailing: const Icon(Icons.chevron_right_rounded),
-            onTap: () => context.push(AppRoutes.myPlans),
           ),
-        ],
+        SliverList.builder(
+          itemCount: active.length,
+          itemBuilder: (context, index) => asCoach
+              ? _studentTile(context, active[index])
+              : _coachTile(context, ref, l10n, active[index]),
+        ),
+        if (!asCoach)
+          SliverToBoxAdapter(
+            child: ListTile(
+              leading: const Icon(Icons.assignment_outlined),
+              title: Text(l10n.coachPlansTitle),
+              trailing: const Icon(Icons.chevron_right_rounded),
+              onTap: () => context.push(AppRoutes.myPlans),
+            ),
+          ),
+        SliverPadding(
+          padding: EdgeInsetsDirectional.only(
+            bottom: context.sizes.fabClearance,
+          ),
+        ),
       ],
+    );
+  }
+
+  /// Ленивый список приглашений.
+  Widget _invites(List<CoachLink> links) {
+    return SliverList.builder(
+      itemCount: links.length,
+      itemBuilder: (context, index) =>
+          CoachLinkTile(link: links[index], uid: me.uid),
+    );
+  }
+
+  /// Строка ученика у тренера: открывает экран ученика.
+  Widget _studentTile(BuildContext context, CoachLink link) {
+    return ListTile(
+      leading: const Icon(Icons.person_outline_rounded),
+      title: Text(link.athleteNickname),
+      trailing: const Icon(Icons.chevron_right_rounded),
+      onTap: () => context.push(AppRoutes.student(link.athleteId)),
+    );
+  }
+
+  /// Строка тренера у ученика с кнопкой разрыва связи.
+  Widget _coachTile(
+    BuildContext context,
+    WidgetRef ref,
+    AppLocalizations l10n,
+    CoachLink link,
+  ) {
+    return ListTile(
+      leading: const Icon(Icons.sports_rounded),
+      title: Text(link.coachNickname),
+      trailing: IconButton(
+        tooltip: l10n.coachEndLink,
+        icon: const Icon(Icons.link_off_rounded),
+        onPressed: () => endLink(context, ref, link, me.uid),
+      ),
     );
   }
 }
