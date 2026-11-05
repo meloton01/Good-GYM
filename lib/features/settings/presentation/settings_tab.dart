@@ -5,6 +5,7 @@ import '../../../app/router/app_routes.dart';
 import '../../../core/navigation/tab_definition.dart';
 import '../../auth/presentation/change_email_screen.dart';
 import '../../auth/presentation/change_password_screen.dart';
+import '../../profile/presentation/blocked_users_screen.dart';
 import 'appearance_screen.dart';
 import 'settings_screen.dart';
 
@@ -27,6 +28,10 @@ final settingsTab = TabDefinition(
     GoRoute(
       path: AppRoutes.changePasswordSegment,
       builder: (context, state) => const ChangePasswordScreen(),
+    ),
+    GoRoute(
+      path: AppRoutes.blockedUsersSegment,
+      builder: (context, state) => const BlockedUsersScreen(),
     ),
   ],
 );

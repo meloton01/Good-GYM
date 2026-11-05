@@ -15,6 +15,8 @@ abstract final class AppRoutes {
   static const String changeEmail = '/settings/$changeEmailSegment';
   static const String changePasswordSegment = 'change-password';
   static const String changePassword = '/settings/$changePasswordSegment';
+  static const String blockedUsersSegment = 'blocked';
+  static const String blockedUsers = '/settings/$blockedUsersSegment';
   static const String profileEditSegment = 'edit';
   static const String profileEdit = '/profile/$profileEditSegment';
   static const String gymPickerSegment = 'gym';
@@ -51,8 +53,14 @@ abstract final class AppRoutes {
   /// Путь рекорда в рейтинге.
   static String recordDetail(String recordId) => '/rating/records/$recordId';
 
-  /// Путь профиля рекордсмена.
-  static String recordHolder(String uid) => '/rating/athletes/$uid';
+  /// Параметр запроса с ником рекордсмена для меню жалоб и блокировки.
+  static const String nicknameParameter = 'nickname';
+
+  /// Путь профиля рекордсмена с его ником.
+  static String recordHolder(String uid, String nickname) => Uri(
+    path: '/rating/athletes/$uid',
+    queryParameters: {nicknameParameter: nickname},
+  ).toString();
 
   /// Параметр запроса с uid владельца тренировки, если это не текущий пользователь.
   static const String ownerParameter = 'owner';

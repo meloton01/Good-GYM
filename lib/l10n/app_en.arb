@@ -483,6 +483,91 @@
   "@privacyRecordsVisibility": {
     "description": "Privacy setting"
   },
+  "privacyBlockedUsers": "Blocked users",
+  "@privacyBlockedUsers": {
+    "description": "Settings item that opens the blocked users list"
+  },
+  "blockedUsersEmptyTitle": "No blocked users",
+  "@blockedUsersEmptyTitle": {
+    "description": "Empty blocked users list title"
+  },
+  "blockedUsersEmptyMessage": "You can block a user on their record page or record history.",
+  "@blockedUsersEmptyMessage": {
+    "description": "Empty blocked users list hint"
+  },
+  "blockUserAction": "Block",
+  "@blockUserAction": {
+    "description": "Menu item that blocks a user"
+  },
+  "unblockUserAction": "Unblock",
+  "@unblockUserAction": {
+    "description": "Action that removes a block"
+  },
+  "blockConfirmTitle": "Block {nickname}?",
+  "@blockConfirmTitle": {
+    "description": "Block confirmation title",
+    "placeholders": {
+      "nickname": {
+        "type": "String"
+      }
+    }
+  },
+  "blockConfirmMessage": "This user will not see your profile and record history and cannot send you coach invites. An active coach link has to be ended separately.",
+  "@blockConfirmMessage": {
+    "description": "Explains what blocking does"
+  },
+  "userBlockedTitle": "You blocked this user",
+  "@userBlockedTitle": {
+    "description": "Shown instead of the record history of a blocked user"
+  },
+  "userBlockedMessage": "Their record history is hidden. Unblock to see it.",
+  "@userBlockedMessage": {
+    "description": "Hint under the blocked user title"
+  },
+  "reportUserAction": "Report user",
+  "@reportUserAction": {
+    "description": "Menu item that reports a user"
+  },
+  "reportRecordAction": "Report record",
+  "@reportRecordAction": {
+    "description": "Menu item that reports a record"
+  },
+  "reportDialogTitle": "Report",
+  "@reportDialogTitle": {
+    "description": "Report dialog title"
+  },
+  "reportCommentLabel": "Comment (optional)",
+  "@reportCommentLabel": {
+    "description": "Report comment input label"
+  },
+  "reportSendAction": "Send",
+  "@reportSendAction": {
+    "description": "Button that sends a report"
+  },
+  "reportSent": "Report sent. A moderator will review it.",
+  "@reportSent": {
+    "description": "Shown after a report is sent"
+  },
+  "reportReasonSpam": "Spam",
+  "@reportReasonSpam": {
+    "description": "Report reason"
+  },
+  "reportReasonAbuse": "Insults or harassment",
+  "@reportReasonAbuse": {
+    "description": "Report reason"
+  },
+  "reportReasonCheating": "Fake result",
+  "@reportReasonCheating": {
+    "description": "Report reason"
+  },
+  "reportReasonInappropriate": "Inappropriate content",
+  "@reportReasonInappropriate": {
+    "description": "Report reason"
+  },
+  "reportReasonOther": "Other",
+  "@reportReasonOther": {
+    "description": "Report reason"
+  },
   "visibilityEveryone": "Everyone",
   "@visibilityEveryone": {
     "description": "Visibility option"

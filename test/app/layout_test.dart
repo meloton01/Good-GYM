@@ -46,6 +46,7 @@ void main() {
         '/profile',
         AppRoutes.profileEdit,
         AppRoutes.changePassword,
+        AppRoutes.blockedUsers,
       ]) {
         router.go(route);
         await tester.pumpAndSettle();

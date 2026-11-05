@@ -7,6 +7,9 @@ import '../../../core/errors/result.dart';
 import '../../../core/widgets/empty_state_view.dart';
 import '../../../core/widgets/paged_list_view.dart';
 import '../../../l10n/generated/app_localizations.dart';
+import '../../profile/data/safety_repository_provider.dart';
+import '../../profile/presentation/safety_actions.dart';
+import '../../profile/presentation/user_safety_menu.dart';
 import '../../settings/presentation/app_settings_controller.dart';
 import '../data/record_repository_providers.dart';
 import '../domain/gym_record.dart';
@@ -28,12 +31,17 @@ final recordBadgesProvider = FutureProvider.family<Set<RecordBadge>, String>((
   };
 });
 
-/// Профиль рекордсмена: значки и история одобренных рекордов.
+/// Профиль рекордсмена: значки, история одобренных рекордов, жалоба и блокировка.
 class RecordHolderScreen extends ConsumerWidget {
-  /// Создаёт экран пользователя [uid].
-  const RecordHolderScreen({super.key, required this.uid});
+  /// Создаёт экран пользователя [uid] с ником [nickname]; пустой ник скрывает меню.
+  const RecordHolderScreen({
+    super.key,
+    required this.uid,
+    required this.nickname,
+  });
 
   final String uid;
+  final String nickname;
 
   /// Строит значки над историей; скрытая настройками история показывается как скрытая.
   @override
@@ -46,10 +54,15 @@ class RecordHolderScreen extends ConsumerWidget {
       context,
       ref.watch(appSettingsProvider.select((s) => s.weightUnit)),
     );
-    final nickname = state.items.firstOrNull?.nickname;
     final hidden = state.failure == AppFailure.permissionDenied;
+    final blocked = ref.watch(isBlockedProvider(uid)).value ?? false;
     return Scaffold(
-      appBar: AppBar(title: Text(nickname ?? l10n.recordHolderTitle)),
+      appBar: AppBar(
+        title: Text(nickname.isEmpty ? l10n.recordHolderTitle : nickname),
+        actions: [
+          if (nickname.isNotEmpty) UserSafetyMenu(uid: uid, nickname: nickname),
+        ],
+      ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -70,7 +83,17 @@ class RecordHolderScreen extends ConsumerWidget {
               ),
             ),
           Expanded(
-            child: hidden
+            child: blocked
+                ? EmptyStateView(
+                    icon: Icons.block_rounded,
+                    title: l10n.userBlockedTitle,
+                    message: l10n.userBlockedMessage,
+                    action: OutlinedButton(
+                      onPressed: () => unblockUser(context, ref, uid),
+                      child: Text(l10n.unblockUserAction),
+                    ),
+                  )
+                : hidden
                 ? EmptyStateView(
                     icon: Icons.visibility_off_outlined,
                     title: l10n.recordHistoryHiddenTitle,

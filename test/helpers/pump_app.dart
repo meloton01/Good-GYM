@@ -6,6 +6,8 @@ import 'package:good_gym/app/app.dart';
 import 'package:good_gym/core/storage/shared_preferences_provider.dart';
 import 'package:good_gym/features/auth/data/auth_repository_provider.dart';
 import 'package:good_gym/features/auth/domain/auth_user.dart';
+import 'package:good_gym/features/profile/data/firestore_safety_repository.dart';
+import 'package:good_gym/features/profile/data/safety_repository_provider.dart';
 import 'package:good_gym/features/profile/data/user_profile_repository_provider.dart';
 import 'package:good_gym/features/profile/domain/user_profile.dart';
 import 'package:good_gym/features/profile/domain/user_role.dart';
@@ -108,6 +110,9 @@ Future<TestBackend> pumpApp(
         videoSourceProvider.overrideWithValue(backend.videoSource),
         authRepositoryProvider.overrideWithValue(backend.auth),
         userProfileRepositoryProvider.overrideWithValue(backend.profiles),
+        safetyRepositoryProvider.overrideWithValue(
+          FirestoreSafetyRepository(backend.firestore),
+        ),
       ],
       child: const GoodGymApp(),
     ),

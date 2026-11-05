@@ -13,6 +13,7 @@ import '../../../l10n/generated/app_localizations.dart';
 import '../../auth/data/auth_repository_provider.dart';
 import '../../profile/data/user_profile_repository_provider.dart';
 import '../../profile/domain/user_role.dart';
+import '../../profile/presentation/user_safety_menu.dart';
 import '../../settings/presentation/app_settings_controller.dart';
 import '../data/record_repository_providers.dart';
 import '../domain/gym_record.dart';
@@ -42,7 +43,17 @@ class RecordDetailScreen extends ConsumerWidget {
       message: l10n.recordHiddenMessage,
     );
     return Scaffold(
-      appBar: AppBar(title: Text(l10n.recordTitle)),
+      appBar: AppBar(
+        title: Text(l10n.recordTitle),
+        actions: [
+          if (record.value case final value?)
+            UserSafetyMenu(
+              uid: value.uid,
+              nickname: value.nickname,
+              recordId: value.id,
+            ),
+        ],
+      ),
       body: switch (record) {
         AsyncData(:final value?) => _RecordBody(record: value),
         AsyncData() => hidden,
@@ -92,7 +103,8 @@ class _RecordBody extends ConsumerWidget {
           title: Text(record.nickname),
           subtitle: Text(record.gymName),
           trailing: const Icon(Icons.chevron_right_rounded),
-          onTap: () => context.push(AppRoutes.recordHolder(record.uid)),
+          onTap: () =>
+              context.push(AppRoutes.recordHolder(record.uid, record.nickname)),
         ),
         RecordFacts(record: record, format: format),
         RecordVideoPlayer(recordId: record.id),
