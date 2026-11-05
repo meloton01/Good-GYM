@@ -88,9 +88,7 @@ class _RecordBody extends ConsumerWidget {
         : ref.watch(userProfileProvider(uid).select((p) => p.value?.role));
     final own = record.uid == uid;
     final reviewable =
-        role == UserRole.moderator &&
-        !own &&
-        record.status == RecordStatus.pending;
+        role == UserRole.moderator && uid != null && record.isReviewableBy(uid);
     final format = RecordFormat.of(
       context,
       ref.watch(appSettingsProvider.select((s) => s.weightUnit)),
