@@ -2,14 +2,15 @@ import { FieldValue } from 'firebase-admin/firestore';
 import { onCall } from 'firebase-functions/https';
 
 import { fail } from '../common/fail';
-import { db, region } from '../common/app';
+import { db } from '../common/app';
+import { callOptions } from '../common/call_options';
 import { Collections } from '../common/fields';
 import { requireVerifiedUser } from '../common/guards';
 import { parseRecordId } from '../domain/record_input';
 import { canAppeal } from '../domain/review';
 
 /** Возвращает отклонённый рекорд на проверку; причина прошлого отказа сохраняется. */
-export const appealRecord = onCall({ region }, async (request) => {
+export const appealRecord = onCall(callOptions, async (request) => {
   const uid = requireVerifiedUser(request);
   const recordId = parseRecordId(request.data);
   if (!recordId) {

@@ -2,7 +2,8 @@ import { FieldValue } from 'firebase-admin/firestore';
 import { onCall } from 'firebase-functions/https';
 
 import { fail } from '../common/fail';
-import { db, region } from '../common/app';
+import { db } from '../common/app';
+import { callOptions } from '../common/call_options';
 import { Collections } from '../common/fields';
 import { requireModerator, requireVerifiedUser } from '../common/guards';
 import { parseReason, parseRecordId } from '../domain/record_input';
@@ -10,7 +11,7 @@ import { reviewBlocker } from '../domain/review';
 import { writeLeaderboard } from './leaderboard_writer';
 
 /** Одобряет рекорд и обновляет таблицы в одной транзакции. */
-export const approveRecord = onCall({ region }, async (request) => {
+export const approveRecord = onCall(callOptions, async (request) => {
   const moderatorId = requireVerifiedUser(request);
   const recordId = parseRecordId(request.data);
   if (!recordId) {
@@ -31,7 +32,7 @@ export const approveRecord = onCall({ region }, async (request) => {
 });
 
 /** Отклоняет рекорд с причиной; автор может обжаловать отказ один раз. */
-export const rejectRecord = onCall({ region }, async (request) => {
+export const rejectRecord = onCall(callOptions, async (request) => {
   const moderatorId = requireVerifiedUser(request);
   const recordId = parseRecordId(request.data);
   const reason = parseReason((request.data as { reason?: unknown } | null)?.reason);

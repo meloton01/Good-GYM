@@ -1,14 +1,15 @@
 import { onCall } from 'firebase-functions/https';
 
 import { fail } from '../common/fail';
-import { bucket, db, region } from '../common/app';
+import { bucket, db } from '../common/app';
+import { callOptions } from '../common/call_options';
 import { Collections } from '../common/fields';
 import { isModerator, requireVerifiedUser } from '../common/guards';
 import { RecordLimits } from '../domain/limits';
 import { parseRecordId } from '../domain/record_input';
 
 /** Временная подписанная ссылка на видео: автору, модератору и всем для одобренного рекорда. */
-export const recordVideoUrl = onCall({ region }, async (request) => {
+export const recordVideoUrl = onCall(callOptions, async (request) => {
   const uid = requireVerifiedUser(request);
   const recordId = parseRecordId(request.data);
   if (!recordId) {

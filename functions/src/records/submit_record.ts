@@ -2,7 +2,8 @@ import { FieldValue, Timestamp } from 'firebase-admin/firestore';
 import { onCall } from 'firebase-functions/https';
 
 import { fail } from '../common/fail';
-import { bucket, db, region } from '../common/app';
+import { bucket, db } from '../common/app';
+import { callOptions } from '../common/call_options';
 import { Collections, videoPath } from '../common/fields';
 import { requireVerifiedUser } from '../common/guards';
 import { RecordLimits } from '../domain/limits';
@@ -11,7 +12,7 @@ import { parseRecordInput } from '../domain/record_input';
 import { weightClassFor } from '../domain/weight_class';
 
 /** Создаёт рекорд со статусом pending по уже загруженному видео; e1rm и категорию считает сервер. */
-export const submitRecord = onCall({ region }, async (request) => {
+export const submitRecord = onCall(callOptions, async (request) => {
   const uid = requireVerifiedUser(request);
   const input = parseRecordInput(request.data, new Date());
   if (!input) {
