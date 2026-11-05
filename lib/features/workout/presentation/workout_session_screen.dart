@@ -195,7 +195,10 @@ class _WorkoutSessionScreenState extends ConsumerState<WorkoutSessionScreen> {
     setState(() => _finishing = false);
     switch (result) {
       case Success(:final value):
-        context.pushReplacement(AppRoutes.workoutDetail(value));
+        await completePlan(context, ref, workout, value);
+        if (mounted) {
+          context.pushReplacement(AppRoutes.workoutDetail(value));
+        }
       case Failure(:final failure):
         showFailureSnackBar(context, failure);
     }

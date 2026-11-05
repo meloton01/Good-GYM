@@ -23,6 +23,13 @@ extension AppFailureMessage on AppFailure {
       AppFailure.requiresRecentLogin => l10n.errorRequiresRecentLogin,
       AppFailure.notificationsDenied => l10n.errorNotificationsDenied,
       AppFailure.nothingCompleted => l10n.errorNothingCompleted,
+      AppFailure.userNotFound => l10n.errorUserNotFound,
+      AppFailure.inviteUnavailable => l10n.errorInviteUnavailable,
+      AppFailure.alreadyLinked => l10n.errorAlreadyLinked,
+      AppFailure.alreadyInvited => l10n.errorAlreadyInvited,
+      AppFailure.coachLimitReached => l10n.errorCoachLimitReached,
+      AppFailure.linkUnavailable => l10n.errorLinkUnavailable,
+      AppFailure.roleLocked => l10n.errorRoleLocked,
       AppFailure.unknown => l10n.errorUnknown,
     };
   }

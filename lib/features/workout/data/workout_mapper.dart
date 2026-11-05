@@ -17,6 +17,7 @@ abstract final class WorkoutMapper {
         for (final item in workout.exercises) item.exercise.id,
       }.toList(),
       WorkoutFields.exercises: ExerciseMapper.itemsToList(workout.exercises),
+      if (workout.planId != null) WorkoutFields.planId: workout.planId,
     };
   }
 
@@ -28,6 +29,7 @@ abstract final class WorkoutMapper {
   ) {
     final title = data[WorkoutFields.title];
     final note = data[WorkoutFields.note];
+    final planId = data[WorkoutFields.planId];
     final startedAt = readFirestoreDate(data[WorkoutFields.startedAt]);
     final exercises = ExerciseMapper.itemsFromList(
       data[WorkoutFields.exercises],
@@ -43,6 +45,7 @@ abstract final class WorkoutMapper {
       startedAt: startedAt,
       finishedAt: readFirestoreDate(data[WorkoutFields.finishedAt]),
       note: note is String ? note : '',
+      planId: planId is String ? planId : null,
     );
   }
 

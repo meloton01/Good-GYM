@@ -7,7 +7,7 @@ part 'workout.freezed.dart';
 /// Тренировка пользователя.
 @freezed
 abstract class Workout with _$Workout {
-  /// Создаёт тренировку; [finishedAt] null, пока тренировка идёт.
+  /// Создаёт тренировку; [finishedAt] null, пока тренировка идёт, [planId] задан для плана тренера.
   const factory Workout({
     required String id,
     required String ownerId,
@@ -16,5 +16,6 @@ abstract class Workout with _$Workout {
     required DateTime startedAt,
     DateTime? finishedAt,
     @Default('') String note,
+    String? planId,
   }) = _Workout;
 }

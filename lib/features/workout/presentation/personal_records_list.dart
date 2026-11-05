@@ -9,6 +9,7 @@ import '../../../core/widgets/empty_state_view.dart';
 import '../../../core/widgets/error_view.dart';
 import '../../../core/widgets/loading_view.dart';
 import '../../../l10n/generated/app_localizations.dart';
+import '../../auth/data/auth_repository_provider.dart';
 import '../../settings/presentation/app_settings_controller.dart';
 import '../data/workout_repository_provider.dart';
 import '../domain/personal_record.dart';
@@ -36,7 +37,12 @@ class PersonalRecordsList extends ConsumerWidget {
         title: l10n.recordsEmptyTitle,
         message: l10n.recordsEmptyMessage,
       ),
-      AsyncData(:final value) => _buildList(context, value, format),
+      AsyncData(:final value) => _buildList(
+        context,
+        value,
+        format,
+        ref.watch(authUserProvider).value?.uid == uid ? null : uid,
+      ),
       AsyncError(:final error) => ErrorView(
         title: l10n.workoutRecordsTab,
         failure: failureFromError(error),
@@ -46,11 +52,12 @@ class PersonalRecordsList extends ConsumerWidget {
     };
   }
 
-  /// Строит список, отсортированный по названию упражнения.
+  /// Строит список по названию упражнения; [owner] задан, если это рекорды ученика.
   Widget _buildList(
     BuildContext context,
     List<PersonalRecord> records,
     WorkoutFormat format,
+    String? owner,
   ) {
     final l10n = format.l10n;
     final sorted = [...records]
@@ -65,8 +72,9 @@ class PersonalRecordsList extends ConsumerWidget {
           title: Text(record.exercise.name(l10n)),
           subtitle: Text(_describe(record, format)),
           trailing: const Icon(Icons.chevron_right_rounded),
-          onTap: () =>
-              context.push(AppRoutes.exerciseProgress(record.exercise.id)),
+          onTap: () => context.push(
+            AppRoutes.exerciseProgress(record.exercise.id, owner: owner),
+          ),
         );
       },
     );

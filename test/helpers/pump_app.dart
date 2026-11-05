@@ -12,7 +12,10 @@ import 'package:good_gym/features/profile/domain/user_role.dart';
 import 'package:good_gym/features/settings/data/settings_repository_provider.dart';
 import 'package:good_gym/features/settings/data/shared_preferences_settings_repository.dart';
 import 'package:good_gym/features/workout/data/active_workout_store_provider.dart';
+import 'package:good_gym/features/workout/data/coach_repository_providers.dart';
 import 'package:good_gym/features/workout/data/exercise_repository_provider.dart';
+import 'package:good_gym/features/workout/data/firestore_coach_link_repository.dart';
+import 'package:good_gym/features/workout/data/firestore_coach_plan_repository.dart';
 import 'package:good_gym/features/workout/data/firestore_exercise_repository.dart';
 import 'package:good_gym/features/workout/data/firestore_workout_repository.dart';
 import 'package:good_gym/features/workout/data/firestore_workout_template_repository.dart';
@@ -84,6 +87,12 @@ Future<TestBackend> pumpApp(
         ),
         exerciseRepositoryProvider.overrideWithValue(
           FirestoreExerciseRepository(backend.firestore),
+        ),
+        coachLinkRepositoryProvider.overrideWithValue(
+          FirestoreCoachLinkRepository(backend.firestore),
+        ),
+        coachPlanRepositoryProvider.overrideWithValue(
+          FirestoreCoachPlanRepository(backend.firestore),
         ),
         restAlarmProvider.overrideWithValue(backend.restAlarm),
         authRepositoryProvider.overrideWithValue(backend.auth),

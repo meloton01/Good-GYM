@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../app/router/app_routes.dart';
 import '../../../app/theme/theme_context.dart';
+import '../../../core/errors/app_failure.dart';
 import '../../../core/errors/result.dart';
 import '../../../core/firebase/firestore_failure_mapper.dart';
 import '../../../core/widgets/error_view.dart';
@@ -104,7 +105,13 @@ class _ProfileDetails extends ConsumerWidget {
         .read(userProfileRepositoryProvider)
         .updateRole(uid: profile.uid, role: role);
     if (result is Failure<void> && context.mounted) {
-      showFailureSnackBar(context, result.failure);
+      final locked =
+          result.failure == AppFailure.permissionDenied &&
+          profile.role == UserRole.student;
+      showFailureSnackBar(
+        context,
+        locked ? AppFailure.roleLocked : result.failure,
+      );
     }
   }
 }

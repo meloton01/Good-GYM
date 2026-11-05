@@ -12,6 +12,7 @@ import '../../../core/widgets/info_snack_bar.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../auth/data/auth_repository_provider.dart';
 import '../../profile/data/user_profile_repository_provider.dart';
+import '../../workout/data/coach_repository_providers.dart';
 import '../../workout/data/workout_repository_provider.dart';
 import 'app_settings_controller.dart';
 
@@ -24,21 +25,39 @@ Future<void> exportUserData(BuildContext context, WidgetRef ref) async {
   if (user == null) {
     return;
   }
-  final (profile, workouts) = await (
-    ref.read(userProfileRepositoryProvider).exportData(user.uid),
-    ref.read(workoutRepositoryProvider).exportData(user.uid),
-  ).wait;
+  final profile = await ref
+      .read(userProfileRepositoryProvider)
+      .exportData(user.uid);
+  final workouts = await ref
+      .read(workoutRepositoryProvider)
+      .exportData(user.uid);
+  final links = await ref
+      .read(coachLinkRepositoryProvider)
+      .exportData(user.uid);
+  final plans = await ref
+      .read(coachPlanRepositoryProvider)
+      .exportData(user.uid);
   if (!context.mounted) {
     return;
   }
-  switch ((profile, workouts)) {
-    case (Failure(:final failure), _) || (_, Failure(:final failure)):
+  switch ((profile, workouts, links, plans)) {
+    case (Failure(:final failure), _, _, _) ||
+        (_, Failure(:final failure), _, _) ||
+        (_, _, Failure(:final failure), _) ||
+        (_, _, _, Failure(:final failure)):
       showFailureSnackBar(context, failure);
-    case (Success(value: final profileData), Success(value: final workoutData)):
+    case (
+      Success(value: final profileData),
+      Success(value: final workoutData),
+      Success(value: final linkData),
+      Success(value: final planData),
+    ):
       final settings = ref.read(appSettingsProvider);
       final document = {
         ...profileData,
         'workouts': workoutData,
+        'coachLinks': linkData,
+        'plans': planData,
         'email': user.email,
         'exportedAt': DateTime.now().toUtc().toIso8601String(),
         'deviceSettings': {

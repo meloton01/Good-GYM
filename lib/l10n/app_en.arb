@@ -1232,5 +1232,267 @@
   "roleCoachByAdmin": "The coach role is granted by the app administration.",
   "@roleCoachByAdmin": {
     "description": "Note under the role list: coach role is not self-selectable"
+  },
+  "actionShowMore": "Show more",
+  "@actionShowMore": {
+    "description": "Button that loads more items"
+  },
+  "errorUserNotFound": "No user with this nickname. Check the spelling.",
+  "@errorUserNotFound": {
+    "description": "Invite error: nickname not found"
+  },
+  "errorInviteUnavailable": "This user cannot be invited. Coaches invite students, students invite coaches.",
+  "@errorInviteUnavailable": {
+    "description": "Invite error: target cannot be invited"
+  },
+  "errorAlreadyLinked": "You are already linked with this user.",
+  "@errorAlreadyLinked": {
+    "description": "Invite error: link already active"
+  },
+  "errorAlreadyInvited": "An invite is already waiting for an answer.",
+  "@errorAlreadyInvited": {
+    "description": "Invite error: pending invite exists"
+  },
+  "errorCoachLimitReached": "The coach already has 50 students. Ask them to end a link and try again.",
+  "@errorCoachLimitReached": {
+    "description": "Accept error: coach has max students"
+  },
+  "errorLinkUnavailable": "The link has changed or the student already has a coach. Refresh the list.",
+  "@errorLinkUnavailable": {
+    "description": "Link action error: link changed or student has a coach"
+  },
+  "errorRoleLocked": "End the link with your coach before changing the role.",
+  "@errorRoleLocked": {
+    "description": "Role change error: student has an active coach"
+  },
+  "coachTabStudents": "Students",
+  "@coachTabStudents": {
+    "description": "Workout tab label for coach"
+  },
+  "coachTabCoach": "Coach",
+  "@coachTabCoach": {
+    "description": "Workout tab label for student"
+  },
+  "coachEndLink": "End link",
+  "@coachEndLink": {
+    "description": "Action that ends coach-student link"
+  },
+  "coachEndLinkMessage": "{nickname} will lose access to shared plans and workouts. Assigned plans stay with the student.",
+  "@coachEndLinkMessage": {
+    "description": "End link confirmation text",
+    "placeholders": {
+      "nickname": {
+        "type": "String"
+      }
+    }
+  },
+  "coachEndLinkConfirm": "End",
+  "@coachEndLinkConfirm": {
+    "description": "Confirm end link button"
+  },
+  "coachInviteFromStudent": "Invites you as a coach",
+  "@coachInviteFromStudent": {
+    "description": "Incoming invite subtitle from student"
+  },
+  "coachInviteFromCoach": "Invites you as a student",
+  "@coachInviteFromCoach": {
+    "description": "Incoming invite subtitle from coach"
+  },
+  "coachInviteWaiting": "Waiting for an answer",
+  "@coachInviteWaiting": {
+    "description": "Outgoing invite subtitle"
+  },
+  "coachAccept": "Accept",
+  "@coachAccept": {
+    "description": "Accept invite button"
+  },
+  "coachDecline": "Decline",
+  "@coachDecline": {
+    "description": "Decline invite button"
+  },
+  "coachCancelInvite": "Cancel invite",
+  "@coachCancelInvite": {
+    "description": "Cancel outgoing invite button"
+  },
+  "coachInviteStudent": "Invite student",
+  "@coachInviteStudent": {
+    "description": "Button for coach to invite a student"
+  },
+  "coachInviteCoach": "Invite coach",
+  "@coachInviteCoach": {
+    "description": "Button for student to invite a coach"
+  },
+  "coachScanQr": "Scan QR code",
+  "@coachScanQr": {
+    "description": "Button that opens QR scanner"
+  },
+  "coachSendInvite": "Send",
+  "@coachSendInvite": {
+    "description": "Send invite button"
+  },
+  "coachInviteSent": "Invite sent",
+  "@coachInviteSent": {
+    "description": "Snackbar after invite sent"
+  },
+  "coachCameraUnavailable": "Camera is unavailable. Allow camera access in system settings or enter the nickname.",
+  "@coachCameraUnavailable": {
+    "description": "QR scanner error when camera fails"
+  },
+  "coachScanHint": "Point the camera at the QR code from the profile",
+  "@coachScanHint": {
+    "description": "QR scanner hint"
+  },
+  "coachMyQr": "My QR code",
+  "@coachMyQr": {
+    "description": "Button and title for own invite QR"
+  },
+  "coachMyQrHint": "Show this code so you can be sent an invite.",
+  "@coachMyQrHint": {
+    "description": "Hint under own QR code"
+  },
+  "coachPlansTitle": "Plans",
+  "@coachPlansTitle": {
+    "description": "Plans list title"
+  },
+  "coachPlansEmptyTitle": "No plans",
+  "@coachPlansEmptyTitle": {
+    "description": "Empty plans title"
+  },
+  "coachPlansEmptyStudent": "Plans from your coach will appear here.",
+  "@coachPlansEmptyStudent": {
+    "description": "Empty plans message for student"
+  },
+  "coachPlansEmptyCoach": "Create a plan for this student.",
+  "@coachPlansEmptyCoach": {
+    "description": "Empty plans message for coach"
+  },
+  "coachInvitesIncoming": "Invites to you",
+  "@coachInvitesIncoming": {
+    "description": "Section of incoming invites"
+  },
+  "coachInvitesOutgoing": "Sent invites",
+  "@coachInvitesOutgoing": {
+    "description": "Section of outgoing invites"
+  },
+  "coachStudentsTitle": "Students: {count} of {max}",
+  "@coachStudentsTitle": {
+    "description": "Coach students section with count",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "coachNoStudents": "No students yet. Invite one by nickname or QR code.",
+  "@coachNoStudents": {
+    "description": "No students message"
+  },
+  "coachMyCoach": "My coach",
+  "@coachMyCoach": {
+    "description": "Section with student current coach"
+  },
+  "coachNoCoach": "No coach yet. Invite one by nickname or QR code.",
+  "@coachNoCoach": {
+    "description": "No coach message"
+  },
+  "coachStudentTitle": "Student",
+  "@coachStudentTitle": {
+    "description": "Student screen fallback title"
+  },
+  "coachLinkInactive": "The link with this student is not active.",
+  "@coachLinkInactive": {
+    "description": "Student screen when link ended"
+  },
+  "coachNewPlan": "New plan",
+  "@coachNewPlan": {
+    "description": "New plan button and title"
+  },
+  "coachEditPlan": "Edit plan",
+  "@coachEditPlan": {
+    "description": "Edit plan action and title"
+  },
+  "coachDeletePlan": "Delete plan",
+  "@coachDeletePlan": {
+    "description": "Delete plan action"
+  },
+  "coachDeletePlanMessage": "The plan and its comments will be deleted for you and the student.",
+  "@coachDeletePlanMessage": {
+    "description": "Delete plan confirmation"
+  },
+  "coachPlanTitle": "Plan",
+  "@coachPlanTitle": {
+    "description": "Plan screen fallback title"
+  },
+  "coachPlanFrom": "Coach: {nickname}",
+  "@coachPlanFrom": {
+    "description": "Plan author line",
+    "placeholders": {
+      "nickname": {
+        "type": "String"
+      }
+    }
+  },
+  "coachOpenWorkout": "Open workout",
+  "@coachOpenWorkout": {
+    "description": "Opens workout that completed the plan"
+  },
+  "coachPlanNoteLabel": "Note for the student",
+  "@coachPlanNoteLabel": {
+    "description": "Plan note field"
+  },
+  "coachPlanSaved": "Plan saved",
+  "@coachPlanSaved": {
+    "description": "Snackbar after plan saved"
+  },
+  "coachCommentsTitle": "Comments",
+  "@coachCommentsTitle": {
+    "description": "Plan comments section"
+  },
+  "coachCommentLabel": "Comment",
+  "@coachCommentLabel": {
+    "description": "Comment field"
+  },
+  "coachCommentSend": "Send",
+  "@coachCommentSend": {
+    "description": "Send comment button tooltip"
+  },
+  "coachCommentsEmpty": "No comments yet",
+  "@coachCommentsEmpty": {
+    "description": "No comments message"
+  },
+  "coachCommentMeta": "{nickname} · {date}",
+  "@coachCommentMeta": {
+    "description": "Comment author and date",
+    "placeholders": {
+      "nickname": {
+        "type": "String"
+      },
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "planStatusAssigned": "Assigned",
+  "@planStatusAssigned": {
+    "description": "Plan status assigned"
+  },
+  "planStatusCompleted": "Completed",
+  "@planStatusCompleted": {
+    "description": "Plan status completed"
+  },
+  "planStatusWithCoach": "{status} · {coach}",
+  "@planStatusWithCoach": {
+    "description": "Plan status with coach nickname",
+    "placeholders": {
+      "status": {
+        "type": "String"
+      },
+      "coach": {
+        "type": "String"
+      }
+    }
   }
 }

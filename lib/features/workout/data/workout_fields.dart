@@ -5,6 +5,12 @@ abstract final class WorkoutFields {
   static const String templatesCollection = 'workoutTemplates';
   static const String exercisesCollection = 'exercises';
   static const String recordsCollection = 'personalRecords';
+  static const String plansCollection = 'plans';
+  static const String commentsCollection = 'comments';
+  static const String linksCollection = 'coachLinks';
+  static const String studentCoachCollection = 'studentCoach';
+  static const String coachStudentsCollection = 'coachStudents';
+  static const String nicknamesCollection = 'nicknames';
 
   static const String id = 'id';
   static const String ownerId = 'ownerId';
@@ -33,4 +39,18 @@ abstract final class WorkoutFields {
   static const String value = 'value';
   static const String workoutId = 'workoutId';
   static const String achievedAt = 'achievedAt';
+  static const String planId = 'planId';
+  static const String coachId = 'coachId';
+  static const String athleteId = 'athleteId';
+  static const String coachNickname = 'coachNickname';
+  static const String athleteNickname = 'athleteNickname';
+  static const String status = 'status';
+  static const String invitedBy = 'invitedBy';
+  static const String linkId = 'linkId';
+  static const String count = 'count';
+  static const String uid = 'uid';
+  static const String completedAt = 'completedAt';
+  static const String authorId = 'authorId';
+  static const String authorNickname = 'authorNickname';
+  static const String text = 'text';
 }

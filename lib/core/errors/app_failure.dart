@@ -16,5 +16,12 @@ enum AppFailure {
   requiresRecentLogin,
   notificationsDenied,
   nothingCompleted,
+  userNotFound,
+  inviteUnavailable,
+  alreadyLinked,
+  alreadyInvited,
+  coachLimitReached,
+  linkUnavailable,
+  roleLocked,
   unknown,
 }

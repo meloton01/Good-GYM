@@ -22,9 +22,16 @@ import 'workout_format.dart';
 /// Прогресс по упражнению: график показателя и личные рекорды.
 class ExerciseProgressScreen extends ConsumerStatefulWidget {
   /// Создаёт экран прогресса упражнения [exerciseId].
-  const ExerciseProgressScreen({super.key, required this.exerciseId});
+  const ExerciseProgressScreen({
+    super.key,
+    required this.exerciseId,
+    this.ownerId,
+  });
 
   final String exerciseId;
+
+  /// uid ученика, если тренер смотрит его прогресс; null — свой прогресс.
+  final String? ownerId;
 
   /// Создаёт состояние экрана.
   @override
@@ -41,7 +48,7 @@ class _ExerciseProgressScreenState
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final uid = ref.watch(authUserProvider).value?.uid ?? '';
+    final uid = widget.ownerId ?? ref.watch(authUserProvider).value?.uid ?? '';
     final key = (uid, widget.exerciseId);
     final loaded = ref.watch(exerciseHistoryProvider(key));
     final workouts = switch (loaded) {
@@ -56,7 +63,7 @@ class _ExerciseProgressScreenState
     return Scaffold(
       appBar: AppBar(title: Text(exercise?.name(l10n) ?? l10n.progressTitle)),
       body: switch (loaded) {
-        AsyncData(value: Success(:final value)) => _buildProgress(value),
+        AsyncData(value: Success(:final value)) => _buildProgress(uid, value),
         AsyncData(value: Failure(:final failure)) => ErrorView(
           title: l10n.progressTitle,
           failure: failure,
@@ -73,7 +80,7 @@ class _ExerciseProgressScreenState
   }
 
   /// Строит переключатель показателя, график и рекорды.
-  Widget _buildProgress(List<Workout> workouts) {
+  Widget _buildProgress(String uid, List<Workout> workouts) {
     final l10n = AppLocalizations.of(context);
     final points = exerciseProgress(widget.exerciseId, workouts);
     final available = [
@@ -117,7 +124,7 @@ class _ExerciseProgressScreenState
           l10n.progressPointsHint(points.length),
           style: TextStyle(color: context.colors.textSecondary),
         ),
-        RecordSummary(exerciseId: widget.exerciseId, format: format),
+        RecordSummary(uid: uid, exerciseId: widget.exerciseId, format: format),
       ],
     );
   }
