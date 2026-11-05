@@ -23,5 +23,11 @@ enum AppFailure {
   coachLimitReached,
   linkUnavailable,
   roleLocked,
+  noGym,
+  videoInvalid,
+  videoTooLong,
+  ownRecord,
+  recordReviewed,
+  appealUnavailable,
   unknown,
 }

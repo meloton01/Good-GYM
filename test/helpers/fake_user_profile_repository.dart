@@ -22,6 +22,9 @@ class FakeUserProfileRepository implements UserProfileRepository {
   /// Ошибка, которую отдаст поток профиля, если задана.
   Object? watchError;
 
+  /// Профиль пользователя [uid] без подписки.
+  UserProfile? profileOf(String uid) => _profiles[uid];
+
   /// Ники, которые считаются занятыми другими пользователями.
   final Set<String> takenNicknames = {};
 

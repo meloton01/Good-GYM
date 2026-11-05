@@ -27,6 +27,9 @@ class FakeAuthRepository implements AuthRepository {
 
   final List<String> calls = [];
 
+  /// uid вошедшего пользователя или null.
+  String? get currentUid => _user?.uid;
+
   /// Меняет текущую учётную запись и оповещает подписчиков.
   void emit(AuthUser? user) {
     _user = user;
