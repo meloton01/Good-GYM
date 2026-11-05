@@ -51,8 +51,9 @@ service cloud.firestore {
 
     // Завершённая тренировка: даты по порядку, до 30 упражнений.
     function isValidWorkout(data) {
-      return data.keys().hasOnly(['title', 'note', 'startedAt', 'finishedAt', 'exerciseIds', 'exercises'])
+      return data.keys().hasOnly(['title', 'note', 'startedAt', 'finishedAt', 'exerciseIds', 'exercises', 'planId'])
         && data.keys().hasAll(['title', 'note', 'startedAt', 'finishedAt', 'exerciseIds', 'exercises'])
+        && (data.get('planId', null) == null || data.planId is string)
         && isTextOfLength(data.title, 1, 60)
         && isTextOfLength(data.note, 0, 1000)
         && data.startedAt is timestamp
@@ -100,6 +101,102 @@ service cloud.firestore {
         && isRecordValue(data.get('maxWeightKg', null))
         && isRecordValue(data.get('bestE1rmKg', null))
         && isRecordValue(data.get('maxReps', null));
+    }
+
+    function linkPath(linkId) {
+      return /databases/$(database)/documents/coachLinks/$(linkId);
+    }
+
+    function studentCoachPath(athleteId) {
+      return /databases/$(database)/documents/studentCoach/$(athleteId);
+    }
+
+    function coachStudentsPath(coachId) {
+      return /databases/$(database)/documents/coachStudents/$(coachId);
+    }
+
+    // Пользователь — тренер ученика athleteId, и связь сейчас активна.
+    function isActiveCoachOf(athleteId) {
+      return isVerifiedUser()
+        && exists(studentCoachPath(athleteId))
+        && get(studentCoachPath(athleteId)).data.coachId == request.auth.uid;
+    }
+
+    function isLinkParty(data) {
+      return isVerifiedUser() && request.auth.uid in [data.coachId, data.athleteId];
+    }
+
+    // Роли и ники сторон совпадают с профилями: тренер связан с учеником.
+    function hasValidLinkParties(data) {
+      return data.coachId != data.athleteId
+        && get(userPath(data.coachId)).data.role == 'coach'
+        && get(userPath(data.athleteId)).data.role == 'student'
+        && data.coachNickname == get(userPath(data.coachId)).data.nickname
+        && data.athleteNickname == get(userPath(data.athleteId)).data.nickname;
+    }
+
+    // Число активных учеников тренера до записи.
+    function activeStudents(coachId) {
+      return exists(coachStudentsPath(coachId)) ? get(coachStudentsPath(coachId)).data.count : 0;
+    }
+
+    function isValidInvite(linkId, data) {
+      return isLinkParty(data)
+        && data.keys().hasOnly(['coachId', 'athleteId', 'coachNickname', 'athleteNickname', 'status', 'invitedBy', 'createdAt', 'updatedAt'])
+        && data.keys().hasAll(['coachId', 'athleteId', 'coachNickname', 'athleteNickname', 'status', 'invitedBy', 'createdAt', 'updatedAt'])
+        && linkId == data.coachId + '_' + data.athleteId
+        && data.status == 'pending'
+        && data.invitedBy == request.auth.uid
+        && data.createdAt == request.time
+        && data.updatedAt == request.time
+        && hasValidLinkParties(data);
+    }
+
+    // Принять может только приглашённая сторона; ученик свободен, у тренера меньше 50 учеников.
+    function isAccept(linkId, before, after) {
+      return before.status == 'pending'
+        && after.status == 'active'
+        && request.auth.uid != before.invitedBy
+        && after.diff(before).affectedKeys().hasOnly(['status', 'updatedAt'])
+        && hasValidLinkParties(after)
+        && !exists(studentCoachPath(before.athleteId))
+        && getAfter(studentCoachPath(before.athleteId)).data.linkId == linkId
+        && getAfter(coachStudentsPath(before.coachId)).data.count == activeStudents(before.coachId) + 1
+        && getAfter(coachStudentsPath(before.coachId)).data.count <= 50;
+    }
+
+    // Разорвать активную связь может любая сторона; доступ тренера пропадает вместе с замком.
+    function isEnd(before, after) {
+      return before.status == 'active'
+        && after.status == 'ended'
+        && after.diff(before).affectedKeys().hasOnly(['status', 'updatedAt'])
+        && !existsAfter(studentCoachPath(before.athleteId))
+        && getAfter(coachStudentsPath(before.coachId)).data.count == activeStudents(before.coachId) - 1;
+    }
+
+    // После разрыва любая сторона может пригласить снова.
+    function isReinvite(before, after) {
+      return before.status == 'ended'
+        && after.status == 'pending'
+        && after.invitedBy == request.auth.uid
+        && after.diff(before).affectedKeys().hasOnly(['status', 'invitedBy', 'coachNickname', 'athleteNickname', 'updatedAt'])
+        && hasValidLinkParties(after);
+    }
+
+    function isValidPlanContent(data) {
+      return isTextOfLength(data.title, 1, 60)
+        && isTextOfLength(data.note, 0, 1000)
+        && isListOfSize(data.exercises, 1, 30);
+    }
+
+    function planPath(athleteId, planId) {
+      return /databases/$(database)/documents/users/$(athleteId)/plans/$(planId);
+    }
+
+    // Ученик или его активный тренер, который составил план.
+    function canAccessPlan(athleteId, plan) {
+      return isOwner(athleteId)
+        || (isActiveCoachOf(athleteId) && plan.coachId == request.auth.uid);
     }
 
     function gymPath(gymId) {
@@ -158,7 +255,8 @@ service cloud.firestore {
         && hasValidEditableFields(request.resource.data)
         && (request.resource.data.role == resource.data.role
             || (isSelectableRole(request.resource.data.role)
-                && isSelectableRole(resource.data.role)))
+                && isSelectableRole(resource.data.role)
+                && !exists(studentCoachPath(uid))))
         && request.resource.data.updatedAt == request.time
         && (request.resource.data.nickname == resource.data.nickname
             || (getAfter(nicknamePath(request.resource.data.nickname)).data.uid == uid
@@ -183,8 +281,10 @@ service cloud.firestore {
       }
 
       // Тренировочные данные: читает и пишет только владелец.
+      // Тренер читает тренировки и рекорды ученика, пока связь активна.
       match /workouts/{workoutId} {
-        allow read, delete: if isOwner(uid);
+        allow read: if isOwner(uid) || isActiveCoachOf(uid);
+        allow delete: if isOwner(uid);
         allow create, update: if isOwner(uid) && isValidWorkout(request.resource.data);
       }
 
@@ -201,9 +301,114 @@ service cloud.firestore {
       }
 
       match /personalRecords/{exerciseId} {
-        allow read, delete: if isOwner(uid);
+        allow read: if isOwner(uid) || isActiveCoachOf(uid);
+        allow delete: if isOwner(uid);
         allow create, update: if isOwner(uid) && isValidRecord(exerciseId, request.resource.data);
       }
+
+      // Планы тренера лежат у ученика: тренер создаёт и меняет их только при активной связи.
+      match /plans/{planId} {
+        allow read: if canAccessPlan(uid, resource.data);
+
+        allow create: if isActiveCoachOf(uid)
+          && request.resource.data.keys().hasOnly(['coachId', 'coachNickname', 'title', 'note', 'exercises', 'status', 'createdAt', 'updatedAt'])
+          && request.resource.data.keys().hasAll(['coachId', 'coachNickname', 'title', 'note', 'exercises', 'status', 'createdAt', 'updatedAt'])
+          && request.resource.data.coachId == request.auth.uid
+          && request.resource.data.coachNickname == get(userPath(request.auth.uid)).data.nickname
+          && request.resource.data.status == 'assigned'
+          && request.resource.data.createdAt == request.time
+          && request.resource.data.updatedAt == request.time
+          && isValidPlanContent(request.resource.data);
+
+        // Тренер правит невыполненный план, ученик только отмечает выполнение.
+        allow update: if resource.data.status == 'assigned'
+          && request.resource.data.updatedAt == request.time
+          && ((isActiveCoachOf(uid)
+               && resource.data.coachId == request.auth.uid
+               && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['title', 'note', 'exercises', 'updatedAt'])
+               && isValidPlanContent(request.resource.data))
+              || (isOwner(uid)
+               && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status', 'workoutId', 'completedAt', 'updatedAt'])
+               && request.resource.data.status == 'completed'
+               && request.resource.data.workoutId is string
+               && request.resource.data.completedAt == request.time));
+
+        allow delete: if canAccessPlan(uid, resource.data);
+
+        match /comments/{commentId} {
+          allow read: if canAccessPlan(uid, get(planPath(uid, planId)).data);
+
+          allow create: if canAccessPlan(uid, get(planPath(uid, planId)).data)
+            && request.resource.data.keys().hasOnly(['authorId', 'authorNickname', 'text', 'createdAt'])
+            && request.resource.data.keys().hasAll(['authorId', 'authorNickname', 'text', 'createdAt'])
+            && request.resource.data.authorId == request.auth.uid
+            && request.resource.data.authorNickname == get(userPath(request.auth.uid)).data.nickname
+            && isTextOfLength(request.resource.data.text, 1, 500)
+            && request.resource.data.createdAt == request.time;
+
+          // Автор удаляет свой комментарий, ученик удаляет комментарии вместе с планом.
+          allow delete: if isOwner(uid)
+            || (isVerifiedUser() && resource.data.authorId == request.auth.uid);
+        }
+      }
+    }
+
+    match /coachLinks/{linkId} {
+      allow read: if isLinkParty(resource.data);
+
+      allow create: if isValidInvite(linkId, request.resource.data);
+
+      allow update: if isLinkParty(resource.data)
+        && request.resource.data.coachId == resource.data.coachId
+        && request.resource.data.athleteId == resource.data.athleteId
+        && request.resource.data.updatedAt == request.time
+        && (isAccept(linkId, resource.data, request.resource.data)
+            || isEnd(resource.data, request.resource.data)
+            || isReinvite(resource.data, request.resource.data));
+
+      // Отклонить или отозвать приглашение, удалить завершённую связь.
+      allow delete: if isLinkParty(resource.data) && resource.data.status != 'active';
+    }
+
+    // Замок: у ученика один активный тренер. Существует ровно пока связь активна.
+    match /studentCoach/{athleteId} {
+      allow read: if isVerifiedUser()
+        && (request.auth.uid == athleteId || resource.data.coachId == request.auth.uid);
+
+      allow create: if isVerifiedUser()
+        && request.resource.data.keys().hasOnly(['coachId', 'linkId'])
+        && request.auth.uid in [request.resource.data.coachId, athleteId]
+        && request.resource.data.linkId == request.resource.data.coachId + '_' + athleteId
+        && getAfter(linkPath(request.resource.data.linkId)).data.status == 'active';
+
+      allow delete: if isVerifiedUser()
+        && request.auth.uid in [resource.data.coachId, athleteId]
+        && getAfter(linkPath(resource.data.linkId)).data.status == 'ended';
+
+      allow update: if false;
+    }
+
+    // Счётчик активных учеников тренера; меняется на 1 вместе с принятием или разрывом связи.
+    match /coachStudents/{coachId} {
+      allow read: if isVerifiedUser();
+
+      allow create, update: if isVerifiedUser()
+        && request.resource.data.keys().hasOnly(['count', 'linkId'])
+        && request.resource.data.count is int
+        && request.resource.data.count >= 0
+        && request.resource.data.count <= 50
+        && getAfter(linkPath(request.resource.data.linkId)).data.coachId == coachId
+        && request.auth.uid in [
+             getAfter(linkPath(request.resource.data.linkId)).data.coachId,
+             getAfter(linkPath(request.resource.data.linkId)).data.athleteId]
+        && ((request.resource.data.count == activeStudents(coachId) + 1
+             && get(linkPath(request.resource.data.linkId)).data.status == 'pending'
+             && getAfter(linkPath(request.resource.data.linkId)).data.status == 'active')
+            || (request.resource.data.count == activeStudents(coachId) - 1
+             && get(linkPath(request.resource.data.linkId)).data.status == 'active'
+             && getAfter(linkPath(request.resource.data.linkId)).data.status == 'ended'));
+
+      allow delete: if false;
     }
 
     match /nicknames/{nickname} {
