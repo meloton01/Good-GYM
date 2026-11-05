@@ -15,6 +15,9 @@ abstract final class UserProfileFields {
   static const String profileVisibility = 'profileVisibility';
   static const String recordsVisibility = 'recordsVisibility';
   static const String createdAt = 'createdAt';
+
+  /// Время согласия на обработку данных и подтверждения возраста 16+.
+  static const String consentAt = 'consentAt';
   static const String updatedAt = 'updatedAt';
 
   static const String weightKg = 'weightKg';

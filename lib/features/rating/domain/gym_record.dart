@@ -33,4 +33,8 @@ abstract class GymRecord with _$GymRecord {
 
   /// Автор может обжаловать отказ один раз.
   bool get canAppeal => status == RecordStatus.rejected && !appealed;
+
+  /// Ждёт ли рекорд проверки модератором [moderatorId]; свои рекорды модератор не проверяет.
+  bool isReviewableBy(String moderatorId) =>
+      status == RecordStatus.pending && uid != moderatorId;
 }

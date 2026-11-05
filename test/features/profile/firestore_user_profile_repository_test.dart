@@ -26,6 +26,8 @@ void main() {
     expect(result, isA<Success<void>>());
     final nickname = await firestore.doc('nicknames/iron').get();
     expect(nickname.data(), {'uid': 'u1'});
+    final user = await firestore.doc('users/u1').get();
+    expect(user.data()?['consentAt'], isNotNull);
     expect(
       await repository.watchProfile('u1').first,
       const UserProfile(uid: 'u1', nickname: 'iron', role: UserRole.student),

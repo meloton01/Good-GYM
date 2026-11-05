@@ -11,6 +11,7 @@ import '../../../core/widgets/failure_snack_bar.dart';
 import '../../../core/widgets/info_snack_bar.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../auth/data/auth_repository_provider.dart';
+import '../../profile/data/safety_repository_provider.dart';
 import '../../profile/data/user_profile_repository_provider.dart';
 import '../../rating/data/record_repository_providers.dart';
 import '../../workout/data/coach_repository_providers.dart';
@@ -39,15 +40,17 @@ Future<void> exportUserData(BuildContext context, WidgetRef ref) async {
       .read(coachPlanRepositoryProvider)
       .exportData(user.uid);
   final records = await ref.read(recordRepositoryProvider).exportData(user.uid);
+  final safety = await ref.read(safetyRepositoryProvider).exportData(user.uid);
   if (!context.mounted) {
     return;
   }
-  switch ((profile, workouts, links, plans, records)) {
-    case (Failure(:final failure), _, _, _, _) ||
-        (_, Failure(:final failure), _, _, _) ||
-        (_, _, Failure(:final failure), _, _) ||
-        (_, _, _, Failure(:final failure), _) ||
-        (_, _, _, _, Failure(:final failure)):
+  switch ((profile, workouts, links, plans, records, safety)) {
+    case (Failure(:final failure), _, _, _, _, _) ||
+        (_, Failure(:final failure), _, _, _, _) ||
+        (_, _, Failure(:final failure), _, _, _) ||
+        (_, _, _, Failure(:final failure), _, _) ||
+        (_, _, _, _, Failure(:final failure), _) ||
+        (_, _, _, _, _, Failure(:final failure)):
       showFailureSnackBar(context, failure);
     case (
       Success(value: final profileData),
@@ -55,6 +58,7 @@ Future<void> exportUserData(BuildContext context, WidgetRef ref) async {
       Success(value: final linkData),
       Success(value: final planData),
       Success(value: final recordData),
+      Success(value: final safetyData),
     ):
       final settings = ref.read(appSettingsProvider);
       final document = {
@@ -63,6 +67,7 @@ Future<void> exportUserData(BuildContext context, WidgetRef ref) async {
         'coachLinks': linkData,
         'plans': planData,
         'records': recordData,
+        ...safetyData,
         'email': user.email,
         'exportedAt': DateTime.now().toUtc().toIso8601String(),
         'deviceSettings': {

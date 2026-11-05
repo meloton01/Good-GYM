@@ -15,7 +15,7 @@ service firebase.storage {
         && fileName.matches('^[A-Za-z0-9]{20}[.]mp4$')
         && request.resource.size > 0
         && request.resource.size <= 50 * 1024 * 1024
-        && request.resource.contentType.matches('video/.*');
+        && request.resource.contentType == 'video/mp4';
 
       allow read, update, delete: if false;
     }

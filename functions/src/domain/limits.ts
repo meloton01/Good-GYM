@@ -5,6 +5,7 @@ export const RecordLimits = {
   minBodyWeightKg: 30,
   maxBodyWeightKg: 300,
   maxVideoBytes: 50 * 1024 * 1024,
+  videoContentType: 'video/mp4',
   minReasonLength: 3,
   maxReasonLength: 300,
   maxPendingPerUser: 5,

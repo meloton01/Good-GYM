@@ -12,9 +12,10 @@ import '../../auth/data/auth_repository_provider.dart';
 import '../data/user_profile_repository_provider.dart';
 import '../domain/nickname_policy.dart';
 import '../domain/user_role.dart';
+import 'consent_field.dart';
 import 'role_selector.dart';
 
-/// Первый шаг после входа: выбор ника и роли.
+/// Первый шаг после входа: выбор ника, роли и согласие на обработку данных.
 class ProfileSetupScreen extends ConsumerStatefulWidget {
   /// Создаёт экран создания профиля.
   const ProfileSetupScreen({super.key});
@@ -73,6 +74,8 @@ class _ProfileSetupScreenState extends ConsumerState<ProfileSetupScreen> {
               selected: _role,
               onSelected: (role) => setState(() => _role = role),
             ),
+            SizedBox(height: spacing.md),
+            const ConsentField(),
             SizedBox(height: spacing.lg),
             PrimaryButton(
               label: l10n.actionContinue,

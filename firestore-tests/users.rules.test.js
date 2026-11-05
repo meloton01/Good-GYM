@@ -25,22 +25,27 @@ let env;
 /** Firestore от имени пользователя uid с заданными claims токена. */
 const as = (uid, claims = verified) => env.authenticatedContext(uid, claims).firestore();
 
-/** Создаёт профиль и ник одним батчем, как транзакция в приложении. */
+/** Создаёт профиль и ник одним батчем, как транзакция в приложении; поле со значением undefined не пишется. */
 const createProfile = (db, uid, nickname, role = 'athlete', extra = {}) => {
   const batch = writeBatch(db);
   batch.set(doc(db, 'nicknames', nickname), { uid });
-  batch.set(doc(db, 'users', uid), {
+  batch.set(doc(db, 'users', uid), withoutUndefined({
     nickname,
     role,
     bio: '',
     profileVisibility: 'everyone',
     recordsVisibility: 'everyone',
+    consentAt: serverTimestamp(),
     createdAt: serverTimestamp(),
     updatedAt: serverTimestamp(),
     ...extra,
-  });
+  }));
   return batch.commit();
 };
+
+/** Копия объекта без полей со значением undefined. */
+const withoutUndefined = (data) =>
+  Object.fromEntries(Object.entries(data).filter(([, value]) => value !== undefined));
 
 /** Кладёт данные в обход правил. */
 const seed = (path, data) =>
@@ -106,6 +111,11 @@ describe('users: create', () => {
         updatedAt: serverTimestamp(),
       }),
     );
+  });
+
+  test('profile without consent or with a client-side consent date is rejected', async () => {
+    await assertFails(createProfile(as('alice'), 'alice', 'alice', 'athlete', { consentAt: undefined }));
+    await assertFails(createProfile(as('alice'), 'alice', 'alice', 'athlete', { consentAt: new Date(0) }));
   });
 
   test('nickname taken by another user cannot be reused', async () => {

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
+import '../../../app/router/app_routes.dart';
 import '../../../core/errors/result.dart';
 import '../../../core/widgets/failure_snack_bar.dart';
 import '../../../core/widgets/option_sheet.dart';
@@ -12,12 +14,12 @@ import '../../profile/domain/profile_visibility.dart';
 import '../../profile/domain/user_profile.dart';
 import 'profile_visibility_labels.dart';
 
-/// Секция приватности: кто видит профиль и рекорды; встраивается в настройки.
+/// Секция приватности: кто видит профиль и рекорды, заблокированные; встраивается в настройки.
 class PrivacySection extends ConsumerWidget {
   /// Создаёт секцию приватности.
   const PrivacySection({super.key});
 
-  /// Строит два пункта видимости; пока профиль не загружен, секции нет.
+  /// Строит пункты видимости и заблокированных; пока профиль не загружен, секции нет.
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
@@ -47,6 +49,11 @@ class PrivacySection extends ConsumerWidget {
           value: profile.recordsVisibility,
           apply: (visibility) =>
               profile.copyWith(recordsVisibility: visibility),
+        ),
+        ListTile(
+          title: Text(l10n.privacyBlockedUsers),
+          trailing: const Icon(Icons.chevron_right_rounded),
+          onTap: () => context.push(AppRoutes.blockedUsers),
         ),
       ],
     );

@@ -4,13 +4,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/errors/result.dart';
 import '../../../core/widgets/failure_snack_bar.dart';
 import '../../auth/data/auth_repository_provider.dart';
+import '../../profile/data/safety_repository_provider.dart';
 import '../../profile/data/user_profile_repository_provider.dart';
 import '../../rating/data/record_repository_providers.dart';
 import '../../workout/data/coach_repository_providers.dart';
 import '../../workout/data/workout_repository_provider.dart';
 import 'delete_account_dialog.dart';
 
-/// Подтверждает личность, удаляет рекорды с видео, разрывает связи, удаляет планы, тренировки, профиль и учётную запись.
+/// Подтверждает личность, удаляет рекорды с видео, разрывает связи, удаляет планы, тренировки, блокировки, жалобы, профиль и учётную запись.
 Future<void> deleteAccount(
   BuildContext context,
   WidgetRef ref,
@@ -27,6 +28,7 @@ Future<void> deleteAccount(
     () => ref.read(coachLinkRepositoryProvider).deleteAllData(uid),
     () => ref.read(coachPlanRepositoryProvider).deleteAllData(uid),
     () => ref.read(workoutRepositoryProvider).deleteAllData(uid),
+    () => ref.read(safetyRepositoryProvider).deleteAllData(uid),
     () => ref.read(userProfileRepositoryProvider).deleteAllData(uid),
     auth.deleteAccount,
   ];

@@ -27,8 +27,10 @@ final ratingTab = TabDefinition(
     ),
     GoRoute(
       path: AppRoutes.recordHolderSegment,
-      builder: (context, state) =>
-          RecordHolderScreen(uid: state.pathParameters['uid']!),
+      builder: (context, state) => RecordHolderScreen(
+        uid: state.pathParameters['uid']!,
+        nickname: state.uri.queryParameters[AppRoutes.nicknameParameter] ?? '',
+      ),
     ),
   ],
 );

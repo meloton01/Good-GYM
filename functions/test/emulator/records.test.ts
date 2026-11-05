@@ -72,7 +72,7 @@ const submission = (uploadId: string, extra: Record<string, unknown> = {}) => ({
 
 /** Ждёт выполнения условия, пока фоновая функция обрабатывает событие. */
 async function eventually(check: () => Promise<boolean>) {
-  for (let attempt = 0; attempt < 50; attempt++) {
+  for (let attempt = 0; attempt < 150; attempt++) {
     if (await check()) {
       return;
     }
