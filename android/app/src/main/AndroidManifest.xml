@@ -3,7 +3,7 @@
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
     <!-- Только HTTPS; без резервной копии, чтобы токены сессии не уходили из приложения. -->
     <application
-        android:label="good_gym"
+        android:label="Good GYM"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher"
         android:usesCleartextTraffic="false"
