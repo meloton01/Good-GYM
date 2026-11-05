@@ -126,8 +126,10 @@ firebase emulators:exec --only firestore,storage --project demo-good-gym "npm --
 
 | Путь | Кто читает | Содержимое |
 |---|---|---|
-| `users/{uid}` | по `profileVisibility`: все, посетители того же зала или только владелец | ник, роль, описание, зал, видимость |
+| `users/{uid}` | по `profileVisibility`: все, посетители того же зала или только владелец; заблокированным владельцем не виден | ник, роль, описание, зал, видимость, `consentAt` (согласие и 16+, ставит сервер, не меняется) |
 | `users/{uid}/private/body` | только владелец | вес (кг) и рост (см) |
+| `users/{uid}/blocks/{blockedUid}` | только владелец | ник заблокированного, дата |
+| `reports/{reporterId}_user_{uid}`, `reports/{reporterId}_record_{recordId}` | автор жалобы и модераторы | `targetUid`, `recordId`, причина, комментарий до 500 символов, статус `open`. Одна жалоба на цель, менять нельзя |
 | `nicknames/{nickname}` | вошедшие | `uid` владельца |
 | `gyms/{gymId}` | вошедшие | название, `nameLower` для поиска, город, создатель |
 | `users/{uid}/workouts/{id}` | владелец и активный тренер | завершённая тренировка: даты, `exerciseIds`, упражнения с подходами, `planId` |
@@ -139,7 +141,7 @@ firebase emulators:exec --only firestore,storage --project demo-good-gym "npm --
 | `coachLinks/{coachId}_{athleteId}` | стороны связи | ники сторон, статус `pending`, `active` или `ended`, `invitedBy` |
 | `studentCoach/{athleteId}` | ученик и его тренер | `coachId`, `linkId`; существует, только пока связь активна |
 | `coachStudents/{coachId}` | вошедшие | `count` активных учеников, до 50 |
-| `records/{recordId}` | автор и модераторы; одобренный — по `recordsVisibility` автора | ник, зал, упражнение, вес, повторы, `e1rmKg`, пол, `weightClass`, путь к видео, статус, причина отказа, `appealed`. Пишут только функции |
+| `records/{recordId}` | автор и модераторы; одобренный — по `recordsVisibility` автора, кроме заблокированных им | ник, зал, упражнение, вес, повторы, `e1rmKg`, пол, `weightClass`, путь к видео, статус, причина отказа, `appealed`. Пишут только функции |
 | `leaderboard/{exercise}_{period}_{scope}_{uid}` | вошедшие | лучший вес и лучший 1ПМ пользователя со ссылками на рекорды. Пишут только функции |
 | Storage `records/{uid}/{id}.mp4` | никто напрямую, только по подписанной ссылке | видео рекорда до 50 МБ; клиент только создаёт файл в своей папке |
 
@@ -198,6 +200,27 @@ firebase emulators:exec --only auth,functions,firestore,storage --project demo-g
 - ⚑ Уведомление автору о решении — статус в «Мои рекорды». Push через FCM не сделан.
 - ⚑ Длительность видео проверяет приложение: функция видит только тип и размер файла.
 
+## Безопасность
+
+Аудит и замеры: `docs/security-performance-report.md`.
+
+- Согласие на обработку данных и возраст 16+ отмечаются при создании профиля. Без отметки профиль не создать, время согласия пишет сервер (`consentAt`).
+- Жалоба на пользователя или рекорд: меню в шапке рекорда и истории рекордов. Причина из списка, комментарий необязателен. Жалобы разбирает модератор в Firebase Console, коллекция `reports`.
+- Блокировка там же. Заблокированный не видит профиль и историю рекордов того, кто его заблокировал, и не может прислать или принять приглашение тренера. Список и разблокировка: Настройки → Приватность → Заблокированные.
+- App Check: Play Integrity на Android и App Attest на iOS в релизной сборке, отладочный провайдер в остальных. Вызываемые функции принимают запросы только с токеном App Check (кроме эмулятора).
+- Android: только HTTPS (`usesCleartextTraffic="false"`), резервное копирование выключено, чтобы токены сессии не уезжали на другое устройство. В релизе `debugPrint` молчит, `print` запрещён линтером.
+
+Релизная сборка с обфускацией (символы хранить вне репозитория, они нужны для расшифровки стектрейсов):
+
+```
+flutter build appbundle --release --obfuscate --split-debug-info=build/symbols
+flutter build ipa --release --obfuscate --split-debug-info=build/symbols
+```
+
+- ⚑ Токены сессии хранит Firebase Auth SDK (Keychain на iOS, закрытое хранилище приложения на Android). Своих токенов приложение не хранит, поэтому `flutter_secure_storage` не подключён.
+- ⚑ Блокировка не меняет рейтинг: место в таблице — публичный факт. Активную связь с тренером нужно разорвать отдельно.
+- ⚑ Модераторского экрана жалоб в приложении нет, жалобы читаются в консоли.
+
 ## Роли
 
 Сам пользователь выбирает только атлета или ученика (`UserRole.selectable`) и переключается между ними. Тренера и модератора выдаёт администрация: в Firebase Console открыть `users/{uid}` и поменять поле `role` на `coach` или `moderator`. Консоль работает в обход правил, а клиент такую роль ни выставить, ни снять не может.
@@ -210,6 +233,7 @@ firebase emulators:exec --only auth,functions,firestore,storage --project demo-g
 |---|---|---|---|
 | auth | `AuthRepository` | вход, регистрация, подтверждение email, сброс и смена пароля, смена email, удаление учётной записи | `FirebaseAuthRepository` |
 | profile | `UserProfileRepository` | профиль, ник, роль, данные о теле, экспорт и удаление данных | `FirestoreUserProfileRepository` |
+| profile | `SafetyRepository` | жалобы, блокировки, их экспорт и удаление | `FirestoreSafetyRepository` |
 | rating | `GymRepository` | поиск и создание залов | `FirestoreGymRepository` |
 | rating | `RecordRepository` | таблицы, подача рекорда, загрузка видео, модерация, значки | `FirebaseRecordRepository` |
 | rating | `VideoSource` | выбор и сжатие видео | `PickerVideoSource` |
