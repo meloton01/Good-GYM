@@ -63,6 +63,7 @@ class FirestoreUserProfileRepository implements UserProfileRepository {
           UserProfileFields.bio: '',
           UserProfileFields.profileVisibility: ProfileVisibility.everyone.name,
           UserProfileFields.recordsVisibility: ProfileVisibility.everyone.name,
+          UserProfileFields.consentAt: FieldValue.serverTimestamp(),
           UserProfileFields.createdAt: FieldValue.serverTimestamp(),
           UserProfileFields.updatedAt: FieldValue.serverTimestamp(),
         });

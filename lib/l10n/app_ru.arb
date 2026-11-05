@@ -52,6 +52,8 @@
   "profileSetupTitle": "Ваш профиль",
   "profileNicknameLabel": "Ник",
   "profileNicknameHelper": "От 3 до 20 символов: a-z, 0-9, _ и .",
+  "profileConsentLabel": "Мне исполнилось 16 лет, я согласен на обработку персональных данных по политике конфиденциальности",
+  "validationConsentRequired": "Отметьте согласие, чтобы создать профиль",
   "profileRoleLabel": "Роль",
   "profileChangeRole": "Сменить роль",
   "roleAthlete": "Атлет",

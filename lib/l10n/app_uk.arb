@@ -52,6 +52,8 @@
   "profileSetupTitle": "Ваш профіль",
   "profileNicknameLabel": "Нік",
   "profileNicknameHelper": "Від 3 до 20 символів: a-z, 0-9, _ і .",
+  "profileConsentLabel": "Мені виповнилося 16 років, я погоджуюся на обробку персональних даних згідно з політикою конфіденційності",
+  "validationConsentRequired": "Позначте згоду, щоб створити профіль",
   "profileRoleLabel": "Роль",
   "profileChangeRole": "Змінити роль",
   "roleAthlete": "Атлет",

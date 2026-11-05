@@ -8,7 +8,7 @@ abstract interface class UserProfileRepository {
   /// Поток профиля по uid; null, если профиль ещё не создан.
   Stream<UserProfile?> watchProfile(String uid);
 
-  /// Создаёт профиль и закрепляет ник; занятый ник даёт AppFailure.nicknameTaken.
+  /// Создаёт профиль с отметкой согласия и закрепляет ник; занятый ник даёт AppFailure.nicknameTaken.
   Future<Result<void>> createProfile({
     required String uid,
     required String nickname,

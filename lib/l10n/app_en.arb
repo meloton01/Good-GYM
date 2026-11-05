@@ -223,6 +223,14 @@
   "@profileNicknameHelper": {
     "description": "Helper text under the nickname input"
   },
+  "profileConsentLabel": "I am 16 or older and agree to the processing of my personal data under the privacy policy",
+  "@profileConsentLabel": {
+    "description": "Checkbox on profile setup: age 16+ and consent to data processing"
+  },
+  "validationConsentRequired": "Tick the box to create a profile",
+  "@validationConsentRequired": {
+    "description": "Error when the consent checkbox is not ticked"
+  },
   "profileRoleLabel": "Role",
   "@profileRoleLabel": {
     "description": "Title of the role selector"

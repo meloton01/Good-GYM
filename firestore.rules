@@ -246,14 +246,15 @@ service cloud.firestore {
     match /users/{uid} {
       allow read: if canViewProfile(uid, resource.data);
 
-      // Профиль создаётся вместе с записью ника в одной транзакции.
+      // Профиль создаётся вместе с записью ника в одной транзакции; consentAt фиксирует согласие и возраст 16+.
       allow create: if isOwner(uid)
         && request.resource.data.keys().hasOnly([
              'nickname', 'role', 'bio', 'profileVisibility', 'recordsVisibility',
-             'createdAt', 'updatedAt'])
+             'consentAt', 'createdAt', 'updatedAt'])
         && request.resource.data.keys().hasAll([
              'nickname', 'role', 'bio', 'profileVisibility', 'recordsVisibility',
-             'createdAt', 'updatedAt'])
+             'consentAt', 'createdAt', 'updatedAt'])
+        && request.resource.data.consentAt == request.time
         && hasValidEditableFields(request.resource.data)
         && isSelectableRole(request.resource.data.role)
         && request.resource.data.createdAt == request.time
