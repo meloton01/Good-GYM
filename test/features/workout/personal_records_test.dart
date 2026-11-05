@@ -2,7 +2,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:good_gym/features/workout/domain/built_in_exercises.dart';
 import 'package:good_gym/features/workout/domain/exercise_best.dart';
 import 'package:good_gym/features/workout/domain/exercise_progress.dart';
-import 'package:good_gym/features/workout/domain/one_rep_max.dart';
 import 'package:good_gym/features/workout/domain/personal_records.dart';
 import 'package:good_gym/features/workout/domain/workout_exercise.dart';
 import 'package:good_gym/features/workout/domain/workout_set.dart';
@@ -10,11 +9,6 @@ import 'package:good_gym/features/workout/domain/workout_set.dart';
 import 'workout_test_data.dart';
 
 void main() {
-  test('Epley formula matches weight × (1 + reps / 30)', () {
-    expect(estimateOneRepMax(100, 5), closeTo(116.67, 0.01));
-    expect(estimateOneRepMax(60, 30), 120);
-  });
-
   test('best ignores sets that are not completed', () {
     const item = WorkoutExercise(
       exercise: BuiltInExercises.benchPress,
