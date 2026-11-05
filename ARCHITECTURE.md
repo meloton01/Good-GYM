@@ -115,10 +115,10 @@ flutter run
 
 ```
 npm --prefix firestore-tests install
-firebase emulators:exec --only firestore --project demo-good-gym "npm --prefix firestore-tests test"
+firebase emulators:exec --only firestore,storage --project demo-good-gym "npm --prefix firestore-tests test"
 ```
 
-Деплой: `firebase deploy --only firestore:rules`.
+Деплой: `firebase deploy --only firestore:rules,storage`.
 
 Ник уникален за счёт коллекции `nicknames/{nickname}` с полем `uid`. Профиль и ник создаются одной транзакцией, а правила через `getAfter` проверяют, что обе записи ссылаются друг на друга. При смене ника старая запись удаляется, а новая создаётся в той же транзакции.
 
@@ -139,6 +139,9 @@ firebase emulators:exec --only firestore --project demo-good-gym "npm --prefix f
 | `coachLinks/{coachId}_{athleteId}` | стороны связи | ники сторон, статус `pending`, `active` или `ended`, `invitedBy` |
 | `studentCoach/{athleteId}` | ученик и его тренер | `coachId`, `linkId`; существует, только пока связь активна |
 | `coachStudents/{coachId}` | вошедшие | `count` активных учеников, до 50 |
+| `records/{recordId}` | автор и модераторы; одобренный — по `recordsVisibility` автора | ник, зал, упражнение, вес, повторы, `e1rmKg`, пол, `weightClass`, путь к видео, статус, причина отказа, `appealed`. Пишут только функции |
+| `leaderboard/{exercise}_{period}_{scope}_{uid}` | вошедшие | лучший вес и лучший 1ПМ пользователя со ссылками на рекорды. Пишут только функции |
+| Storage `records/{uid}/{id}.mp4` | никто напрямую, только по подписанной ссылке | видео рекорда до 50 МБ; клиент только создаёт файл в своей папке |
 
 Для графика упражнения нужен составной индекс `exerciseIds` + `finishedAt` из `firestore.indexes.json`: `firebase deploy --only firestore:indexes`.
 
@@ -164,6 +167,37 @@ firebase emulators:exec --only firestore --project demo-good-gym "npm --prefix f
 - ⚑ Подтверждение связи в ТЗ отнесено к Cloud Functions. На тарифе Spark функций нет, поэтому принятие выполняет клиент, а все условия (кто принимает, свободен ли ученик, лимит тренера) проверяют правила. Перенос в функцию не меняет `CoachLinkRepository`.
 - ⚑ Уведомление о приглашении — счётчик на вкладке «Тренер»/«Ученики». Push через FCM требует Cloud Functions и появится вместе с ними.
 
+## Рейтинг и проверка видео
+
+Нужен тариф Blaze: Cloud Functions и Storage на Spark недоступны. Код функций в `functions/` (TypeScript, регион `europe-west1`).
+
+- Подача: приложение сжимает видео (`video_compress`, до 60 с), загружает его в `records/{uid}/{uploadId}.mp4` с прогрессом, паузой и продолжением, потом вызывает `submitRecord`. Функция проверяет файл (тип, размер), зал в профиле, лимиты (5 на проверке, 10 в сутки), сама считает `e1rmKg` по Эпли и весовую категорию IPF и создаёт рекорд со статусом `pending`. Вес тела нужен только для категории и не сохраняется.
+- Проверка: `approveRecord` и `rejectRecord` вызывает только модератор (роль в профиле), свой рекорд проверить нельзя. Одобрение одной транзакцией меняет статус и строки таблиц. `appealRecord` возвращает отказ на проверку один раз.
+- Таблицы: при одобрении функция обновляет 6 строк `leaderboard`: всё время, месяц и ISO-неделя (UTC) по дате подхода, для зала и общего рейтинга. В строке лучший вес и лучший 1ПМ, поэтому один пользователь занимает одну строку. Фильтр по полу или категории добавляет одно условие на равенство, индексы в `firestore.indexes.json`. В таблицу попадают только одобренные рекорды.
+- Видео отдаёт `recordVideoUrl`: подписанная ссылка на 15 минут автору, модераторам и всем для одобренного рекорда. Плеер загружается только по нажатию.
+- `syncRecordNickname` переписывает ник в рекордах и таблицах после смены ника. `deleteRecordData` удаляет рекорды, строки таблиц и видео при удалении аккаунта.
+- Значки считаются по строкам таблиц за всё время: «Первый рекорд» — есть хоть одна строка, «Топ-3 зала» — пользователь в первой тройке своего зала по весу хотя бы в одном упражнении.
+
+Тесты функций:
+
+```
+npm --prefix functions install
+npm --prefix functions run test:unit
+npm --prefix functions run build
+firebase emulators:exec --only auth,functions,firestore,storage --project demo-good-gym "npm --prefix functions run test:emulator"
+```
+
+Деплой: `firebase deploy --only functions,firestore,storage`. Подписанным ссылкам нужна роль Service Account Token Creator у сервисного аккаунта функций на самого себя (см. `docs/firebase-setup.md`).
+
+Допущения:
+
+- ⚑ Упражнение «Подтягивания»: вес означает дополнительное отягощение, 0 допустим.
+- ⚑ Пол и вес тела указываются при каждой подаче, вес тела подставляется из профиля.
+- ⚑ Одобренный рекорд и его видео видны всем в рейтинге: участие в рейтинге публично. `recordsVisibility` скрывает историю рекордов в профиле рекордсмена.
+- ⚑ Продолжить загрузку можно после обрыва сети, пока открыт экран. После перезапуска приложения видео загружается заново.
+- ⚑ Уведомление автору о решении — статус в «Мои рекорды». Push через FCM не сделан.
+- ⚑ Длительность видео проверяет приложение: функция видит только тип и размер файла.
+
 ## Роли
 
 Сам пользователь выбирает только атлета или ученика (`UserRole.selectable`) и переключается между ними. Тренера и модератора выдаёт администрация: в Firebase Console открыть `users/{uid}` и поменять поле `role` на `coach` или `moderator`. Консоль работает в обход правил, а клиент такую роль ни выставить, ни снять не может.
@@ -177,7 +211,8 @@ firebase emulators:exec --only firestore --project demo-good-gym "npm --prefix f
 | auth | `AuthRepository` | вход, регистрация, подтверждение email, сброс и смена пароля, смена email, удаление учётной записи | `FirebaseAuthRepository` |
 | profile | `UserProfileRepository` | профиль, ник, роль, данные о теле, экспорт и удаление данных | `FirestoreUserProfileRepository` |
 | rating | `GymRepository` | поиск и создание залов | `FirestoreGymRepository` |
-| rating | `RecordRepository` | таблицы, подача рекорда, модерация | этап 5 |
+| rating | `RecordRepository` | таблицы, подача рекорда, загрузка видео, модерация, значки | `FirebaseRecordRepository` |
+| rating | `VideoSource` | выбор и сжатие видео | `PickerVideoSource` |
 | workout | `WorkoutRepository` | история, график, личные рекорды, выгрузка и удаление тренировок | `FirestoreWorkoutRepository` |
 | workout | `WorkoutTemplateRepository` | шаблоны тренировок | `FirestoreWorkoutTemplateRepository` |
 | workout | `ExerciseRepository` | свои упражнения | `FirestoreExerciseRepository` |

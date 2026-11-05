@@ -1494,5 +1494,424 @@
         "type": "String"
       }
     }
+  },
+  "errorNoGym": "Choose your gym in Profile → Edit to take part in the rating.",
+  "@errorNoGym": {
+    "description": "Error: user has no gym"
+  },
+  "errorVideoInvalid": "The video could not be used. Choose another video up to 60 seconds.",
+  "@errorVideoInvalid": {
+    "description": "Error: video missing, wrong type or too big"
+  },
+  "errorVideoTooLong": "The video is longer than 60 seconds. Trim it or record a shorter one.",
+  "@errorVideoTooLong": {
+    "description": "Error: video too long"
+  },
+  "errorOwnRecord": "You can't review your own record. Another moderator will check it.",
+  "@errorOwnRecord": {
+    "description": "Error: moderator reviews own record"
+  },
+  "errorRecordReviewed": "This record has already been reviewed. Refresh the queue.",
+  "@errorRecordReviewed": {
+    "description": "Error: record is not pending"
+  },
+  "errorAppealUnavailable": "This record can't be appealed: an appeal is allowed once, after a rejection.",
+  "@errorAppealUnavailable": {
+    "description": "Error: appeal not allowed"
+  },
+  "ratingTableTab": "Table",
+  "@ratingTableTab": {
+    "description": "Rating tab: leaderboard"
+  },
+  "myRecordsTab": "My records",
+  "@myRecordsTab": {
+    "description": "Rating tab: own records"
+  },
+  "moderationTab": "Review",
+  "@moderationTab": {
+    "description": "Rating tab: moderation queue"
+  },
+  "submitRecordAction": "Upload record",
+  "@submitRecordAction": {
+    "description": "FAB to submit a record"
+  },
+  "ratingScopeTitle": "Rating",
+  "@ratingScopeTitle": {
+    "description": "Filter title: gym or all"
+  },
+  "ratingScopeMyGym": "My gym",
+  "@ratingScopeMyGym": {
+    "description": "Filter: own gym"
+  },
+  "ratingScopeAll": "All gyms",
+  "@ratingScopeAll": {
+    "description": "Filter: global rating"
+  },
+  "ratingExerciseTitle": "Exercise",
+  "@ratingExerciseTitle": {
+    "description": "Filter and field title: exercise"
+  },
+  "ratingExerciseSquat": "Squat",
+  "@ratingExerciseSquat": {
+    "description": "Rating exercise"
+  },
+  "ratingExerciseBenchPress": "Bench press",
+  "@ratingExerciseBenchPress": {
+    "description": "Rating exercise"
+  },
+  "ratingExerciseDeadlift": "Deadlift",
+  "@ratingExerciseDeadlift": {
+    "description": "Rating exercise"
+  },
+  "ratingExercisePullUp": "Pull-up",
+  "@ratingExercisePullUp": {
+    "description": "Rating exercise"
+  },
+  "ratingPeriodTitle": "Period",
+  "@ratingPeriodTitle": {
+    "description": "Filter title: period"
+  },
+  "ratingPeriodWeek": "This week",
+  "@ratingPeriodWeek": {
+    "description": "Period filter"
+  },
+  "ratingPeriodMonth": "This month",
+  "@ratingPeriodMonth": {
+    "description": "Period filter"
+  },
+  "ratingPeriodAllTime": "All time",
+  "@ratingPeriodAllTime": {
+    "description": "Period filter"
+  },
+  "ratingMetricTitle": "Compare by",
+  "@ratingMetricTitle": {
+    "description": "Filter title: metric"
+  },
+  "ratingMetricMaxWeight": "Max weight",
+  "@ratingMetricMaxWeight": {
+    "description": "Metric: max weight"
+  },
+  "ratingMetricE1rm": "Estimated 1RM",
+  "@ratingMetricE1rm": {
+    "description": "Metric: Epley estimate"
+  },
+  "ratingSexTitle": "Sex",
+  "@ratingSexTitle": {
+    "description": "Filter and field title: sex"
+  },
+  "ratingSexAll": "Everyone",
+  "@ratingSexAll": {
+    "description": "Sex filter: no filter"
+  },
+  "ratingSexMale": "Men",
+  "@ratingSexMale": {
+    "description": "Sex"
+  },
+  "ratingSexFemale": "Women",
+  "@ratingSexFemale": {
+    "description": "Sex"
+  },
+  "ratingWeightClassTitle": "Weight class",
+  "@ratingWeightClassTitle": {
+    "description": "Filter title: weight class"
+  },
+  "ratingWeightClassAll": "All classes",
+  "@ratingWeightClassAll": {
+    "description": "Weight class filter: no filter"
+  },
+  "ratingWeightClassUpTo": "up to {bound} kg",
+  "@ratingWeightClassUpTo": {
+    "description": "Weight class with upper bound",
+    "placeholders": {
+      "bound": {
+        "type": "int"
+      }
+    }
+  },
+  "ratingWeightClassOver": "{bound}+ kg",
+  "@ratingWeightClassOver": {
+    "description": "Open weight class",
+    "placeholders": {
+      "bound": {
+        "type": "int"
+      }
+    }
+  },
+  "ratingNoGymTitle": "No gym chosen",
+  "@ratingNoGymTitle": {
+    "description": "Empty state: user has no gym"
+  },
+  "ratingNoGymMessage": "Choose your gym in Profile → Edit. Until then the rating of all gyms is available.",
+  "@ratingNoGymMessage": {
+    "description": "Empty state: how to choose a gym"
+  },
+  "ratingEmptyTitle": "No records yet",
+  "@ratingEmptyTitle": {
+    "description": "Empty leaderboard title"
+  },
+  "ratingEmptyMessage": "Records appear here after a moderator approves the video. Change the filters or upload your own.",
+  "@ratingEmptyMessage": {
+    "description": "Empty leaderboard message"
+  },
+  "myRecordsEmptyTitle": "No records submitted",
+  "@myRecordsEmptyTitle": {
+    "description": "Empty own records title"
+  },
+  "myRecordsEmptyMessage": "Upload a video of your lift. After review the record enters the rating.",
+  "@myRecordsEmptyMessage": {
+    "description": "Empty own records message"
+  },
+  "moderationEmptyTitle": "Queue is empty",
+  "@moderationEmptyTitle": {
+    "description": "Empty moderation queue title"
+  },
+  "moderationEmptyMessage": "New records will appear here for review.",
+  "@moderationEmptyMessage": {
+    "description": "Empty moderation queue message"
+  },
+  "moderationOwnRecord": "This is your record. Another moderator will review it.",
+  "@moderationOwnRecord": {
+    "description": "Moderator sees own pending record"
+  },
+  "recordStatusPending": "Under review",
+  "@recordStatusPending": {
+    "description": "Record status"
+  },
+  "recordStatusApproved": "Approved",
+  "@recordStatusApproved": {
+    "description": "Record status"
+  },
+  "recordStatusRejected": "Rejected",
+  "@recordStatusRejected": {
+    "description": "Record status"
+  },
+  "recordStatusAppealed": "Appeal under review",
+  "@recordStatusAppealed": {
+    "description": "Record status after appeal"
+  },
+  "recordTitle": "Record",
+  "@recordTitle": {
+    "description": "Record screen title"
+  },
+  "recordHiddenTitle": "Record unavailable",
+  "@recordHiddenTitle": {
+    "description": "Record hidden or deleted"
+  },
+  "recordHiddenMessage": "The record was deleted or its author hid it.",
+  "@recordHiddenMessage": {
+    "description": "Record hidden message"
+  },
+  "recordDateLabel": "Date",
+  "@recordDateLabel": {
+    "description": "Record field: date"
+  },
+  "recordWeightClassLabel": "Weight class",
+  "@recordWeightClassLabel": {
+    "description": "Record field: class"
+  },
+  "recordStatusLabel": "Status",
+  "@recordStatusLabel": {
+    "description": "Record field: status"
+  },
+  "recordRejectionLabel": "Rejection reason",
+  "@recordRejectionLabel": {
+    "description": "Record field: rejection reason"
+  },
+  "recordWeightLabel": "Weight, {unit}",
+  "@recordWeightLabel": {
+    "description": "Field: lifted weight",
+    "placeholders": {
+      "unit": {
+        "type": "String"
+      }
+    }
+  },
+  "recordAddedWeightHint": "Added weight; 0 without extra weight",
+  "@recordAddedWeightHint": {
+    "description": "Hint for pull-ups weight"
+  },
+  "recordRepsLabel": "Reps",
+  "@recordRepsLabel": {
+    "description": "Field: reps"
+  },
+  "recordBodyWeightLabel": "Body weight, {unit}",
+  "@recordBodyWeightLabel": {
+    "description": "Field: body weight",
+    "placeholders": {
+      "unit": {
+        "type": "String"
+      }
+    }
+  },
+  "recordBodyWeightHint": "Only sets the weight class. Other users don't see it.",
+  "@recordBodyWeightHint": {
+    "description": "Hint for body weight privacy"
+  },
+  "submitRecordTitle": "New record",
+  "@submitRecordTitle": {
+    "description": "Submit screen title"
+  },
+  "submitRecordSend": "Send for review",
+  "@submitRecordSend": {
+    "description": "Submit button"
+  },
+  "submitRecordSent": "Record sent for review",
+  "@submitRecordSent": {
+    "description": "Snack after submit"
+  },
+  "submitRecordPublicNote": "An approved record and its video are visible to everyone in the rating.",
+  "@submitRecordPublicNote": {
+    "description": "Note on public visibility"
+  },
+  "criteriaTitle": "Video requirements",
+  "@criteriaTitle": {
+    "description": "Criteria section title"
+  },
+  "criteriaBarVisible": "The bar and plates are visible",
+  "@criteriaBarVisible": {
+    "description": "Criterion"
+  },
+  "criteriaFullMovement": "The whole movement is in the frame",
+  "@criteriaFullMovement": {
+    "description": "Criterion"
+  },
+  "criteriaNoEditing": "No editing",
+  "@criteriaNoEditing": {
+    "description": "Criterion"
+  },
+  "criteriaSingleSet": "One set without cuts",
+  "@criteriaSingleSet": {
+    "description": "Criterion"
+  },
+  "videoHint": "Video up to 60 seconds. It is compressed on the phone before upload.",
+  "@videoHint": {
+    "description": "Video picker hint"
+  },
+  "videoRecord": "Record",
+  "@videoRecord": {
+    "description": "Button: record video"
+  },
+  "videoChoose": "Choose video",
+  "@videoChoose": {
+    "description": "Button: choose from gallery"
+  },
+  "videoPreparing": "Compressing video",
+  "@videoPreparing": {
+    "description": "Video is compressing"
+  },
+  "videoUploading": "Uploading: {percent}%",
+  "@videoUploading": {
+    "description": "Upload progress",
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "videoUploadPaused": "Paused: {percent}%",
+  "@videoUploadPaused": {
+    "description": "Upload paused",
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "videoPause": "Pause",
+  "@videoPause": {
+    "description": "Pause button"
+  },
+  "videoResume": "Resume",
+  "@videoResume": {
+    "description": "Resume button"
+  },
+  "videoPlay": "Play",
+  "@videoPlay": {
+    "description": "Play button"
+  },
+  "videoOpen": "Watch video",
+  "@videoOpen": {
+    "description": "Load and show video"
+  },
+  "videoUploaded": "Video uploaded",
+  "@videoUploaded": {
+    "description": "Upload complete"
+  },
+  "appealRecordTitle": "Appeal the rejection?",
+  "@appealRecordTitle": {
+    "description": "Appeal dialog title"
+  },
+  "appealRecordMessage": "The record goes back to review. An appeal is possible only once.",
+  "@appealRecordMessage": {
+    "description": "Appeal dialog message"
+  },
+  "appealRecordAction": "Appeal",
+  "@appealRecordAction": {
+    "description": "Appeal button"
+  },
+  "appealRecordSent": "Appeal sent",
+  "@appealRecordSent": {
+    "description": "Snack after appeal"
+  },
+  "approveRecordAction": "Approve",
+  "@approveRecordAction": {
+    "description": "Approve button"
+  },
+  "rejectRecordAction": "Reject",
+  "@rejectRecordAction": {
+    "description": "Reject button"
+  },
+  "rejectRecordTitle": "Reject record",
+  "@rejectRecordTitle": {
+    "description": "Reject dialog title"
+  },
+  "rejectReasonLabel": "Reason",
+  "@rejectReasonLabel": {
+    "description": "Reject reason field"
+  },
+  "rejectReasonTooShort": "Use at least {count} characters",
+  "@rejectReasonTooShort": {
+    "description": "Reject reason validation",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "recordApproved": "Record approved",
+  "@recordApproved": {
+    "description": "Snack after approve"
+  },
+  "recordRejected": "Record rejected",
+  "@recordRejected": {
+    "description": "Snack after reject"
+  },
+  "recordHolderTitle": "Records",
+  "@recordHolderTitle": {
+    "description": "Record holder screen title"
+  },
+  "recordHistoryEmptyTitle": "No approved records",
+  "@recordHistoryEmptyTitle": {
+    "description": "Empty holder history title"
+  },
+  "recordHistoryEmptyMessage": "Records appear here after review.",
+  "@recordHistoryEmptyMessage": {
+    "description": "Empty holder history message"
+  },
+  "recordHistoryHiddenTitle": "Records hidden",
+  "@recordHistoryHiddenTitle": {
+    "description": "Holder history hidden title"
+  },
+  "recordHistoryHiddenMessage": "The user shows the record history only to selected people.",
+  "@recordHistoryHiddenMessage": {
+    "description": "Holder history hidden message"
+  },
+  "badgeFirstRecord": "First record",
+  "@badgeFirstRecord": {
+    "description": "Badge"
+  },
+  "badgeGymTop3": "Top 3 of the gym",
+  "@badgeGymTop3": {
+    "description": "Badge"
   }
 }

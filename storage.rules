@@ -1,0 +1,23 @@
+rules_version = '2';
+
+// Видео рекордов: клиент только загружает своё, читать можно по подписанной ссылке от функции.
+service firebase.storage {
+  match /b/{bucket}/o {
+    function isVerifiedUser() {
+      return request.auth != null
+        && (request.auth.token.firebase.sign_in_provider != 'password'
+            || request.auth.token.email_verified == true);
+    }
+
+    match /records/{uid}/{fileName} {
+      allow create: if isVerifiedUser()
+        && request.auth.uid == uid
+        && fileName.matches('^[A-Za-z0-9]{20}[.]mp4$')
+        && request.resource.size > 0
+        && request.resource.size <= 50 * 1024 * 1024
+        && request.resource.contentType.matches('video/.*');
+
+      allow read, update, delete: if false;
+    }
+  }
+}

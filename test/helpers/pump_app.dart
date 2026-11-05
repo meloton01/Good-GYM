@@ -9,6 +9,7 @@ import 'package:good_gym/features/auth/domain/auth_user.dart';
 import 'package:good_gym/features/profile/data/user_profile_repository_provider.dart';
 import 'package:good_gym/features/profile/domain/user_profile.dart';
 import 'package:good_gym/features/profile/domain/user_role.dart';
+import 'package:good_gym/features/rating/data/record_repository_providers.dart';
 import 'package:good_gym/features/settings/data/settings_repository_provider.dart';
 import 'package:good_gym/features/settings/data/shared_preferences_settings_repository.dart';
 import 'package:good_gym/features/workout/data/active_workout_store_provider.dart';
@@ -24,8 +25,10 @@ import 'package:good_gym/features/workout/data/workout_template_repository_provi
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'fake_auth_repository.dart';
+import 'fake_record_repository.dart';
 import 'fake_rest_alarm.dart';
 import 'fake_user_profile_repository.dart';
+import 'fake_video_source.dart';
 
 const testUser = AuthUser(
   uid: 'uid-1',
@@ -49,6 +52,12 @@ class TestBackend {
   final FakeUserProfileRepository profiles;
   final FakeFirebaseFirestore firestore = FakeFirebaseFirestore();
   final FakeRestAlarm restAlarm = FakeRestAlarm();
+  final FakeVideoSource videoSource = FakeVideoSource();
+  late final FakeRecordRepository records = FakeRecordRepository(
+    firestore,
+    () => auth.currentUid ?? '',
+    profiles.profileOf,
+  );
 }
 
 /// Запускает приложение с фейковым бэкендом; по умолчанию пользователь вошёл и профиль создан.
@@ -95,6 +104,8 @@ Future<TestBackend> pumpApp(
           FirestoreCoachPlanRepository(backend.firestore),
         ),
         restAlarmProvider.overrideWithValue(backend.restAlarm),
+        recordRepositoryProvider.overrideWithValue(backend.records),
+        videoSourceProvider.overrideWithValue(backend.videoSource),
         authRepositoryProvider.overrideWithValue(backend.auth),
         userProfileRepositoryProvider.overrideWithValue(backend.profiles),
       ],

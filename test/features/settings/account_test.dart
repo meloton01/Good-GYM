@@ -17,6 +17,7 @@ void main() {
     tester,
   ) async {
     final backend = await pumpApp(tester);
+    await backend.firestore.doc('records/r1').set({'uid': testUser.uid});
     await openDeleteDialog(tester);
     expect(find.text('Delete account?'), findsOneWidget);
 
@@ -36,6 +37,10 @@ void main() {
       'deleteAccount',
     ]);
     expect(backend.profiles.deletedUids, [testUser.uid]);
+    final records = await tester.runAsync(
+      () => backend.firestore.collection('records').get(),
+    );
+    expect(records!.docs, isEmpty);
     expect(find.widgetWithText(AppBar, 'Sign in'), findsOneWidget);
   });
 

@@ -15,6 +15,103 @@
         { "fieldPath": "coachId", "order": "ASCENDING" },
         { "fieldPath": "createdAt", "order": "DESCENDING" }
       ]
+    },
+    {
+      "collectionGroup": "records",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "uid", "order": "ASCENDING" },
+        { "fieldPath": "status", "order": "ASCENDING" },
+        { "fieldPath": "performedAt", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "records",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "uid", "order": "ASCENDING" },
+        { "fieldPath": "createdAt", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "records",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "uid", "order": "ASCENDING" },
+        { "fieldPath": "createdAt", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "records",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "status", "order": "ASCENDING" },
+        { "fieldPath": "createdAt", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "leaderboard",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "exerciseId", "order": "ASCENDING" },
+        { "fieldPath": "period", "order": "ASCENDING" },
+        { "fieldPath": "scope", "order": "ASCENDING" },
+        { "fieldPath": "bestWeightKg", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "leaderboard",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "exerciseId", "order": "ASCENDING" },
+        { "fieldPath": "period", "order": "ASCENDING" },
+        { "fieldPath": "scope", "order": "ASCENDING" },
+        { "fieldPath": "sex", "order": "ASCENDING" },
+        { "fieldPath": "bestWeightKg", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "leaderboard",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "exerciseId", "order": "ASCENDING" },
+        { "fieldPath": "period", "order": "ASCENDING" },
+        { "fieldPath": "scope", "order": "ASCENDING" },
+        { "fieldPath": "weightClass", "order": "ASCENDING" },
+        { "fieldPath": "bestWeightKg", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "leaderboard",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "exerciseId", "order": "ASCENDING" },
+        { "fieldPath": "period", "order": "ASCENDING" },
+        { "fieldPath": "scope", "order": "ASCENDING" },
+        { "fieldPath": "bestE1rmKg", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "leaderboard",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "exerciseId", "order": "ASCENDING" },
+        { "fieldPath": "period", "order": "ASCENDING" },
+        { "fieldPath": "scope", "order": "ASCENDING" },
+        { "fieldPath": "sex", "order": "ASCENDING" },
+        { "fieldPath": "bestE1rmKg", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "leaderboard",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "exerciseId", "order": "ASCENDING" },
+        { "fieldPath": "period", "order": "ASCENDING" },
+        { "fieldPath": "scope", "order": "ASCENDING" },
+        { "fieldPath": "weightClass", "order": "ASCENDING" },
+        { "fieldPath": "bestE1rmKg", "order": "DESCENDING" }
+      ]
     }
   ],
   "fieldOverrides": []

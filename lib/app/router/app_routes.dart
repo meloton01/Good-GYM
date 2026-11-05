@@ -43,6 +43,17 @@ abstract final class AppRoutes {
   static const String myPlansSegment = 'plans';
   static const String myPlans = '/workout/$myPlansSegment';
 
+  static const String submitRecordSegment = 'submit';
+  static const String submitRecord = '/rating/$submitRecordSegment';
+  static const String recordDetailSegment = 'records/:recordId';
+  static const String recordHolderSegment = 'athletes/:uid';
+
+  /// Путь рекорда в рейтинге.
+  static String recordDetail(String recordId) => '/rating/records/$recordId';
+
+  /// Путь профиля рекордсмена.
+  static String recordHolder(String uid) => '/rating/athletes/$uid';
+
   /// Параметр запроса с uid владельца тренировки, если это не текущий пользователь.
   static const String ownerParameter = 'owner';
 

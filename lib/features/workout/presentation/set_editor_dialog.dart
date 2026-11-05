@@ -4,10 +4,10 @@ import '../../../app/theme/theme_context.dart';
 import '../../../core/formatting/measurement_format.dart';
 import '../../../core/units/unit_labels.dart';
 import '../../../core/units/weight_unit.dart';
+import '../../../core/validation/number_validators.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../domain/workout_limits.dart';
 import '../domain/workout_set.dart';
-import 'workout_validators.dart';
 
 /// Открывает правку подхода: повторы, вес в единицах пользователя и отдых; null при отмене.
 Future<WorkoutSet?> showSetEditor(
@@ -90,7 +90,7 @@ class _SetEditorDialogState extends State<_SetEditorDialog> {
               controller: _reps,
               keyboardType: TextInputType.number,
               decoration: InputDecoration(labelText: l10n.setRepsLabel),
-              validator: (value) => WorkoutValidators.number(
+              validator: (value) => NumberValidators.number(
                 l10n,
                 locale,
                 value,
@@ -109,7 +109,7 @@ class _SetEditorDialogState extends State<_SetEditorDialog> {
                 labelText: l10n.setWeightLabel(widget.unit.shortLabel(l10n)),
                 helperText: l10n.setWeightHelper,
               ),
-              validator: (value) => WorkoutValidators.number(
+              validator: (value) => NumberValidators.number(
                 l10n,
                 locale,
                 value,
@@ -123,7 +123,7 @@ class _SetEditorDialogState extends State<_SetEditorDialog> {
               controller: _rest,
               keyboardType: TextInputType.number,
               decoration: InputDecoration(labelText: l10n.setRestLabel),
-              validator: (value) => WorkoutValidators.number(
+              validator: (value) => NumberValidators.number(
                 l10n,
                 locale,
                 value,

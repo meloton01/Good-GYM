@@ -30,6 +30,12 @@ extension AppFailureMessage on AppFailure {
       AppFailure.coachLimitReached => l10n.errorCoachLimitReached,
       AppFailure.linkUnavailable => l10n.errorLinkUnavailable,
       AppFailure.roleLocked => l10n.errorRoleLocked,
+      AppFailure.noGym => l10n.errorNoGym,
+      AppFailure.videoInvalid => l10n.errorVideoInvalid,
+      AppFailure.videoTooLong => l10n.errorVideoTooLong,
+      AppFailure.ownRecord => l10n.errorOwnRecord,
+      AppFailure.recordReviewed => l10n.errorRecordReviewed,
+      AppFailure.appealUnavailable => l10n.errorAppealUnavailable,
       AppFailure.unknown => l10n.errorUnknown,
     };
   }
