@@ -3,7 +3,11 @@
 <plist version="1.0">
 <dict>
 	<key>NSCameraUsageDescription</key>
-	<string>The camera scans a QR code to invite a coach or a student.</string>
+	<string>The camera scans a QR code to invite a coach or a student and records a lift video for the gym rating.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>The microphone records sound with a lift video for the gym rating.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>The photo library lets you choose a lift video for the gym rating.</string>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
 	<key>CFBundleDevelopmentRegion</key>
