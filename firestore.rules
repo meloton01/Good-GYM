@@ -40,6 +40,15 @@ service cloud.firestore {
       return /databases/$(database)/documents/users/$(uid);
     }
 
+    function blockPath(ownerId, blockedId) {
+      return /databases/$(database)/documents/users/$(ownerId)/blocks/$(blockedId);
+    }
+
+    // Ни один из пользователей не заблокировал другого.
+    function noBlockBetween(firstId, secondId) {
+      return !exists(blockPath(firstId, secondId)) && !exists(blockPath(secondId, firstId));
+    }
+
     function isMuscleGroup(value) {
       return value in ['chest', 'back', 'legs', 'shoulders', 'arms', 'core'];
     }
@@ -149,7 +158,8 @@ service cloud.firestore {
         && data.invitedBy == request.auth.uid
         && data.createdAt == request.time
         && data.updatedAt == request.time
-        && hasValidLinkParties(data);
+        && hasValidLinkParties(data)
+        && noBlockBetween(data.coachId, data.athleteId);
     }
 
     // Принять может только приглашённая сторона; ученик свободен, у тренера меньше 50 учеников.
@@ -159,6 +169,7 @@ service cloud.firestore {
         && request.auth.uid != before.invitedBy
         && after.diff(before).affectedKeys().hasOnly(['status', 'updatedAt'])
         && hasValidLinkParties(after)
+        && noBlockBetween(before.coachId, before.athleteId)
         && !exists(studentCoachPath(before.athleteId))
         && getAfter(studentCoachPath(before.athleteId)).data.linkId == linkId
         && getAfter(coachStudentsPath(before.coachId)).data.count == activeStudents(before.coachId) + 1
@@ -180,7 +191,8 @@ service cloud.firestore {
         && after.status == 'pending'
         && after.invitedBy == request.auth.uid
         && after.diff(before).affectedKeys().hasOnly(['status', 'invitedBy', 'coachNickname', 'athleteNickname', 'updatedAt'])
-        && hasValidLinkParties(after);
+        && hasValidLinkParties(after)
+        && noBlockBetween(before.coachId, before.athleteId);
     }
 
     function isValidPlanContent(data) {
@@ -220,10 +232,11 @@ service cloud.firestore {
         && isValidGym(data);
     }
 
-    // Профиль виден по настройке владельца: всем, посетителям его зала или только ему.
+    // Профиль виден по настройке владельца: всем, посетителям его зала или только ему; заблокированным не виден.
     function canViewProfile(uid, data) {
       return isOwner(uid)
         || (isVerifiedUser()
+            && !exists(blockPath(uid, request.auth.uid))
             && (data.get('profileVisibility', 'everyone') == 'everyone'
                 || (data.get('profileVisibility', 'everyone') == 'gymMembers'
                     && data.get('gymId', null) != null
@@ -297,6 +310,18 @@ service cloud.firestore {
       match /exercises/{exerciseId} {
         allow read, delete: if isOwner(uid);
         allow create: if isOwner(uid) && isValidCustomExercise(request.resource.data);
+        allow update: if false;
+      }
+
+      // Заблокированные пользователи: видит и меняет только владелец.
+      match /blocks/{blockedId} {
+        allow read, delete: if isOwner(uid);
+        allow create: if isOwner(uid)
+          && blockedId != uid
+          && request.resource.data.keys().hasOnly(['nickname', 'createdAt'])
+          && request.resource.data.keys().hasAll(['nickname', 'createdAt'])
+          && request.resource.data.nickname == get(userPath(blockedId)).data.nickname
+          && request.resource.data.createdAt == request.time;
         allow update: if false;
       }
 
@@ -448,9 +473,10 @@ service cloud.firestore {
       return isVerifiedUser() && get(userPath(request.auth.uid)).data.role == 'moderator';
     }
 
-    // История рекордов пользователя видна по его настройке recordsVisibility.
+    // История рекордов пользователя видна по его настройке recordsVisibility; заблокированным не видна.
     function canViewRecordsOf(uid) {
       return isVerifiedUser()
+        && !exists(blockPath(uid, request.auth.uid))
         && (get(userPath(uid)).data.get('recordsVisibility', 'everyone') == 'everyone'
             || (get(userPath(uid)).data.get('recordsVisibility', 'everyone') == 'gymMembers'
                 && get(userPath(uid)).data.get('gymId', null) != null
@@ -464,6 +490,42 @@ service cloud.firestore {
         || (resource.data.status == 'approved' && canViewRecordsOf(resource.data.uid));
 
       allow write: if false;
+    }
+
+    function isReportReason(value) {
+      return value in ['spam', 'abuse', 'cheating', 'inappropriate', 'other'];
+    }
+
+    // Жалоба на пользователя или на его рекорд; одна жалоба от автора на одну цель.
+    function isValidReportTarget(reportId, data) {
+      return (data.get('recordId', null) == null
+              && reportId == request.auth.uid + '_user_' + data.targetUid)
+        || (data.recordId is string
+            && reportId == request.auth.uid + '_record_' + data.recordId
+            && get(/databases/$(database)/documents/records/$(data.recordId)).data.uid == data.targetUid);
+    }
+
+    // Жалобы разбирает модератор; автор видит и удаляет только свои.
+    match /reports/{reportId} {
+      allow read: if isModerator()
+        || (isVerifiedUser() && resource.data.reporterId == request.auth.uid);
+
+      allow create: if isVerifiedUser()
+        && request.resource.data.keys().hasOnly(['reporterId', 'targetUid', 'recordId', 'reason', 'comment', 'status', 'createdAt'])
+        && request.resource.data.keys().hasAll(['reporterId', 'targetUid', 'reason', 'comment', 'status', 'createdAt'])
+        && request.resource.data.reporterId == request.auth.uid
+        && request.resource.data.targetUid is string
+        && request.resource.data.targetUid != request.auth.uid
+        && exists(userPath(request.resource.data.targetUid))
+        && isReportReason(request.resource.data.reason)
+        && isTextOfLength(request.resource.data.comment, 0, 500)
+        && request.resource.data.status == 'open'
+        && request.resource.data.createdAt == request.time
+        && isValidReportTarget(reportId, request.resource.data);
+
+      allow update: if false;
+
+      allow delete: if isVerifiedUser() && resource.data.reporterId == request.auth.uid;
     }
 
     // Лучшие одобренные результаты пользователей; пишут только функции при одобрении.
