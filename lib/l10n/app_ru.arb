@@ -441,5 +441,8 @@
   "recordHistoryHiddenTitle": "Рекорды скрыты",
   "recordHistoryHiddenMessage": "Пользователь показывает историю рекордов не всем.",
   "badgeFirstRecord": "Первый рекорд",
-  "badgeGymTop3": "Топ-3 зала"
+  "badgeGymTop3": "Топ-3 зала",
+  "aboutPrivacyPolicy": "Политика конфиденциальности",
+  "aboutTerms": "Условия использования",
+  "linkOpenFailed": "Не удалось открыть ссылку. Установите или включите браузер и попробуйте снова."
 }

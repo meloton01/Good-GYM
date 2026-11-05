@@ -441,5 +441,8 @@
   "recordHistoryHiddenTitle": "Рекорди приховано",
   "recordHistoryHiddenMessage": "Користувач показує історію рекордів не всім.",
   "badgeFirstRecord": "Перший рекорд",
-  "badgeGymTop3": "Топ-3 залу"
+  "badgeGymTop3": "Топ-3 залу",
+  "aboutPrivacyPolicy": "Політика конфіденційності",
+  "aboutTerms": "Умови використання",
+  "linkOpenFailed": "Не вдалося відкрити посилання. Встановіть або увімкніть браузер і спробуйте знову."
 }

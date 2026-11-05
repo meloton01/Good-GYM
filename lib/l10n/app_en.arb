@@ -2006,5 +2006,17 @@
   "badgeGymTop3": "Top 3 of the gym",
   "@badgeGymTop3": {
     "description": "Badge"
+  },
+  "aboutPrivacyPolicy": "Privacy policy",
+  "@aboutPrivacyPolicy": {
+    "description": "Opens the privacy policy in the browser"
+  },
+  "aboutTerms": "Terms of use",
+  "@aboutTerms": {
+    "description": "Opens the terms of use in the browser"
+  },
+  "linkOpenFailed": "Could not open the link. Install or enable a browser and try again.",
+  "@linkOpenFailed": {
+    "description": "Shown when the browser does not open"
   }
 }
