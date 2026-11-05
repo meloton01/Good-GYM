@@ -17,14 +17,21 @@ class RatingScreen extends ConsumerWidget {
   /// Создаёт экран вкладки рейтинга.
   const RatingScreen({super.key});
 
-  /// Строит вложенные вкладки и кнопку подачи рекорда.
+  /// Строит вложенные вкладки и кнопку подачи рекорда; перестраивается только при смене роли или зала.
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
-    final uid = ref.watch(authUserProvider).value?.uid;
+    final uid = ref.watch(authUserProvider.select((user) => user.value?.uid));
     final profile = uid == null
         ? null
-        : ref.watch(userProfileProvider(uid)).value;
+        : ref.watch(
+            userProfileProvider(uid).select(
+              (profile) => switch (profile.value) {
+                final value? => (role: value.role, gymId: value.gymId),
+                null => null,
+              },
+            ),
+          );
     if (uid == null || profile == null) {
       return Scaffold(
         appBar: AppBar(title: Text(l10n.tabRating)),
