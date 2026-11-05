@@ -130,10 +130,15 @@ firebase emulators:exec --only firestore --project demo-good-gym "npm --prefix f
 | `users/{uid}/private/body` | только владелец | вес (кг) и рост (см) |
 | `nicknames/{nickname}` | вошедшие | `uid` владельца |
 | `gyms/{gymId}` | вошедшие | название, `nameLower` для поиска, город, создатель |
-| `users/{uid}/workouts/{id}` | только владелец | завершённая тренировка: даты, `exerciseIds`, упражнения с подходами |
+| `users/{uid}/workouts/{id}` | владелец и активный тренер | завершённая тренировка: даты, `exerciseIds`, упражнения с подходами, `planId` |
 | `users/{uid}/workoutTemplates/{id}` | только владелец | шаблон: название, `titleLower`, упражнения |
 | `users/{uid}/exercises/{id}` | только владелец | своё упражнение: название, группа мышц; не меняется |
-| `users/{uid}/personalRecords/{exerciseId}` | только владелец | лучший вес, расчётный 1ПМ и повторы со ссылкой на тренировку |
+| `users/{uid}/personalRecords/{exerciseId}` | владелец и активный тренер | лучший вес, расчётный 1ПМ и повторы со ссылкой на тренировку |
+| `users/{uid}/plans/{id}` | ученик и активный тренер, составивший план | план тренера: название, заметка, упражнения, статус `assigned` или `completed`, `workoutId` |
+| `users/{uid}/plans/{id}/comments/{id}` | те же | автор, ник автора, текст до 500 символов |
+| `coachLinks/{coachId}_{athleteId}` | стороны связи | ники сторон, статус `pending`, `active` или `ended`, `invitedBy` |
+| `studentCoach/{athleteId}` | ученик и его тренер | `coachId`, `linkId`; существует, только пока связь активна |
+| `coachStudents/{coachId}` | вошедшие | `count` активных учеников, до 50 |
 
 Для графика упражнения нужен составной индекс `exerciseIds` + `finishedAt` из `firestore.indexes.json`: `firebase deploy --only firestore:indexes`.
 
@@ -147,6 +152,17 @@ firebase emulators:exec --only firestore --project demo-good-gym "npm --prefix f
 - Личные рекорды считает `PersonalRecords` при завершении тренировки и пишет одним батчем с ней. При удалении тренировки рекорды её упражнений пересчитываются по оставшимся.
 - Расчётный 1ПМ по формуле Эпли (`estimateOneRepMax`). Это личные рекорды, рейтинг зала строится отдельно, по проверенному видео.
 - Таймер отдыха (`RestTimerController`) хранит время окончания, а не остаток, поэтому отсчёт верен после сворачивания. Уведомление ставит системный планировщик через `flutter_local_notifications`: точное, если Android разрешил `SCHEDULE_EXACT_ALARM`, иначе неточное. Тип уведомлений «Таймер отдыха» выключается в настройках.
+
+## Связь тренер-ученик
+
+- Приглашает тренер или ученик по нику или QR-коду с ником (`mobile_scanner`, `qr_flutter`). Атлет приглашать не может: сначала переключается на ученика.
+- Документ связи один на пару, id `{coachId}_{athleteId}`. Принять может только приглашённая сторона, отклонить или отозвать — любая (документ удаляется). После разрыва любая сторона приглашает снова.
+- Принятие и разрыв идут одной транзакцией: статус связи, замок `studentCoach/{athleteId}` и счётчик `coachStudents/{coachId}`. Правила через `getAfter` проверяют, что три записи согласованы. Замок даёт ученику одного тренера, счётчик держит лимит 50 учеников.
+- Доступ тренера к тренировкам, рекордам и планам ученика правила проверяют по замку: связь разорвана, замка нет, доступа нет.
+- Планы лежат у ученика, поэтому удаляются и выгружаются вместе с его данными. Тренер правит план до выполнения. Ученик начинает тренировку из плана, при завершении план получает `completed` и ссылку на тренировку.
+- Пока ученик связан с тренером, сменить роль на атлета нельзя: сначала нужно разорвать связь.
+- ⚑ Подтверждение связи в ТЗ отнесено к Cloud Functions. На тарифе Spark функций нет, поэтому принятие выполняет клиент, а все условия (кто принимает, свободен ли ученик, лимит тренера) проверяют правила. Перенос в функцию не меняет `CoachLinkRepository`.
+- ⚑ Уведомление о приглашении — счётчик на вкладке «Тренер»/«Ученики». Push через FCM требует Cloud Functions и появится вместе с ними.
 
 ## Роли
 
@@ -166,7 +182,8 @@ firebase emulators:exec --only firestore --project demo-good-gym "npm --prefix f
 | workout | `WorkoutTemplateRepository` | шаблоны тренировок | `FirestoreWorkoutTemplateRepository` |
 | workout | `ExerciseRepository` | свои упражнения | `FirestoreExerciseRepository` |
 | workout | `RestAlarm` | уведомление об окончании отдыха | `LocalNotificationsRestAlarm` |
-| workout | `CoachLinkRepository` | приглашения и связь тренер-ученик | этап 4 |
+| workout | `CoachLinkRepository` | приглашения и связь тренер-ученик | `FirestoreCoachLinkRepository` |
+| workout | `CoachPlanRepository` | планы тренера, выполнение и комментарии | `FirestoreCoachPlanRepository` |
 | settings | `SettingsRepository` | внешний вид, язык, единицы, уведомления на устройстве | `SharedPreferencesSettingsRepository` |
 
 Вход через Google и Apple требует настройки консолей: см. `docs/firebase-setup.md`.
