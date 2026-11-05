@@ -9,7 +9,17 @@
 3. Задеплоить правила: `firebase deploy --only firestore:rules`.
 4. **Authentication → Templates**: при желании поправить отправителя и текст писем. Язык письма приложение передаёт само, по языку интерфейса.
 
-## Вход через Google
+## Рейтинг: Functions и Storage
+
+Нужен тариф Blaze. Небольшая нагрузка укладывается в бесплатную квоту, но стоит поставить бюджетное оповещение в Google Cloud Billing.
+
+1. **Usage and billing**: перейти на Blaze.
+2. **Storage**: создать бакет по умолчанию в регионе `europe-west1`.
+3. Сервисному аккаунту функций (`<номер проекта>-compute@developer.gserviceaccount.com`) выдать в IAM роль **Service Account Token Creator** на самого себя: без неё `recordVideoUrl` не подпишет ссылку.
+4. Задеплоить: `firebase deploy --only functions,firestore,storage`.
+5. Модератора назначить вручную: `users/{uid}` → поле `role` = `moderator`.
+
+
 
 1. Authentication → Sign-in method → Google → включить, указать email поддержки.
 2. Android: добавить SHA-1 и SHA-256 ключа подписи в Project settings → Your apps → Android.
